@@ -1,0 +1,9 @@
+CLOSED_DIR
+DIR
+subdir
+file1
+file2
+ft_ls
+test/*
+*.o
+libft.a

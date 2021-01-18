@@ -1,0 +1,34 @@
+#include "ft_ls.h"
+
+int		freeError(t_error *error)
+{
+	if (error != NULL)
+	{
+		if (error->panic != NULL)
+			free(error->panic);
+		if (error->permission != NULL)
+			free(error->permission);
+		free(error);
+	}
+	return (0);
+}
+
+int		handleError(t_error *error)
+{
+	if (error == NULL)
+		return freeError(error);
+	if (error->panic != NULL)
+		fprint_fd(2, "\033[41;30mERROR\033[m\033[31m - %s\033[m\n",
+			error->panic);
+	if (error->access != NULL)
+		fprint_fd(2, "ls: cannot access '%s': No such file or directory\n",
+			error->access);
+	if (error->option)
+		fprint_fd(2, "ls: invalid option -- '%c'\n%s\n",
+			error->option,
+			"Try 'ls --help' for more information.");
+	if (error->permission != NULL)
+		fprint_fd(2, "ls: cannot open directory '%s': Permission denied\n",
+			error->permission);
+	return freeError(error);
+}
