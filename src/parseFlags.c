@@ -1,31 +1,28 @@
 #include "ft_ls.h"
 
-t_error *checkFlags(const char c)
+t_error checkFlags(const char c)
 {
 	if (c == 'l' || c == 'R' || c == 'a' || c == 'r' || c == 't')
-		return (NULL);
+		return (noErrors());
 	if (c == 'u' || c == 'f' || c == 'g' || c == 'd')
-		return (NULL);
+		return (noErrors());
 	return (invalidOption(c));
 }
 
-t_error	*checkForLongFlag(char const *av)
+t_error	checkForLongFlag(char const *av)
 {
 	if (!ft_strcmp("--all", av))
-		return (NULL);
+		return (noErrors());
 	if (!ft_strcmp("--reverse", av))
-		return (NULL);
+		return (noErrors());
 	if (!ft_strcmp("--recursive", av))
-		return (NULL);
+		return (noErrors());
 	if (!ft_strcmp("--directory", av))
-		return (NULL);
+		return (noErrors());
 	if (!ft_strcmp("--color", av))
-		return (NULL);
+		return (noErrors());
 	if (!ft_strcmp("--help", av))
-	{
-		printUsage();
-		return (emptyError());
-	}
+		return (noErrors());
 	return (accessFailed(av));
 }
 
@@ -61,28 +58,31 @@ void	parseLongFlag(const char *av, int *flags)
 {
 	if (!ft_strcmp("--all", av))
 		*flags = *flags | FLAG_A;
-	if (!ft_strcmp("--reverse", av))
+	else if (!ft_strcmp("--reverse", av))
 		*flags = *flags | FLAG_R;
-	if (!ft_strcmp("--recursive", av))
+	else if (!ft_strcmp("--recursive", av))
 		*flags = *flags | FLAG_RR;
-	if (!ft_strcmp("--directory", av))
+	else if (!ft_strcmp("--directory", av))
 		*flags = *flags	| FLAG_D;
-	if (!ft_strcmp("--color", av))
+	else if (!ft_strcmp("--color", av))
 		*flags = *flags | FLAG_COLOR;
+	else if (!ft_strcmp("--help", av))
+		*flags = *flags | FLAG_HELP;
 }
 
 /*
 **	parsing one program argument for flags
 */
-t_error	*parseFlags(const char *av, int *flags)
+t_error	parseFlags(const char *av, int *flags)
 {
-	t_error	*error;
+	t_error	error;
 
-	if ((error = checkForErrors(av)) != NULL)
+	error = checkForErrors(av);
+	if (error.wasSet)
 		return (error);
 	if (!ft_strncmp("--", av, 2))
 		parseLongFlag(av, flags);
 	else if (av[0] == '-')
 		parseShortFlags(av, flags);
-	return (NULL);
+	return (noErrors());
 }

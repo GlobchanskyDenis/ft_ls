@@ -53,9 +53,19 @@ void	DumpFile(int prefix, t_file *file)
 	else
 		fprint("%s ", file->name);
 	if (file->path == NULL)
-		fprint("<NULL>\n");
+		fprint("<NULL> ");
 	else
-		fprint("%s\n", file->path);
+		fprint("%s ", file->path);
+	if (file->type == DIRECTORY)
+		fprint("directory ");
+	else if (file->type == FILE)
+		fprint("file ");
+	else if (file->type == SYMBOLIC)
+		fprint("symbolic_link ");
+	else
+		fprint("not_set ");
+	DumpBits(file->stat.st_mode);
+	fprint(" hard_links=%d\n", file->stat.st_nlink);
 }
 
 void	DumpFileTree(int prefix, t_file *currentFile)

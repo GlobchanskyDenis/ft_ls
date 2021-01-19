@@ -1,58 +1,50 @@
 #include "ft_ls.h"
 
-t_error	*newError(char *newPanic)
+t_error	newError(char *newPanic)
 {
-	t_error *error;
+	t_error error;
 
-	if ((error = (t_error *)ft_memalloc(sizeof(t_error))) == NULL)
-		return (NULL);
-	if ((error->panic = ft_strdup(newPanic)) == NULL)
-	{
-		free(error);
-		return (NULL);
-	}
+	ft_bzero(&error, sizeof(error));
+	error.wasSet = 1;
+	error.panic = ft_strdup(newPanic);
 	return (error);
 }
 
-t_error *accessFailed(char const *av)
+t_error accessFailed(char const *av)
 {
-	t_error *error;
+	t_error error;
 
-	if ((error = (t_error *)ft_memalloc(sizeof(t_error))) == NULL)
-		return (NULL);
-	error->access = av;
+	ft_bzero(&error, sizeof(error));
+	error.wasSet = 1;
+	error.access = av;
 	return (error);
 }
 
-t_error *invalidOption(char c)
+t_error invalidOption(char c)
 {
-	t_error *error;
+	t_error error;
 
-	if ((error = (t_error *)ft_memalloc(sizeof(t_error))) == NULL)
-		return (NULL);
-	error->option = c;
+	ft_bzero(&error, sizeof(error));
+	error.wasSet = 1;
+	error.option = c;
 	return (error);
 }
 
-t_error	*emptyError()
+t_error permissionError(char const *fileName)
 {
-	t_error *error;
+	t_error error;
 
-	if ((error = (t_error *)ft_memalloc(sizeof(t_error))) == NULL)
-		return (NULL);
+	ft_bzero(&error, sizeof(error));
+	error.wasSet = 1;
+	error.permission = ft_strdup(fileName);
 	return (error);
 }
 
-t_error *permissionError(char const *fileName)
+t_error	allocateFailed()
 {
-	t_error *error;
+	t_error error;
 
-	if ((error = (t_error *)ft_memalloc(sizeof(t_error))) == NULL)
-		return (NULL);
-	if ((error->permission = ft_strdup(fileName)) == NULL)
-	{
-		free(error);
-		return (NULL);
-	}
-	return (error);
+	ft_bzero(&error, sizeof(error));
+	error.wasSet = 1;
+	return(error);
 }

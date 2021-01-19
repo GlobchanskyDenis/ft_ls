@@ -7,3 +7,5 @@ ft_ls
 test/*
 *.o
 libft.a
+hard_link
+symbolic_link

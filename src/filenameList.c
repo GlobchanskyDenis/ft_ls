@@ -1,23 +1,18 @@
 #include "ft_ls.h"
 
-t_error	*addToFilenameList(char *filename, t_list **fileList)
+t_error	addToFilenameList(char *filename, t_list **fileList)
 {
 	t_list	*newFilenameNode;
 
 	if (filename == NULL || fileList == NULL)
 		return (newError("empty pointer in addFilenameList"));
-	if ((newFilenameNode = ft_lstnew_fag(NULL, 0)) == NULL)
-		return (newError("malloc returned NULL"));
-	if ((newFilenameNode->content = ft_strdup(filename)) == NULL)
-	{
-		free(newFilenameNode);
-		return (newError("malloc returned NULL"));
-	}
+	if ((newFilenameNode = ft_lstnew_fag(filename, 0)) == NULL)
+		return (allocateFailed());
 	if (*fileList == NULL)
 		*fileList = newFilenameNode;
 	else
 		ft_lstadd(fileList, newFilenameNode);
-	return (NULL);
+	return (noErrors());
 }
 
 int		freeFilenameList(t_list **fileList)
@@ -32,8 +27,6 @@ int		freeFilenameList(t_list **fileList)
 	{
 		toDelete = node;
 		node = node->next;
-		if (toDelete->content != NULL)
-			free(toDelete->content);
 		free(toDelete);
 	}
 	*fileList = NULL;

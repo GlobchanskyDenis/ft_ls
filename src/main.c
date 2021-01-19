@@ -23,22 +23,29 @@ void	displayFiles(t_file *fileTree, int flags)
 int		main(int ac, char **av)
 {
 	int			flags;
-	t_error		*error;
+	t_error		error;
 	t_file		*fileTree;
 	t_list		*filenames;
 
 	filenames = NULL;
-	if ((error = reader(ac, av, &flags, &filenames)) != NULL)
-		return (handleError(error) + freeFilenameList(&filenames));
+	error = reader(ac, av, &flags, &filenames);
+	if (flags & FLAG_HELP)
+	{
+		printUsage();
+		return (handleError(&error) + freeFilenameList(&filenames));
+	}
+	if (error.wasSet)
+		return (handleError(&error) + freeFilenameList(&filenames));
 
 	// DumpFlags(flags);
-	// DumpFiles(files);
+	// DumpFiles(filenames);
 
-	if ((error = initializeFileTree(flags, &filenames, &fileTree)) != NULL)
+	error = initializeFileTree(flags, &filenames, &fileTree);
+	if (error.wasSet)
 	{
 		freeFilenameList(&filenames);
 		freeFileTree(&fileTree);
-		return (handleError(error));
+		return (handleError(&error));
 	}
 	freeFilenameList(&filenames);
 	DumpFileTree(0, fileTree);

@@ -1,25 +1,19 @@
 #include "ft_ls.h"
 
-t_file	*newFile(char const *name, char const *path,
-	int isNeedToAllocateName, int type)
+t_file	*newFile(char const *name, char const *path, int type)
 {
 	t_file	*dst;
 
 	if (!(dst = (t_file *)ft_memalloc(sizeof(t_file))))
 		return (NULL);
-	if (type == DIRECTORY)
-		dst->isDir = 1;
+	dst->type = type;
 	if (name == NULL)
 		return (dst);
-	if (isNeedToAllocateName) {
-		if (!(dst->name = ft_strdup((char *)(name))))
-		{
-			freeFile(&dst);
-			return NULL;
-		}
+	if (!(dst->name = ft_strdup((char *)(name))))
+	{
+		freeFile(&dst);
+		return NULL;
 	}
-	else
-		dst->name = (char *)name;
 	dst->path = (char *)path;
 	return (dst);
 }
@@ -51,22 +45,22 @@ void	insertAsNext(t_file *headFile, t_file *newfile)
 	}
 }
 
-t_error	*createChildFilePath(t_file *directory, char **path)
+t_error	createChildFilePath(t_file *directory, char **path)
 {
 	if (directory->name == NULL)
 		*path = NULL;
 	else if (directory->path == NULL)
 	{
 		if ((*path = ft_strdup(directory->name)) == NULL)
-			return (newError("malloc returned NULL"));
+			return (allocateFailed());
 	}
 	else
 	{
 		if ((*path = ft_concat3(directory->path, "/",
 			directory->name)) == NULL)
-			return (newError("malloc returned NULL"));
+			return (allocateFailed());
 	}
-	return (NULL);
+	return (noErrors());
 }
 
 void	freeFile(t_file **file)
@@ -77,12 +71,12 @@ void	freeFile(t_file **file)
 		free((*file)->name);
 	if ((*file)->path != NULL)
 		free((*file)->path);
+	if ((*file)->symlink != NULL)
+		free((*file)->symlink);
 	if ((*file)->author != NULL)
 		stringDel(&((*file)->author));
 	if ((*file)->group != NULL)
 		stringDel(&((*file)->group));
-	if ((*file)->time != NULL)
-		stringDel(&((*file)->time));
 	free(*file);
 	*file = NULL;
 }

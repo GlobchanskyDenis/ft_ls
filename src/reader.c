@@ -1,10 +1,10 @@
 #include "ft_ls.h"
 
-t_error	*checkForErrors(char const *av)
+t_error	checkForErrors(char const *av)
 {
 	size_t	len;
 	size_t	i;
-	t_error *error;
+	t_error error;
 
 	if ((len = ft_strlen(av)) < 1)
 		return (newError("Program arguments are invalid"));
@@ -15,11 +15,12 @@ t_error	*checkForErrors(char const *av)
 	i = 1;
 	while (i < len)
 	{
-		if ((error = checkFlags(av[i])) != NULL )
+		error = checkFlags(av[i]);
+		if (error.wasSet)
 			return (error);
 		i++;
 	}
-	return (NULL);
+	return (noErrors());
 }
 
 void	printUsage()
@@ -45,28 +46,30 @@ void	printUsage()
 /*
 **	main function for parsing flags
 */
-t_error	*reader(int ac, char **av, int *flags, t_list **filenames)
+t_error	reader(int ac, char **av, int *flags, t_list **filenames)
 {
 	int		i;
-	t_error *error;
+	t_error error;
 
 	if (ac < 0 || av == NULL)
 		return (newError("Program arguments are invalid"));
 	*flags = 0;
+	*filenames = NULL;
 	i = 1;
 	while (i < ac)
 	{
-		if ((error = parseFlags(av[i], flags)) != NULL)
+		error = parseFlags(av[i], flags);
+		if (error.wasSet)
 		{
-			if (isFileExist(av[i]))
+			if ((isFileExist(av[i]) == 1))
 			{
 				addToFilenameList(av[i], filenames);
-				freeError(error);
+				freeError(&error);
 			}
 			else
 				return (error);
 		}
 		i++;
 	}
-	return (NULL);
+	return (noErrors());
 }

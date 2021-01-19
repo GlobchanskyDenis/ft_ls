@@ -1,50 +1,55 @@
 #include "ft_ls.h"
 
-t_error	*initializeFileTree(int flags, t_list **files, t_file **fileTree)
+t_error	initializeFileTree(int flags, t_list **files, t_file **fileTree)
 {
 	t_list	*node;
 	t_file	*newfile;
 	t_file	*toDelete;
-	t_error	*error;
+	t_error	error;
 
 	*fileTree = NULL;
 	if (*files == NULL)
 	{
-		if (!(*fileTree = newFile(NULL, NULL, 0, DIRECTORY)))
-			return (newError("malloc returned NULL"));
+		if (!(*fileTree = newFile(NULL, NULL, DIRECTORY)))
+			return (allocateFailed());
 		if ((flags & FLAG_D))
 		{
 			if (!((*fileTree)->name = ft_strdup(".")))
-				return (newError("malloc returned NULL"));
-			if (((flags & FLAG_L) || (flags & FLAG_G)) &&
-				(error = readFileLstat(*fileTree)))
-				return (error);
-			return (NULL);
+				return (allocateFailed());
+			if ((flags & FLAG_L) || (flags & FLAG_G))
+			{
+				error = readFileLstat(*fileTree);
+				if (error.wasSet)
+					return (error);
+			}
+			return (noErrors());
 		}
-		if ((error = readDirFiles(flags, *fileTree)))
+		error = readDirFiles(flags, *fileTree);
+		if (error.wasSet)
 			return (error);
 		toDelete = *fileTree;
 		*fileTree = (*fileTree)->child;
 		freeFile(&toDelete);
-		return (NULL);
+		return (noErrors());
 	}
 	else {
 		while (*files)
 		{
 			node = *files;
-			if (!(newfile = newFile((char *)(node->content), NULL, 0, UNKNOWN)))
-				return (newError("malloc returned NULL"));
+			if (!(newfile = newFile((char *)(node->content), NULL, UNKNOWN)))
+				return (allocateFailed());
 			*files = node->next;
-			if (node->content != NULL)
-				free(node->content);
 			free(node);
+			error = readFileLstat(newfile);
+			if (error.wasSet)
+				return (error);
 			if (*fileTree == NULL)
 				*fileTree = newfile;
 			else
 				insertAsNext(*fileTree, newfile);
 		}
 	}
-	return (NULL);
+	return (noErrors());
 }
 
 void	freeFileTree(t_file **fileTree)
