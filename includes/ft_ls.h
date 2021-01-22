@@ -9,13 +9,12 @@
 # include <sys/types.h>
 
 /*
-**	For lstat, opendir, ctime, listxattr, getpwuid, getgrgid
+**	For lstat, opendir, ctime, getpwuid, getgrgid
 */
 # include <sys/stat.h>
 # include <unistd.h>
 # include <dirent.h>
 # include <time.h>
-// # include <attr/xattr.h>
 # include <pwd.h>
 # include <grp.h>
 
@@ -45,8 +44,8 @@ typedef	struct		s_file
 	char			*name;
 	char			*path;
 	char			*symlink;
-	t_string		*author;
-	t_string		*group;
+	char 			*author;
+	char 			*group;
 	int				permissionDenied;
 	int				type;
 	t_stat			stat;
@@ -58,7 +57,6 @@ typedef struct      s_error
 {
 	int				wasSet;
 	char			*panic;
-	char			*permission;
 	char const		*access;
 	char			option;
 }					t_error;
@@ -83,12 +81,11 @@ t_error	newError(char *newPanic);
 t_error accessFailed(char const *av);
 t_error invalidOption(char c);
 t_error allocateFailed();
-t_error permissionError(char const *fileName);
+t_error noErrors();
 
 /*
 **	error_handler.c
 */
-t_error noErrors();
 int		freeError(t_error *error);
 int		handleError(t_error *error);
 

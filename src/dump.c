@@ -48,24 +48,15 @@ void	DumpFile(int prefix, t_file *file)
 {
 	while (prefix--)
 		fprint("\t");
-	if (file->name == NULL)
-		fprint("<NULL> ");
-	else
-		fprint("%s ", file->name);
-	if (file->path == NULL)
-		fprint("<NULL> ");
-	else
-		fprint("%s ", file->path);
-	if (file->type == DIRECTORY)
-		fprint("directory ");
-	else if (file->type == FILE)
-		fprint("file ");
-	else if (file->type == SYMBOLIC)
-		fprint("symbolic_link ");
-	else
-		fprint("not_set ");
+	fprint("%s\t", (file->name == NULL) ? "NULL" : file->name);
+	fprint("%s\t", (file->path == NULL) ? "NULL" : file->path);
+	fprint("%s\t", (file->type == DIRECTORY) ? "DIR" : (
+		(file->type == FILE) ? "FILE" : (
+		(file->type == SYMBOLIC) ? "SYMLINK" : "NOT_SET")));
 	DumpBits(file->stat.st_mode);
-	fprint(" hard_links=%d\n", file->stat.st_nlink);
+	fprint("\t%s\t", (file->author == NULL) ? "NULL" : file->author);
+	fprint("%s\t", (file->group == NULL) ? "NULL" : file->group);
+	fprint("hard_links=%d\n", file->stat.st_nlink);
 }
 
 void	DumpFileTree(int prefix, t_file *currentFile)
@@ -88,12 +79,12 @@ void	DumpBits(int value)
 	i = 15;
 	while (i >= 0)
 	{
-		if (!((i + 1) % 4))
-			fprint(" ");
 		if (value & (1 << i))
 			fprint("1");
 		else
 			fprint("0");
 		i--;
+		if (!((i + 1) % 4))
+			fprint(" ");
 	}
 }

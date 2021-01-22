@@ -30,14 +30,12 @@ t_error invalidOption(char c)
 	return (error);
 }
 
-t_error permissionError(char const *fileName)
+t_error noErrors()
 {
 	t_error error;
 
 	ft_bzero(&error, sizeof(error));
-	error.wasSet = 1;
-	error.permission = ft_strdup(fileName);
-	return (error);
+	return(error);
 }
 
 t_error	allocateFailed()

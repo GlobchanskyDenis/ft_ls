@@ -29,15 +29,16 @@ int		main(int ac, char **av)
 
 	filenames = NULL;
 	error = reader(ac, av, &flags, &filenames);
+	DumpFlags(flags);
 	if (flags & FLAG_HELP)
 	{
 		printUsage();
-		return (handleError(&error) + freeFilenameList(&filenames));
+		return (freeError(&error) + freeFilenameList(&filenames));
 	}
 	if (error.wasSet)
 		return (handleError(&error) + freeFilenameList(&filenames));
 
-	// DumpFlags(flags);
+	
 	// DumpFiles(filenames);
 
 	error = initializeFileTree(flags, &filenames, &fileTree);

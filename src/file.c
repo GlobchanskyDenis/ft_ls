@@ -73,10 +73,10 @@ void	freeFile(t_file **file)
 		free((*file)->path);
 	if ((*file)->symlink != NULL)
 		free((*file)->symlink);
-	if ((*file)->author != NULL)
-		stringDel(&((*file)->author));
-	if ((*file)->group != NULL)
-		stringDel(&((*file)->group));
+	// if ((*file)->author != NULL)
+	// 	stringDel(&((*file)->author));
+	// if ((*file)->group != NULL)
+	// 	stringDel(&((*file)->group));
 	free(*file);
 	*file = NULL;
 }

@@ -50,26 +50,25 @@ t_error	reader(int ac, char **av, int *flags, t_list **filenames)
 {
 	int		i;
 	t_error error;
+	t_error toReturnError;
 
-	if (ac < 0 || av == NULL)
-		return (newError("Program arguments are invalid"));
 	*flags = 0;
 	*filenames = NULL;
-	i = 1;
-	while (i < ac)
+	i = 0;
+	toReturnError = noErrors();
+	while (++i < ac)
 	{
 		error = parseFlags(av[i], flags);
 		if (error.wasSet)
 		{
-			if ((isFileExist(av[i]) == 1))
-			{
+			if ((isFileExist(av[i]) == 1) && freeError(&error))
 				addToFilenameList(av[i], filenames);
-				freeError(&error);
-			}
 			else
-				return (error);
+			{
+				if (!toReturnError.wasSet)
+					toReturnError = error;
+			}
 		}
-		i++;
 	}
-	return (noErrors());
+	return (toReturnError);
 }
