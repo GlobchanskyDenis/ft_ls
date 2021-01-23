@@ -3,13 +3,14 @@
 
 # include "../libft/libft.h"
 
+
 /*
 **	For all
 */
 # include <sys/types.h>
 
 /*
-**	For lstat, opendir, ctime, getpwuid, getgrgid
+**	For lstat, opendir, ctime, getpwuid, getgrgid, errno
 */
 # include <sys/stat.h>
 # include <unistd.h>
@@ -17,6 +18,7 @@
 # include <time.h>
 # include <pwd.h>
 # include <grp.h>
+# include <errno.h>
 
 # define UNKNOWN					0
 # define DIRECTORY					4
@@ -42,6 +44,7 @@ typedef struct group	t_group;
 typedef	struct		s_file
 {
 	char			*name;
+	char			*alterName;
 	char			*path;
 	char			*symlink;
 	char 			*author;
@@ -77,7 +80,7 @@ void	DumpBits(int value);
 /*
 **	error_constructor.c
 */
-t_error	newError(char *newPanic);
+t_error	newError(char *cause, char *description);
 t_error accessFailed(char const *av);
 t_error invalidOption(char c);
 t_error allocateFailed();
@@ -94,8 +97,9 @@ int		handleError(t_error *error);
 */
 t_file	*newFile(char const *name, char const *path, int type);
 t_error	createChildFilePath(t_file *directory, char **path);
-void	insertAsChild(t_file *directory, t_file *newfile);
+// void	insertAsChild(t_file *directory, t_file *newfile);
 void	insertAsNext(t_file *headFile, t_file *newfile);
+void	insertFileByFlags(int flags, t_file *dir, t_file *newfile);
 void	freeFile(t_file **file);
 
 /*
@@ -109,6 +113,11 @@ int		freeFilenameList(t_list **fileList);
 */
 t_error	initializeFileTree(int flags, t_list **files, t_file **fileTree);
 void	freeFileTree(t_file **fileTree);
+
+/*
+**	localeRu.c
+*/
+int		stringToUpCase(char *str);
 
 /*
 **	lstat.c
@@ -131,5 +140,11 @@ void	parseLongFlag(const char *av, int *flags);
 t_error	checkForErrors(char const *av);
 t_error	reader(int ac, char **av, int *flags, t_list **filenames);
 void	printUsage();
+
+/*
+**	sort.c
+*/
+int 	insertByName(t_file *dir, t_file *prev, t_file *next, t_file *node);
+int 	insertByNameReverse(t_file *dir, t_file *prev, t_file *next, t_file *node);
 
 #endif

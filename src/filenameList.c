@@ -5,7 +5,7 @@ t_error	addToFilenameList(char *filename, t_list **fileList)
 	t_list	*newFilenameNode;
 
 	if (filename == NULL || fileList == NULL)
-		return (newError("empty pointer in addFilenameList"));
+		return (newError("filename or fileList is NULL", "addFilenameList function"));
 	if ((newFilenameNode = ft_lstnew_fag(filename, 0)) == NULL)
 		return (allocateFailed());
 	if (*fileList == NULL)

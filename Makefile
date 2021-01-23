@@ -9,9 +9,10 @@ FILES_INC	=	ft_ls.h
 FILES		=	directory.c				dump.c				\
 				error_constructor.c		error_handler.c		\
 				file.c					filenameList.c		\
-				fileTree.c				lstat.c				\
+				fileTree.c				localeRu.c			\
+				lstat.c				\
 				main.c					parseFlags.c		\
-				reader.c
+				reader.c				sort.c
 OBJECTS		=	$(addprefix $(DIR_SRC),$(FILES:.c=.o))
 SRC			=	$(addprefix $(DIR_SRC),$(FILES))
 INCLUDES	= 	-I $(DIR_INC) -I $(DIR_LFT)$(DIR_INC)

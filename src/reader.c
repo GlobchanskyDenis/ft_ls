@@ -7,7 +7,7 @@ t_error	checkForErrors(char const *av)
 	t_error error;
 
 	if ((len = ft_strlen(av)) < 1)
-		return (newError("Program arguments are invalid"));
+		return (newError("Program arguments are invalid", "checkForErrors function"));
 	if (av[0] != '-' || (av[0] == '-' && len == 1))
 		return (accessFailed(av));
 	if ((ft_strncmp("--", av, 2) == 0) && len > 2)

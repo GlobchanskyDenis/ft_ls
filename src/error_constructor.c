@@ -1,12 +1,12 @@
 #include "ft_ls.h"
 
-t_error	newError(char *newPanic)
+t_error	newError(char *cause, char *description)
 {
 	t_error error;
 
 	ft_bzero(&error, sizeof(error));
 	error.wasSet = 1;
-	error.panic = ft_strdup(newPanic);
+	error.panic = ft_concat3(cause, ": ", description);
 	return (error);
 }
 

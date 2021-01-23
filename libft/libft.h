@@ -82,6 +82,7 @@ char			*ft_strstr(const char *haystack, const char *needle);
 char			*ft_strnstr(const char *haystack, const char *needle, \
 		size_t len);
 int				ft_strcmp(const char *s1, const char *s2);
+int				ft_strcmpOneCase(char const *s1, char const *s2);
 int				ft_strncmp(const char *s1, const char *s2, size_t n);
 char			*ft_strnew(size_t size);
 void			ft_strdel(char **as);
@@ -101,6 +102,8 @@ void			ft_strupr(char *str);
 char			*ft_strnewc(size_t size, char c);
 char			*ft_concat2(char *src1, char *src2);
 char			*ft_concat3(char *src1, char *src2, char *src3);
+char			*ft_bufconcat2(char *dst, char *src1, char *src2);
+char			*ft_bufconcat3(char *dst, char *src1, char *src2, char *src3);
 
 /*
 **	LOGIC FUNCTIONS

@@ -10,10 +10,7 @@ t_error	addFileToDirectory(int flags, t_file *directory, char *name, int type)
 	t_file	*newfile;
 	t_error	error;
 
-	if (name == NULL)
-		return (newError(name));
-	error = createChildFilePath(directory, &path);
-	if (error.wasSet)
+	if ((error = createChildFilePath(directory, &path)).wasSet)
 		return (error);
 	if (!(newfile = newFile(name, path, type)))
 	{
@@ -22,79 +19,60 @@ t_error	addFileToDirectory(int flags, t_file *directory, char *name, int type)
 	}
 	if ((flags & FLAG_L) || (flags & FLAG_G) || (flags & FLAG_D))
 	{
-		error = readFileLstat(newfile);
-		if (error.wasSet)
+		if ((error = readFileLstat(newfile)).wasSet)
 			return (error);
 	}
-	// Через lstat вычислить всю инфу о файле;
-	// В случае флага D и файл не является папкой - нужно скипнуть файл от добавления
-	insertAsChild(directory, newfile);
+	insertFileByFlags(flags, directory, newfile);
+	// insertAsChild(directory, newfile);
 	if ((flags & FLAG_RR) && (type == DIRECTORY))
 	{
-		error = readDirFiles(flags, newfile);
-		if (error.wasSet)
+		if ((error = readDirFiles(flags, newfile)).wasSet)
 			return (error);
 	}
+	return (noErrors());
+}
 
+t_error openDirectoryWithPath(t_file *directory, DIR **dir)
+{
+	char	fullPath[1024];
+	char	*buf;
+
+	if (ft_strlen(directory->name) + ft_strlen(directory->path) < 1022)
+	{
+		ft_bufconcat3(fullPath, directory->path, "/", directory->name);
+		if (!(*dir = opendir(fullPath)))
+			directory->permissionDenied = 1;
+	} else {
+		if (!(buf = ft_concat3(directory->path, "/", directory->name)))
+			return (allocateFailed());
+		if (!(*dir = opendir(buf)))
+			directory->permissionDenied = 1;
+		free(buf);
+	}
 	return (noErrors());
 }
 
 t_error	openDirectory(t_file *directory, DIR **dir)
 {
-	char	fullPath[1024];
-	size_t	nameLen;
-	size_t	pathLen;
-	char	*buf;
-
 	if (directory->name == NULL)
 	{
 		if (!(*dir = opendir(".")))
-		{
 			directory->permissionDenied = 1;
-			return (noErrors());
-		}
 	}
 	else if (directory->path == NULL)
 	{
 		if (!(*dir = opendir(directory->name)))
-		{
 			directory->permissionDenied = 1;
-			return (noErrors());
-		}
 	}
-	else {
-		nameLen = ft_strlen(directory->name);
-		pathLen = ft_strlen(directory->path);
-		if (nameLen + pathLen < 1022)
-		{
-			ft_strcpy(fullPath, directory->path);
-			ft_strcpy(&(fullPath[pathLen]), "/");
-			ft_strcpy(&(fullPath[pathLen + 1]), directory->name);
-			fullPath[nameLen + 1 + pathLen] = '\0';
-			fprint("concatinated fullPath %s\n", fullPath);
-			if (!(*dir = opendir(fullPath)))
-			{
-				directory->permissionDenied = 1;
-				return (noErrors());
-			}
-		} else {
-			if (!(buf = ft_concat3(directory->path, "/", directory->name)))
-				return (allocateFailed());
-			fprint("concatinated buf %s\n", buf);
-			if (!(*dir = opendir(buf)))
-			{
-				directory->permissionDenied = 1;
-				free(buf);
-				return (noErrors());
-			}
-			free(buf);
-		}
-	}
+	else
+		return (openDirectoryWithPath(directory, dir));
 	return (noErrors());
 }
 
 int		isNeedToSkipFile(int flags, char *filename)
 {
+	if (filename == NULL)
+		return (1);
 	if (!ft_strncmp(filename, ".", 1) && !(flags & FLAG_A) &&
 		!(flags & FLAG_G))
 		return (1);
@@ -107,9 +85,7 @@ t_error	readDirFiles(int flags, t_file *directory)
 	t_dirent	*entry;
 	t_error		error;
 
-	fprint("read dir files '%s'/'%s'\n", (directory->path == NULL) ? "NULL" : directory->path, (directory->name == NULL) ? "NULL" : directory->name);
 	error = openDirectory(directory, &dir);
-	fprint("%s\n", (directory->permissionDenied) ? "permission Denied" : "success");
 	if (error.wasSet)
 		return (error);
 	if (directory->permissionDenied)
@@ -125,7 +101,6 @@ t_error	readDirFiles(int flags, t_file *directory)
 			closedir(dir);
 			return (error);
 		}
-		// fprint("%s [%d]\n", entry->d_name, entry->d_type);
     }
 	closedir(dir);
 	return (noErrors());

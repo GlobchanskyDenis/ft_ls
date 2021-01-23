@@ -49,6 +49,22 @@ void	DumpFile(int prefix, t_file *file)
 	while (prefix--)
 		fprint("\t");
 	fprint("%s\t", (file->name == NULL) ? "NULL" : file->name);
+	fprint("%s\t", (file->alterName == NULL) ? "NULL" : file->alterName);
+	// if (file->name != NULL && file->name[0] < 0)
+	// {
+	// 	int i = 0;
+	// 	while (file->name[i])
+	// 		fprint("%d.", (unsigned int)(file->name[i++]));
+	// 	fprint("\t");
+
+	// 	i = 0;
+	// 	unsigned char *name = (unsigned char *)(file->name);
+
+	// 	while (name[i])
+	// 		fprint("%d.", name[i++]);
+	// 	fprint("\t");
+	// }
+	/*
 	fprint("%s\t", (file->path == NULL) ? "NULL" : file->path);
 	fprint("%s\t", (file->type == DIRECTORY) ? "DIR" : (
 		(file->type == FILE) ? "FILE" : (
@@ -57,6 +73,8 @@ void	DumpFile(int prefix, t_file *file)
 	fprint("\t%s\t", (file->author == NULL) ? "NULL" : file->author);
 	fprint("%s\t", (file->group == NULL) ? "NULL" : file->group);
 	fprint("hard_links=%d\n", file->stat.st_nlink);
+	*/
+	fprint("\n");
 }
 
 void	DumpFileTree(int prefix, t_file *currentFile)
