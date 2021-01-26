@@ -50,6 +50,7 @@ typedef	struct		s_file
 	char 			*author;
 	char 			*group;
 	int				permissionDenied;
+	int				isNeedQuotes;
 	int				type;
 	t_stat			stat;
 	struct s_file	*child;
@@ -63,6 +64,11 @@ typedef struct      s_error
 	char const		*access;
 	char			option;
 }					t_error;
+
+/*
+**		alternate.c
+*/
+int		initAlternateString(char *dst, char *src);
 
 /*
 **	directory.c
@@ -97,9 +103,9 @@ int		handleError(t_error *error);
 */
 t_file	*newFile(char const *name, char const *path, int type);
 t_error	createChildFilePath(t_file *directory, char **path);
-// void	insertAsChild(t_file *directory, t_file *newfile);
-void	insertAsNext(t_file *headFile, t_file *newfile);
-void	insertFileByFlags(int flags, t_file *dir, t_file *newfile);
+// void	insertAsNext(t_file *headFile, t_file *newfile);
+void	insertToNextByFlags(int flags, t_file **head, t_file *newfile);
+void	insertToChildsByFlags(int flags, t_file *dir, t_file *newfile);
 void	freeFile(t_file **file);
 
 /*
@@ -113,11 +119,6 @@ int		freeFilenameList(t_list **fileList);
 */
 t_error	initializeFileTree(int flags, t_list **files, t_file **fileTree);
 void	freeFileTree(t_file **fileTree);
-
-/*
-**	localeRu.c
-*/
-int		stringToUpCase(char *str);
 
 /*
 **	lstat.c
@@ -146,5 +147,7 @@ void	printUsage();
 */
 int 	insertByName(t_file *dir, t_file *prev, t_file *next, t_file *node);
 int 	insertByNameReverse(t_file *dir, t_file *prev, t_file *next, t_file *node);
+int 	insertNextByName(t_file **prev, t_file *next, t_file *node);
+int 	insertNextByNameReverse(t_file **prev, t_file *next, t_file *node);
 
 #endif

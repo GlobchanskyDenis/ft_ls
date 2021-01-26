@@ -6,11 +6,11 @@ LFT			=	$(DIR_LFT)libft.a
 DIR_INC		=	includes/
 DIR_SRC		=	src/
 FILES_INC	=	ft_ls.h
-FILES		=	directory.c				dump.c				\
+FILES		=	alternate.c				\
+				directory.c				dump.c				\
 				error_constructor.c		error_handler.c		\
 				file.c					filenameList.c		\
-				fileTree.c				localeRu.c			\
-				lstat.c				\
+				fileTree.c				lstat.c\
 				main.c					parseFlags.c		\
 				reader.c				sort.c
 OBJECTS		=	$(addprefix $(DIR_SRC),$(FILES:.c=.o))
@@ -21,7 +21,9 @@ HEADER		=	$(addprefix $(DIR_INC), $(FILES_INC))
 .PHONY: all clean fclean re
 
 all:		$(NAME)
-			@echo all
+			@cp $(NAME) test/test/
+			@cp $(NAME) test/try/
+			@cp $(NAME) test/rus/
 
 $(NAME):	$(OBJECTS) $(SRC) $(DIR_INC)ft_ls.h
 			@make -C $(DIR_LFT)

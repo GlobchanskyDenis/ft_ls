@@ -49,7 +49,16 @@ void	DumpFile(int prefix, t_file *file)
 	while (prefix--)
 		fprint("\t");
 	fprint("%s\t", (file->name == NULL) ? "NULL" : file->name);
-	fprint("%s\t", (file->alterName == NULL) ? "NULL" : file->alterName);
+	// fprint("%s\t", (file->alterName == NULL) ? "NULL" : file->alterName);
+	if (file->alterName != NULL)
+	{
+		int i = 0;
+		while (file->alterName[i])
+		{
+			fprint("%d.", file->alterName[i]);
+			i++;
+		}
+	}
 	// if (file->name != NULL && file->name[0] < 0)
 	// {
 	// 	int i = 0;

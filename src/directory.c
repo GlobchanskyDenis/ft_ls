@@ -22,7 +22,7 @@ t_error	addFileToDirectory(int flags, t_file *directory, char *name, int type)
 		if ((error = readFileLstat(newfile)).wasSet)
 			return (error);
 	}
-	insertFileByFlags(flags, directory, newfile);
+	insertToChildsByFlags(flags, directory, newfile);
 	// insertAsChild(directory, newfile);
 	if ((flags & FLAG_RR) && (type == DIRECTORY))
 	{
