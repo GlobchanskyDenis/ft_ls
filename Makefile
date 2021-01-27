@@ -10,9 +10,11 @@ FILES		=	alternate.c				\
 				directory.c				dump.c				\
 				error_constructor.c		error_handler.c		\
 				file.c					filenameList.c		\
-				fileTree.c				lstat.c\
+				fileTree.c				insert.c			\
+				insertByAccessTime.c	insertByModTime.c	\
+				insertByName.c			lstat.c				\
 				main.c					parseFlags.c		\
-				reader.c				sort.c
+				reader.c				
 OBJECTS		=	$(addprefix $(DIR_SRC),$(FILES:.c=.o))
 SRC			=	$(addprefix $(DIR_SRC),$(FILES))
 INCLUDES	= 	-I $(DIR_INC) -I $(DIR_LFT)$(DIR_INC)

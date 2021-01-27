@@ -103,9 +103,6 @@ int		handleError(t_error *error);
 */
 t_file	*newFile(char const *name, char const *path, int type);
 t_error	createChildFilePath(t_file *directory, char **path);
-// void	insertAsNext(t_file *headFile, t_file *newfile);
-void	insertToNextByFlags(int flags, t_file **head, t_file *newfile);
-void	insertToChildsByFlags(int flags, t_file *dir, t_file *newfile);
 void	freeFile(t_file **file);
 
 /*
@@ -119,6 +116,36 @@ int		freeFilenameList(t_list **fileList);
 */
 t_error	initializeFileTree(int flags, t_list **files, t_file **fileTree);
 void	freeFileTree(t_file **fileTree);
+
+/*
+**	insert.c
+*/
+void	insertToNextByFlags(int flags, t_file **head, t_file *newfile);
+void	insertToChildsByFlags(int flags, t_file *dir, t_file *newfile);
+
+/*
+**	insertByAccessTime.c
+*/
+int 	insertByAccessTime(t_file *dir, t_file *prev, t_file *next, t_file *node);
+int 	insertByAccessTimeReverse(t_file *dir, t_file *prev, t_file *next, t_file *node);
+int 	insertNextByAccessTime(t_file **prev, t_file *next, t_file *node);
+int 	insertNextByAccessTimeReverse(t_file **prev, t_file *next, t_file *node);
+
+/*
+**	insertByModTime.c
+*/
+int 	insertByModTime(t_file *dir, t_file *prev, t_file *next, t_file *node);
+int 	insertByModTimeReverse(t_file *dir, t_file *prev, t_file *next, t_file *node);
+int 	insertNextByModTime(t_file **prev, t_file *next, t_file *node);
+int 	insertNextByModTimeReverse(t_file **prev, t_file *next, t_file *node);
+
+/*
+**	insertByName.c
+*/
+int 	insertByName(t_file *dir, t_file *prev, t_file *next, t_file *node);
+int 	insertByNameReverse(t_file *dir, t_file *prev, t_file *next, t_file *node);
+int 	insertNextByName(t_file **prev, t_file *next, t_file *node);
+int 	insertNextByNameReverse(t_file **prev, t_file *next, t_file *node);
 
 /*
 **	lstat.c
@@ -141,13 +168,5 @@ void	parseLongFlag(const char *av, int *flags);
 t_error	checkForErrors(char const *av);
 t_error	reader(int ac, char **av, int *flags, t_list **filenames);
 void	printUsage();
-
-/*
-**	sort.c
-*/
-int 	insertByName(t_file *dir, t_file *prev, t_file *next, t_file *node);
-int 	insertByNameReverse(t_file *dir, t_file *prev, t_file *next, t_file *node);
-int 	insertNextByName(t_file **prev, t_file *next, t_file *node);
-int 	insertNextByNameReverse(t_file **prev, t_file *next, t_file *node);
 
 #endif

@@ -47,7 +47,6 @@ t_error	initializeFileTree(int flags, t_list **files, t_file **fileTree)
 				*fileTree = newfile;
 			else
 				insertToNextByFlags(flags, fileTree, newfile);
-				// insertAsNext(*fileTree, newfile);
 		}
 	}
 	return (noErrors());

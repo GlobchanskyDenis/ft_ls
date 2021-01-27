@@ -15,13 +15,11 @@ t_error	readFileLstat(t_file *file)
 	{
 		if (lstat(".", &(file->stat)) != 0)
 			return (newError(".", strerror(errno)));
-			// return (permissionError("."));
 	}
 	else
 	{
 		if (lstat(file->name, &(file->stat)) != 0)
 			return (newError(file->name, strerror(errno)));
-			// return (permissionError(file->name));
 	}
 	// fprint("file %s количество жестких ссылок %d, байт %d время %s\n",
 	// 	file->name, file->stat.st_nlink, file->stat.st_size, ctime(&(file->stat.st_atime)));
