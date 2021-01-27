@@ -33,3 +33,4 @@ int		handleError(t_error *error)
 			"malloc returned NULL");
 	return freeError(error);
 }
+

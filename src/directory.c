@@ -95,7 +95,8 @@ t_error	readDirFiles(int flags, t_file *directory)
 		// fprint("%s [%d]\n", entry->d_name, entry->d_type);
 		if (isNeedToSkipFile(flags, entry->d_name))
 			continue ;
-		error = addFileToDirectory(flags, directory, entry->d_name, entry->d_type);
+		error = addFileToDirectory(flags, directory, entry->d_name,
+				entry->d_type);
 		if (error.wasSet)
 		{
 			closedir(dir);
@@ -105,3 +106,4 @@ t_error	readDirFiles(int flags, t_file *directory)
 	closedir(dir);
 	return (noErrors());
 }
+

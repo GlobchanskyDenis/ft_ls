@@ -84,3 +84,4 @@ int			initAlternateString(char *dst, char *src)
 	dst[i] = '\0';
 	return (isNeedQuotes);
 }
+

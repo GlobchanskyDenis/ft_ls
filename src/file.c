@@ -56,3 +56,4 @@ void	freeFile(t_file **file)
 	free(*file);
 	*file = NULL;
 }
+

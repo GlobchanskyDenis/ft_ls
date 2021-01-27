@@ -86,3 +86,4 @@ t_error	parseFlags(const char *av, int *flags)
 		parseShortFlags(av, flags);
 	return (noErrors());
 }
+

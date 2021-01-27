@@ -8,8 +8,8 @@ int insertByModTime(t_file *dir, t_file *prev, t_file *next, t_file *node)
 	int		ret;
 
 	if ((ret = (dir->child->stat.st_mtime - node->stat.st_mtime)) > 0 ||
-		(ret == 0 && (ret = ft_strcmp(dir->child->alterName, node->alterName)) > 0) ||
-		(ret == 0 && ft_strcmp(dir->child->name, node->name) < 0))
+		(ret == 0 && (ret = ft_strcmp(dir->child->alterName, node->alterName))
+		> 0) || (ret == 0 && ft_strcmp(dir->child->name, node->name) < 0))
 	{
 		// fprint("files: %s %s ret %d\n", dir->child->alterName, node->alterName, ret);
 		node->next = dir->child;
@@ -33,13 +33,14 @@ int insertByModTime(t_file *dir, t_file *prev, t_file *next, t_file *node)
 	return (0);
 }
 
-int insertByModTimeReverse(t_file *dir, t_file *prev, t_file *next, t_file *node)
+int insertByModTimeReverse(t_file *dir, t_file *prev, t_file *next,
+		t_file *node)
 {
 	int		ret;
 
 	if ((ret = (dir->child->stat.st_mtime - node->stat.st_mtime)) < 0 ||
-		(ret == 0 && (ret = ft_strcmp(dir->child->alterName, node->alterName)) < 0) ||
-		(ret == 0 && ft_strcmp(dir->child->name, node->name) > 0))
+		(ret == 0 && (ret = ft_strcmp(dir->child->alterName, node->alterName))
+		< 0) || (ret == 0 && ft_strcmp(dir->child->name, node->name) > 0))
 	{
 		node->next = dir->child;
 		dir->child = node;
@@ -66,8 +67,8 @@ int insertNextByModTime(t_file **prev, t_file *next, t_file *node)
 	int		ret;
 
 	if ((ret = ((*prev)->stat.st_mtime - node->stat.st_mtime)) > 0 ||
-		(ret == 0 && (ret = ft_strcmp((*prev)->alterName, node->alterName)) > 0) ||
-		(ret == 0 && ft_strcmp((*prev)->name, node->name) < 0))
+		(ret == 0 && (ret = ft_strcmp((*prev)->alterName, node->alterName)) > 0)
+		|| (ret == 0 && ft_strcmp((*prev)->name, node->name) < 0))
 	{
 		node->next = *prev;
 		*prev = node;
@@ -94,8 +95,8 @@ int insertNextByModTimeReverse(t_file **prev, t_file *next, t_file *node)
 	int		ret;
 
 	if ((ret = ((*prev)->stat.st_mtime - node->stat.st_mtime)) < 0 ||
-		(ret == 0 && (ret = ft_strcmp((*prev)->alterName, node->alterName)) < 0) ||
-		(ret == 0 && ft_strcmp((*prev)->name, node->name) > 0))
+		(ret == 0 && (ret = ft_strcmp((*prev)->alterName, node->alterName)) < 0)
+		|| (ret == 0 && ft_strcmp((*prev)->name, node->name) > 0))
 	{
 		node->next = *prev;
 		*prev = node;
@@ -116,3 +117,4 @@ int insertNextByModTimeReverse(t_file **prev, t_file *next, t_file *node)
 	}
 	return (0);
 }
+

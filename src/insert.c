@@ -45,3 +45,4 @@ void		insertToChildsByFlags(int flags, t_file *dir, t_file *newfile)
 	else
 		insertToChilds(dir, newfile, insertByName);
 }
+

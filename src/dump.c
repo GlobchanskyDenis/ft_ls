@@ -49,16 +49,18 @@ void	DumpFile(int prefix, t_file *file)
 	while (prefix--)
 		fprint("\t");
 	fprint("%s\t", (file->name == NULL) ? "NULL" : file->name);
+	if (ft_strlen(file->name) < 8)
+		fprint("\t");
 	// fprint("%s\t", (file->alterName == NULL) ? "NULL" : file->alterName);
-	if (file->alterName != NULL)
-	{
-		int i = 0;
-		while (file->alterName[i])
-		{
-			fprint("%d.", file->alterName[i]);
-			i++;
-		}
-	}
+	// if (file->alterName != NULL)
+	// {
+	// 	int i = 0;
+	// 	while (file->alterName[i])
+	// 	{
+	// 		fprint("%d.", file->alterName[i]);
+	// 		i++;
+	// 	}
+	// }
 	// if (file->name != NULL && file->name[0] < 0)
 	// {
 	// 	int i = 0;
@@ -73,7 +75,7 @@ void	DumpFile(int prefix, t_file *file)
 	// 		fprint("%d.", name[i++]);
 	// 	fprint("\t");
 	// }
-	/*
+	
 	fprint("%s\t", (file->path == NULL) ? "NULL" : file->path);
 	fprint("%s\t", (file->type == DIRECTORY) ? "DIR" : (
 		(file->type == FILE) ? "FILE" : (
@@ -82,8 +84,8 @@ void	DumpFile(int prefix, t_file *file)
 	fprint("\t%s\t", (file->author == NULL) ? "NULL" : file->author);
 	fprint("%s\t", (file->group == NULL) ? "NULL" : file->group);
 	fprint("hard_links=%d\n", file->stat.st_nlink);
-	*/
-	fprint("\n");
+	
+	// fprint("\n");
 }
 
 void	DumpFileTree(int prefix, t_file *currentFile)

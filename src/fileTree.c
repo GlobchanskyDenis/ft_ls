@@ -65,3 +65,4 @@ void	freeFileTree(t_file **fileTree)
 	freeFileTree(&next);
 	freeFileTree(&child);
 }
+

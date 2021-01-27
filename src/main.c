@@ -38,7 +38,6 @@ int		main(int ac, char **av)
 	if (error.wasSet)
 		return (handleError(&error) + freeFilenameList(&filenames));
 
-	
 	// DumpFiles(filenames);
 
 	error = initializeFileTree(flags, &filenames, &fileTree);
@@ -56,3 +55,4 @@ int		main(int ac, char **av)
 	// freeFileList(fileList);
 	return (0);
 }
+

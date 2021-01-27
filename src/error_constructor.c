@@ -46,3 +46,4 @@ t_error	allocateFailed()
 	error.wasSet = 1;
 	return(error);
 }
+
