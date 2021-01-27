@@ -1,68 +1,63 @@
 #include "ft_ls.h"
 
-t_error	initializeFileTree(int flags, t_list **files, t_file **fileTree)
+static t_error	initializeFromFileList(int flags, t_list *files,
+		t_file **fileTree)
 {
-	t_list	*node;
 	t_file	*newfile;
-	t_file	*toDelete;
 	t_error	error;
 
-	*fileTree = NULL;
-	if (*files == NULL)
+	while (files)
 	{
-		if (!(*fileTree = newFile(NULL, NULL, DIRECTORY)))
+		if (!(newfile = newFile((char *)(files->content), NULL, UNKNOWN)))
 			return (allocateFailed());
-		if ((flags & FLAG_D))
-		{
-			if (!((*fileTree)->name = ft_strdup(".")))
-				return (allocateFailed());
-			if ((flags & FLAG_L) || (flags & FLAG_G))
-			{
-				error = readFileLstat(*fileTree);
-				if (error.wasSet)
-					return (error);
-			}
-			return (noErrors());
-		}
-		error = readDirFiles(flags, *fileTree);
+		files = files->next;
+		error = readFileLstat(newfile);
 		if (error.wasSet)
 			return (error);
-		toDelete = *fileTree;
-		*fileTree = (*fileTree)->child;
-		freeFile(&toDelete);
-		return (noErrors());
-	}
-	else {
-		while (*files)
-		{
-			node = *files;
-			if (!(newfile = newFile((char *)(node->content), NULL, UNKNOWN)))
-				return (allocateFailed());
-			*files = node->next;
-			free(node);
-			error = readFileLstat(newfile);
-			if (error.wasSet)
-				return (error);
-			if (*fileTree == NULL)
-				*fileTree = newfile;
-			else
-				insertToNextByFlags(flags, fileTree, newfile);
-		}
+		if (newfile->type == DIRECTORY &&
+			(error = readDirFiles(flags, newfile)).wasSet)
+			return (error);
+		newfile->isArgument = 1;
+		insertByFlags(flags, *fileTree, newfile);
 	}
 	return (noErrors());
 }
 
-void	freeFileTree(t_file **fileTree)
+t_error			initializeFileTree(int flags, t_list *files, t_file **fileTree)
+{
+	t_error	error;
+
+	if (!(*fileTree = newFile(".", NULL, DIRECTORY)))
+		return (allocateFailed());
+	if (files == NULL)
+	{
+		error = readFileLstat(*fileTree);
+		if (error.wasSet)
+			return (error);
+		if ((flags & FLAG_D))
+			return (noErrors());
+		error = readDirFiles(flags, *fileTree);
+		if (error.wasSet)
+			return (error);
+		return (noErrors());
+	}
+	else
+		initializeFromFileList(flags, files, fileTree);
+	return (noErrors());
+}
+
+int		freeFileTree(t_file **fileTree)
 {
 	t_file	*next;
 	t_file	*child;
 
 	if (fileTree == NULL || *fileTree == NULL)
-		return ;
+		return (0);
 	next = (*fileTree)->next;
 	child = (*fileTree)->child;
 	freeFile(fileTree);
 	freeFileTree(&next);
 	freeFileTree(&child);
+	return (1);
 }
 

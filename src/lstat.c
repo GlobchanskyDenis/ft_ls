@@ -1,12 +1,12 @@
 #include "ft_ls.h"
 
-int		isFileExist(char const *filename)
+int		isFileNotExist(char const *filename)
 {
 	t_stat		stat;
 
 	if (lstat(filename, &stat) != 0)
-		return (0);
-	return (1);
+		return (errno);
+	return (0);
 }
 
 static t_error	readSymLink(t_file *file)
@@ -43,16 +43,9 @@ t_error			readFileLstat(t_file *file)
 {
 	t_error	error;
 
-	if (file->name == NULL)
-	{
-		if (lstat(".", &(file->stat)) != 0)
-			return (newError(".", strerror(errno)));
-	}
-	else
-	{
-		if (lstat(file->name, &(file->stat)) != 0)
-			return (newError(file->name, strerror(errno)));
-	}
+	if (lstat(file->name, &(file->stat)) != 0)
+		return (newError(file->name, strerror(errno)));
+	file->type = file->stat.st_mode >> 12;
 	if (file->type == SYMBOLIC)
 	{
 		error = readSymLink(file);

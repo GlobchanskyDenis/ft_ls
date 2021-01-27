@@ -48,8 +48,9 @@ typedef	struct		s_file
 	char			*symlink;
 	char			*author;
 	char			*group;
-	int				permissionDenied;
+	int				accessErrno;
 	int				isNeedQuotes;
+	int				isArgument;
 	int				type;
 	t_stat			stat;
 	struct s_file	*child;
@@ -62,6 +63,7 @@ typedef struct      s_error
 	char			*panic;
 	char const		*access;
 	char			option;
+	int				errNo;
 }					t_error;
 
 /*
@@ -75,6 +77,11 @@ int		initAlternateString(char *dst, char *src);
 t_error	readDirFiles(int flags, t_file *directory);
 
 /*
+**	display.c
+*/
+t_error	displayFileTree(int flags, t_file *head);
+
+/*
 **	dump.c
 */
 void	DumpFlags(int flags);
@@ -86,7 +93,7 @@ void	DumpBits(int value);
 **	error_constructor.c
 */
 t_error	newError(char *cause, char *description);
-t_error accessFailed(char const *av);
+t_error accessFailed(char const *av, int errNo);
 t_error invalidOption(char c);
 t_error allocateFailed();
 t_error noErrors();
@@ -113,14 +120,13 @@ int		freeFilenameList(t_list **fileList);
 /*
 **	fileTree.c
 */
-t_error	initializeFileTree(int flags, t_list **files, t_file **fileTree);
-void	freeFileTree(t_file **fileTree);
+t_error	initializeFileTree(int flags, t_list *files, t_file **fileTree);
+int		freeFileTree(t_file **fileTree);
 
 /*
 **	insert.c
 */
-void	insertToNextByFlags(int flags, t_file **head, t_file *newfile);
-void	insertToChildsByFlags(int flags, t_file *dir, t_file *newfile);
+void	insertByFlags(int flags, t_file *dir, t_file *newfile);
 
 /*
 **	insertByAccessTime.c
@@ -129,9 +135,6 @@ int		insertByAccessTime(t_file *dir, t_file *prev, t_file *next,
 		t_file *node);
 int		insertByAccessTimeReverse(t_file *dir, t_file *prev, t_file *next,
 		t_file *node);
-int		insertNextByAccessTime(t_file **prev, t_file *next, t_file *node);
-int		insertNextByAccessTimeReverse(t_file **prev, t_file *next,
-		t_file *node);
 
 /*
 **	insertByModTime.c
@@ -139,8 +142,6 @@ int		insertNextByAccessTimeReverse(t_file **prev, t_file *next,
 int		insertByModTime(t_file *dir, t_file *prev, t_file *next, t_file *node);
 int		insertByModTimeReverse(t_file *dir, t_file *prev, t_file *next,
 		t_file *node);
-int		insertNextByModTime(t_file **prev, t_file *next, t_file *node);
-int		insertNextByModTimeReverse(t_file **prev, t_file *next, t_file *node);
 
 /*
 **	insertByName.c
@@ -148,21 +149,18 @@ int		insertNextByModTimeReverse(t_file **prev, t_file *next, t_file *node);
 int		insertByName(t_file *dir, t_file *prev, t_file *next, t_file *node);
 int		insertByNameReverse(t_file *dir, t_file *prev, t_file *next,
 		t_file *node);
-int		insertNextByName(t_file **prev, t_file *next, t_file *node);
-int		insertNextByNameReverse(t_file **prev, t_file *next, t_file *node);
 
 /*
 **	insertWithoutOrder.c
 */
 int		insertWithoutOrder(t_file *dir, t_file *prev, t_file *next,
 		t_file *node);
-int		insertNextWithoutOrder(t_file **prev, t_file *next, t_file *node);
 
 
 /*
 **	lstat.c
 */
-int		isFileExist(char const *filename);
+int		isFileNotExist(char const *filename);
 t_error	readFileLstat(t_file *file);
 
 /*

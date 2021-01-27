@@ -10,13 +10,14 @@ t_error	newError(char *cause, char *description)
 	return (error);
 }
 
-t_error accessFailed(char const *av)
+t_error accessFailed(char const *av, int errNo)
 {
 	t_error error;
 
 	ft_bzero(&error, sizeof(error));
 	error.wasSet = 1;
 	error.access = av;
+	error.errNo = errNo;
 	return (error);
 }
 

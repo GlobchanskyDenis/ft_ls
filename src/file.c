@@ -47,8 +47,6 @@ void	freeFile(t_file **file)
 		return ;
 	if ((*file)->name != NULL)
 		free((*file)->name);
-	// if ((*file)->alterName != NULL)
-	//	free((*file)->alterName);
 	if ((*file)->path != NULL)
 		free((*file)->path);
 	if ((*file)->symlink != NULL)

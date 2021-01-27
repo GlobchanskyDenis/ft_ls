@@ -119,15 +119,16 @@ t_string	*stringCat(t_string *dst, char *src)
 	return (dst);
 }
 
-void	stringDel(t_string **src)
+int			stringDel(t_string **src)
 {
 	t_string	*toDelete;
 
 	if (src == NULL || *src == NULL)
-		return ;
+		return (0);
 	toDelete = *src;
 	if (toDelete->str != NULL)
 		free(toDelete->str);
 	free(toDelete);
 	*src = NULL;
+	return (1);
 }

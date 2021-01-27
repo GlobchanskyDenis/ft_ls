@@ -225,7 +225,7 @@ void			fgnl_free(void);
 **	STRING VECTOR FUNCTIONS
 */
 
-void			stringDel(t_string **src);
+int				stringDel(t_string **src);
 t_string		*stringNew(size_t maxLen);
 t_string		*stringDup(char *srcLine, size_t maxLen);
 t_string		*stringCat(t_string *dst, char *src);

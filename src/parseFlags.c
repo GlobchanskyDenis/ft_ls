@@ -23,7 +23,7 @@ t_error	checkForLongFlag(char const *av)
 		return (noErrors());
 	if (!ft_strcmp("--help", av))
 		return (noErrors());
-	return (accessFailed(av));
+	return (accessFailed(av, isFileNotExist(av)));
 }
 
 void	parseShortFlags(const char *av, int *flags)

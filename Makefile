@@ -6,8 +6,8 @@ LFT			=	$(DIR_LFT)libft.a
 DIR_INC		=	includes/
 DIR_SRC		=	src/
 FILES_INC	=	ft_ls.h
-FILES		=	alternate.c				\
-				directory.c				dump.c				\
+FILES		=	alternate.c				directory.c			\
+				display.c				dump.c				\
 				error_constructor.c		error_handler.c		\
 				file.c					filenameList.c		\
 				fileTree.c				insert.c			\
@@ -27,6 +27,7 @@ all:		$(NAME)
 			@cp $(NAME) test/test/
 			@cp $(NAME) test/try/
 			@cp $(NAME) test/rus/
+			@cp $(NAME) test/
 
 $(NAME):	$(OBJECTS) $(SRC) $(DIR_INC)ft_ls.h
 			@make -C $(DIR_LFT)

@@ -19,8 +19,8 @@ int		handleError(t_error *error)
 		fprint_fd(2, "\033[41;30mERROR\033[m\033[31m - %s\033[m\n",
 			error->panic);
 	else if (error->access != NULL)
-		fprint_fd(2, "ls: cannot access '%s': No such file or directory\n",
-			error->access);
+		fprint_fd(2, "ls: cannot access '%s': %s\n",
+			error->access, strerror(error->errNo));
 	else if (error->option)
 		fprint_fd(2, "ls: invalid option -- '%c'\n%s\n",
 			error->option,

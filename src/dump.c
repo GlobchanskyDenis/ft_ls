@@ -80,12 +80,13 @@ void	DumpFile(int prefix, t_file *file)
 	fprint("%s\t", (file->type == DIRECTORY) ? "DIR" : (
 		(file->type == FILE) ? "FILE" : (
 		(file->type == SYMBOLIC) ? "SYMLINK" : "NOT_SET")));
+	fprint("%d %d\t", file->accessErrno, file->isNeedQuotes);
 	DumpBits(file->stat.st_mode);
-	fprint("\t%s\t", (file->author == NULL) ? "NULL" : file->author);
-	fprint("%s\t", (file->group == NULL) ? "NULL" : file->group);
-	fprint("hard_links=%d\n", file->stat.st_nlink);
+	// fprint("\t%s\t", (file->author == NULL) ? "NULL" : file->author);
+	// fprint("%s\t", (file->group == NULL) ? "NULL" : file->group);
+	// fprint("hard_links=%d\n", file->stat.st_nlink);
 
-	// fprint("\n");
+	fprint("\n");
 }
 
 void	DumpFileTree(int prefix, t_file *currentFile)

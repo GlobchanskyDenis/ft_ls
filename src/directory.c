@@ -4,7 +4,8 @@
 **	Создает новый файл с путем = путь папки + имя папки и именем
 **	далее добавляет новый файл в конец списка дочерних файлов
 */
-t_error	addFileToDirectory(int flags, t_file *directory, char *name, int type)
+static t_error	addFileToDirectory(int flags, t_file *directory,
+	char *name, int type)
 {
 	char	*path;
 	t_file	*newfile;
@@ -23,7 +24,7 @@ t_error	addFileToDirectory(int flags, t_file *directory, char *name, int type)
 		if ((error = readFileLstat(newfile)).wasSet)
 			return (error);
 	}
-	insertToChildsByFlags(flags, directory, newfile);
+	insertByFlags(flags, directory, newfile);
 	if ((flags & FLAG_RR) && (type == DIRECTORY))
 	{
 		if ((error = readDirFiles(flags, newfile)).wasSet)
@@ -32,44 +33,35 @@ t_error	addFileToDirectory(int flags, t_file *directory, char *name, int type)
 	return (noErrors());
 }
 
-t_error openDirectoryWithPath(t_file *directory, DIR **dir)
+static t_error	openDirectory(t_file *directory, DIR **dir)
 {
 	char	fullPath[1024];
 	char	*buf;
 
-	if (ft_strlen(directory->name) + ft_strlen(directory->path) < 1022)
-	{
-		ft_bufconcat3(fullPath, directory->path, "/", directory->name);
-		if (!(*dir = opendir(fullPath)))
-			directory->permissionDenied = 1;
-	} else {
-		if (!(buf = ft_concat3(directory->path, "/", directory->name)))
-			return (allocateFailed());
-		if (!(*dir = opendir(buf)))
-			directory->permissionDenied = 1;
-		free(buf);
-	}
-	return (noErrors());
-}
-
-t_error	openDirectory(t_file *directory, DIR **dir)
-{
-	if (directory->name == NULL)
-	{
-		if (!(*dir = opendir(".")))
-			directory->permissionDenied = 1;
-	}
-	else if (directory->path == NULL)
+	if (directory->path == NULL)
 	{
 		if (!(*dir = opendir(directory->name)))
-			directory->permissionDenied = 1;
+			directory->accessErrno = errno;
 	}
 	else
-		return (openDirectoryWithPath(directory, dir));
+	{
+		if (ft_strlen(directory->name) + ft_strlen(directory->path) < 1022)
+		{
+			ft_bufconcat3(fullPath, directory->path, "/", directory->name);
+			if (!(*dir = opendir(fullPath)))
+				directory->accessErrno = errno;
+		} else {
+			if (!(buf = ft_concat3(directory->path, "/", directory->name)))
+				return (allocateFailed());
+			if (!(*dir = opendir(buf)))
+				directory->accessErrno = errno;
+			free(buf);
+		}
+	}
 	return (noErrors());
 }
 
-int		isNeedToSkipFile(int flags, char *filename)
+static int		isNeedToSkipFile(int flags, char *filename)
 {
 	if (filename == NULL)
 		return (1);
@@ -88,7 +80,7 @@ t_error	readDirFiles(int flags, t_file *directory)
 	error = openDirectory(directory, &dir);
 	if (error.wasSet)
 		return (error);
-	if (directory->permissionDenied)
+	if (directory->accessErrno)
 		return (noErrors());
 	while ((entry = readdir(dir)) != NULL)
 	{

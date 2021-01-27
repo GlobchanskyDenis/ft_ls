@@ -10,7 +10,7 @@ t_error	checkForErrors(char const *av)
 		return (newError("Program arguments are invalid",
 					"checkForErrors function"));
 	if (av[0] != '-' || (av[0] == '-' && len == 1))
-		return (accessFailed(av));
+		return (accessFailed(av, isFileNotExist(av)));
 	if ((ft_strncmp("--", av, 2) == 0) && len > 2)
 		return (checkForLongFlag(av));
 	i = 1;
@@ -62,7 +62,7 @@ t_error	reader(int ac, char **av, int *flags, t_list **filenames)
 		error = parseFlags(av[i], flags);
 		if (error.wasSet)
 		{
-			if ((isFileExist(av[i]) == 1) && freeError(&error))
+			if (!isFileNotExist(av[i]) && freeError(&error))
 				addToFilenameList(av[i], filenames);
 			else
 			{
