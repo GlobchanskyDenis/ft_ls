@@ -3,6 +3,7 @@
 t_error	addToFilenameList(char *filename, t_list **fileList)
 {
 	t_list	*newFilenameNode;
+	t_list	*node;
 
 	if (filename == NULL || fileList == NULL)
 		return (newError("filename or fileList is NULL",
@@ -12,7 +13,12 @@ t_error	addToFilenameList(char *filename, t_list **fileList)
 	if (*fileList == NULL)
 		*fileList = newFilenameNode;
 	else
-		ft_lstadd(fileList, newFilenameNode);
+	{
+		node = *fileList;
+		while (node->next)
+			node = node->next;
+		node->next = newFilenameNode;
+	}
 	return (noErrors());
 }
 

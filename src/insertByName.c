@@ -1,7 +1,7 @@
 #include "ft_ls.h"
 
 /*
-**	 Алгоритм проверки вставлять ли в данное место новый файл
+**	Алгоритм проверки вставлять ли в данное место новый файл
 */
 int insertByName(t_file *dir, t_file *prev, t_file *next, t_file *node)
 {

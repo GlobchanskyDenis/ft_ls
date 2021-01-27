@@ -17,13 +17,13 @@ t_error	addFileToDirectory(int flags, t_file *directory, char *name, int type)
 		free(path);
 		return (allocateFailed());
 	}
-	if ((flags & FLAG_L) || (flags & FLAG_G) || (flags & FLAG_D))
+	if ((flags & FLAG_L) || (flags & FLAG_G) || (flags & FLAG_D) ||
+		(flags & FLAG_T) || (flags & FLAG_U))
 	{
 		if ((error = readFileLstat(newfile)).wasSet)
 			return (error);
 	}
 	insertToChildsByFlags(flags, directory, newfile);
-	// insertAsChild(directory, newfile);
 	if ((flags & FLAG_RR) && (type == DIRECTORY))
 	{
 		if ((error = readDirFiles(flags, newfile)).wasSet)

@@ -3,7 +3,6 @@
 
 # include "../libft/libft.h"
 
-
 /*
 **	For all
 */
@@ -47,8 +46,8 @@ typedef	struct		s_file
 	char			*alterName;
 	char			*path;
 	char			*symlink;
-	char 			*author;
-	char 			*group;
+	char			*author;
+	char			*group;
 	int				permissionDenied;
 	int				isNeedQuotes;
 	int				type;
@@ -126,26 +125,39 @@ void	insertToChildsByFlags(int flags, t_file *dir, t_file *newfile);
 /*
 **	insertByAccessTime.c
 */
-int 	insertByAccessTime(t_file *dir, t_file *prev, t_file *next, t_file *node);
-int 	insertByAccessTimeReverse(t_file *dir, t_file *prev, t_file *next, t_file *node);
-int 	insertNextByAccessTime(t_file **prev, t_file *next, t_file *node);
-int 	insertNextByAccessTimeReverse(t_file **prev, t_file *next, t_file *node);
+int		insertByAccessTime(t_file *dir, t_file *prev, t_file *next,
+		t_file *node);
+int		insertByAccessTimeReverse(t_file *dir, t_file *prev, t_file *next,
+		t_file *node);
+int		insertNextByAccessTime(t_file **prev, t_file *next, t_file *node);
+int		insertNextByAccessTimeReverse(t_file **prev, t_file *next,
+		t_file *node);
 
 /*
 **	insertByModTime.c
 */
-int 	insertByModTime(t_file *dir, t_file *prev, t_file *next, t_file *node);
-int 	insertByModTimeReverse(t_file *dir, t_file *prev, t_file *next, t_file *node);
-int 	insertNextByModTime(t_file **prev, t_file *next, t_file *node);
-int 	insertNextByModTimeReverse(t_file **prev, t_file *next, t_file *node);
+int		insertByModTime(t_file *dir, t_file *prev, t_file *next, t_file *node);
+int		insertByModTimeReverse(t_file *dir, t_file *prev, t_file *next,
+		t_file *node);
+int		insertNextByModTime(t_file **prev, t_file *next, t_file *node);
+int		insertNextByModTimeReverse(t_file **prev, t_file *next, t_file *node);
 
 /*
 **	insertByName.c
 */
-int 	insertByName(t_file *dir, t_file *prev, t_file *next, t_file *node);
-int 	insertByNameReverse(t_file *dir, t_file *prev, t_file *next, t_file *node);
-int 	insertNextByName(t_file **prev, t_file *next, t_file *node);
-int 	insertNextByNameReverse(t_file **prev, t_file *next, t_file *node);
+int		insertByName(t_file *dir, t_file *prev, t_file *next, t_file *node);
+int		insertByNameReverse(t_file *dir, t_file *prev, t_file *next,
+		t_file *node);
+int		insertNextByName(t_file **prev, t_file *next, t_file *node);
+int		insertNextByNameReverse(t_file **prev, t_file *next, t_file *node);
+
+/*
+**	insertWithoutOrder.c
+*/
+int		insertWithoutOrder(t_file *dir, t_file *prev, t_file *next,
+		t_file *node);
+int		insertNextWithoutOrder(t_file **prev, t_file *next, t_file *node);
+
 
 /*
 **	lstat.c
@@ -170,3 +182,4 @@ t_error	reader(int ac, char **av, int *flags, t_list **filenames);
 void	printUsage();
 
 #endif
+

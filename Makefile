@@ -12,7 +12,8 @@ FILES		=	alternate.c				\
 				file.c					filenameList.c		\
 				fileTree.c				insert.c			\
 				insertByAccessTime.c	insertByModTime.c	\
-				insertByName.c			lstat.c				\
+				insertByName.c			insertWithoutOrder.c\
+				lstat.c				\
 				main.c					parseFlags.c		\
 				reader.c				
 OBJECTS		=	$(addprefix $(DIR_SRC),$(FILES:.c=.o))

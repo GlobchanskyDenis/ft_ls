@@ -75,7 +75,7 @@ void	DumpFile(int prefix, t_file *file)
 	// 		fprint("%d.", name[i++]);
 	// 	fprint("\t");
 	// }
-	
+
 	fprint("%s\t", (file->path == NULL) ? "NULL" : file->path);
 	fprint("%s\t", (file->type == DIRECTORY) ? "DIR" : (
 		(file->type == FILE) ? "FILE" : (
@@ -84,7 +84,7 @@ void	DumpFile(int prefix, t_file *file)
 	fprint("\t%s\t", (file->author == NULL) ? "NULL" : file->author);
 	fprint("%s\t", (file->group == NULL) ? "NULL" : file->group);
 	fprint("hard_links=%d\n", file->stat.st_nlink);
-	
+
 	// fprint("\n");
 }
 
@@ -117,3 +117,4 @@ void	DumpBits(int value)
 			fprint(" ");
 	}
 }
+
