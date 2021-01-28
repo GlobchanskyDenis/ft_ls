@@ -1,5 +1,9 @@
 #include "ft_ls.h"
 
+/*
+**	Constructor and handlers for t_file file type
+*/
+
 t_file	*newFile(char const *name, char const *path, int type)
 {
 	t_file	*dst;

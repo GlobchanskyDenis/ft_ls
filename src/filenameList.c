@@ -1,5 +1,11 @@
 #include "ft_ls.h"
 
+/*
+**	In the case of specifying the mapping of the necessary files
+**	and folders from the arguments - first we collect the file names
+**	into a list t_list type
+*/
+
 t_error	addToFilenameList(char *filename, t_list **fileList)
 {
 	t_list	*newFilenameNode;
@@ -39,4 +45,3 @@ int		freeFilenameList(t_list **fileList)
 	*fileList = NULL;
 	return (0);
 }
-

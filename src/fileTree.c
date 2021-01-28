@@ -1,5 +1,9 @@
 #include "ft_ls.h"
 
+/*
+**	Constructor and destructor for fileTree of t_file file type
+*/
+
 static t_error	initializeFromFileList(int flags, t_list *files,
 		t_file **fileTree)
 {
@@ -46,7 +50,7 @@ t_error			initializeFileTree(int flags, t_list *files, t_file **fileTree)
 	return (noErrors());
 }
 
-int		freeFileTree(t_file **fileTree)
+int				freeFileTree(t_file **fileTree)
 {
 	t_file	*next;
 	t_file	*child;

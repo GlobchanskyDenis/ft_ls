@@ -1,5 +1,9 @@
 #include "ft_ls.h"
 
+/*
+**	Functions of this file creates different types of errors
+*/
+
 t_error	newError(char *cause, char *description)
 {
 	t_error error;

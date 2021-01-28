@@ -1,5 +1,10 @@
 #include "ft_ls.h"
 
+/*
+**	This functions inserting file into file tree
+**	guided by the method of sorting the given flags
+*/
+
 static void	insert(t_file *dir, t_file *newfile,
 	int (*insert)(t_file *dir, t_file *prev, t_file *next, t_file *node))
 {

@@ -1,5 +1,9 @@
 #include "ft_ls.h"
 
+/*
+**	This file is only for dumping program state in design time
+*/
+
 void	DumpFlags(int flags)
 {
 	fprint("--- Dump flags ---\n");

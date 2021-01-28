@@ -1,8 +1,11 @@
 #include "ft_ls.h"
 
 /*
-**	Алгоритм проверки вставлять ли в данное место новый файл
+**	Algorithm returns 1 in case of insert was successfull and 0 in case of
+**	inserting in this plase is not needed.
+**	Algorithm sorts files by access time
 */
+
 int insertByAccessTime(t_file *dir, t_file *prev, t_file *next, t_file *node)
 {
 	int		ret;
@@ -61,3 +64,4 @@ int insertByAccessTimeReverse(t_file *dir, t_file *prev, t_file *next,
 	}
 	return (0);
 }
+

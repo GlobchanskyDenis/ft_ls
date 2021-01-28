@@ -71,8 +71,9 @@ void	parseLongFlag(const char *av, int *flags)
 }
 
 /*
-**	parsing one program argument for flags
+**	Parsing one program argument for flags
 */
+
 t_error	parseFlags(const char *av, int *flags)
 {
 	t_error	error;

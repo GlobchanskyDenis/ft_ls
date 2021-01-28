@@ -1,9 +1,12 @@
 #include "ft_ls.h"
 
 /*
-**	Создает новый файл с путем = путь папки + имя папки и именем
-**	далее добавляет новый файл в конец списка дочерних файлов
+**	Creates a new file with path = folder path + folder name and name
+**	then adds a new file to the end of the list of child files.
+**	In case of recursion flag - this function goes to recursion
+**	(readDirFiles function call that calls current function)
 */
+
 static t_error	addFileToDirectory(int flags, t_file *directory,
 	char *name, int type)
 {
@@ -61,6 +64,11 @@ static t_error	openDirectory(t_file *directory, DIR **dir)
 	return (noErrors());
 }
 
+/*
+**	If the file does not need to be output, I will not add it
+**	to the file list
+*/
+
 static int		isNeedToSkipFile(int flags, char *filename)
 {
 	if (filename == NULL)
@@ -71,7 +79,12 @@ static int		isNeedToSkipFile(int flags, char *filename)
 	return (0);
 }
 
-t_error	readDirFiles(int flags, t_file *directory)
+/*
+**	Function can fall in recursion (addFileToDirectory function
+**	call that in case of recursion flag calls current function)
+*/
+
+t_error			readDirFiles(int flags, t_file *directory)
 {
 	DIR			*dir;
 	t_dirent	*entry;
@@ -84,7 +97,6 @@ t_error	readDirFiles(int flags, t_file *directory)
 		return (noErrors());
 	while ((entry = readdir(dir)) != NULL)
 	{
-		// fprint("%s [%d]\n", entry->d_name, entry->d_type);
 		if (isNeedToSkipFile(flags, entry->d_name))
 			continue ;
 		error = addFileToDirectory(flags, directory, entry->d_name,

@@ -1,5 +1,9 @@
 #include "ft_ls.h"
 
+/*
+**	Functions of this file handles errors
+*/
+
 int		freeError(t_error *error)
 {
 	if (error != NULL)

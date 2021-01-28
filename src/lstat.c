@@ -1,5 +1,9 @@
 #include "ft_ls.h"
 
+/*
+**	Functions that reads file metadata.
+*/
+
 int		isFileNotExist(char const *filename)
 {
 	t_stat		stat;
@@ -19,7 +23,6 @@ static t_error	readSymLink(t_file *file)
 	if (!(file->symlink = ft_strnew(ret)))
 		return (allocateFailed());
 	ft_strncpy(file->symlink, buf, ret);
-	// fprint("sym link = '%s'\n", file->symlink);
 	return (noErrors());
 }
 
@@ -30,11 +33,9 @@ static t_error	readAuthorGroupNames(t_file *file)
 
 	if (!(pass = getpwuid(file->stat.st_uid)))
 		return (newError(file->name, strerror(errno)));
-	// fprint("user name %s passwd %s\n", pass->pw_name, pass->pw_passwd);
 	file->author = pass->pw_name;
 	if (!(grp = getgrgid(file->stat.st_gid)))
 		return (newError(file->name, strerror(errno)));
-	// fprint("group name %s passwd %s\n\n", grp->gr_name, grp->gr_passwd);
 	file->group = grp->gr_name;
 	return (noErrors());
 }

@@ -1,8 +1,11 @@
 #include "ft_ls.h"
 
 /*
-**	Алгоритм проверки вставлять ли в данное место новый файл
+**	Algorithm returns 1 in case of insert was successfull and 0 in case of
+**	inserting in this plase is not needed.
+**	The algorithm does not sort the files, but adds them in the order of arrival
 */
+
 int insertWithoutOrder(t_file *dir, t_file *prev, t_file *next, t_file *node)
 {
 	if (next != NULL)
@@ -15,3 +18,4 @@ int insertWithoutOrder(t_file *dir, t_file *prev, t_file *next, t_file *node)
 	dir->child = node;
 	return (1);
 }
+

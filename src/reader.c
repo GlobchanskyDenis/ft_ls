@@ -47,6 +47,7 @@ void	printUsage()
 /*
 **	main function for parsing flags
 */
+
 t_error	reader(int ac, char **av, int *flags, t_list **filenames)
 {
 	int		i;
