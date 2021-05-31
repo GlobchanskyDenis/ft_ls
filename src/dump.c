@@ -27,6 +27,8 @@ void	DumpFlags(int flags)
 		fprint("flag 'd' -- list directories, not content\n");
 	if (flags & FLAG_COLOR)
 		fprint("flag '--color' -- display in color\n");
+	if (flags & FLAG_FILE_ARGS)
+		fprint("file names in arguments\n");
 	fprint("------------------\n");
 }
 
@@ -52,7 +54,7 @@ void	DumpFile(int prefix, t_file *file)
 {
 	while (prefix--)
 		fprint("\t");
-	fprint("%s\t", (file->name == NULL) ? "NULL" : file->name);
+	fprint("%s\t%s\t", file->name, file->fullpath);
 	if (ft_strlen(file->name) < 8)
 		fprint("\t");
 	// fprint("%s\t", (file->alterName == NULL) ? "NULL" : file->alterName);
@@ -80,7 +82,6 @@ void	DumpFile(int prefix, t_file *file)
 	// 	fprint("\t");
 	// }
 
-	fprint("%s\t", (file->path == NULL) ? "NULL" : file->path);
 	fprint("%s\t", (file->type == DIRECTORY) ? "DIR" : (
 		(file->type == FILE) ? "FILE" : (
 		(file->type == SYMBOLIC) ? "SYMLINK" : "NOT_SET")));

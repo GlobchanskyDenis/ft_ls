@@ -88,37 +88,6 @@ t_string	*stringConcat3(char *src1, char *src2, char *src3, size_t maxLen)
 	return (dst);
 }
 
-/*
-**	Функция не чистит исходную string структуру в случае ошибки
-**	поэтому возвращаемое значение только для признака ошибки
-*/
-t_string	*stringCat(t_string *dst, char *src)
-{
-	size_t	addLength;
-	size_t	newMaxLen;
-	char	*newCharStr;
-
-	addLength = ft_strlen(src);
-	if (dst->maxLen - dst->length >= addLength)
-	{
-		ft_strcat(&((dst->str)[dst->length]), src);
-		dst->length += addLength;
-		return (dst);
-	}
-	newMaxLen = dst->maxLen;
-	while(newMaxLen < dst->length + addLength)
-		newMaxLen *= 5;
-	if (!(newCharStr = (char *)ft_memalloc(newMaxLen + 1)))
-		return (NULL);
-	ft_strcat(newCharStr, dst->str);
-	ft_strcat(&(newCharStr[dst->length]), src);
-	dst->length += addLength;
-	dst->maxLen = newMaxLen;
-	free(dst->str);
-	dst->str = newCharStr;
-	return (dst);
-}
-
 int			stringDel(t_string **src)
 {
 	t_string	*toDelete;

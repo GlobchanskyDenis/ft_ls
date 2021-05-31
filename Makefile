@@ -7,7 +7,8 @@ DIR_INC		=	includes/
 DIR_SRC		=	src/
 FILES_INC	=	ft_ls.h
 FILES		=	alternate.c				directory.c			\
-				display.c				dump.c				\
+				display.c				displayFile.c		\
+				dump.c				\
 				error_constructor.c		error_handler.c		\
 				file.c					filenameList.c		\
 				fileTree.c				insert.c			\

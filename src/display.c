@@ -1,31 +1,52 @@
 #include "ft_ls.h"
 
-t_error	displayShortDirectory(t_string *buf, t_file *head, int *wasPrintedFirstFile)
+static t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta)
 {
-	t_file		*file;
+	t_error	error;
 
-	file = head;
-	while (file)
+	if (flags & FLAG_L)
 	{
-		if (file->child != NULL && (file = file->next))
-			continue ;
-		if (*wasPrintedFirstFile)
-		{
-			if (!stringCat(buf, "  ") && stringDel(&buf))
-				return (allocateFailed());
-		}
-		else
-			*wasPrintedFirstFile = 1;
-		if (!stringCat(buf, file->name) && stringDel(&buf))
-				return (allocateFailed());
-		file = file->next;
+		if (!stringGrantSize(buf, 50 + meta.sum))
+			return (allocateFailed());
+		fillFileMode(flags, buf, file);
+		stringItoaAlignR(buf, file->stat.st_nlink, meta.maxLinksNumLen, ' ');
+		stringCat(buf, " ");
+		fillFileAuthor(flags, buf, file, meta);
+		stringItoaAlignR(buf, file->stat.st_size, meta.maxSizeLen, ' ');
+		if ((error = fillFileTime(flags, buf, file)).wasSet)
+			return (error);
+		if ((error = fillFileName(flags, buf, file)).wasSet)
+			return (error);
+		stringCat(buf, "\n");
 	}
-	if (!stringCat(buf, "\n"))
-		return (allocateFailed());
+	else if ((error = fillFileName(flags, buf, file)).wasSet)
+		return (error);
 	return (noErrors());
 }
 
-t_error	displayShortFiles(t_string *buf, t_file *head)
+static t_error fillBufDirFullpath(int flags, t_string *buf, t_file *dir)
+{
+	if (!stringGrantSize(buf, 50 + ft_strlen(dir->fullpath)))
+		return (allocateFailed());
+	if (dir->isNeedQuotes)
+		stringCat3(buf, "'", dir->fullpath, "'");
+	else
+		stringCat(buf, dir->fullpath);
+	stringCat(buf, ":\n");
+	if (flags & FLAG_L)
+	{
+		stringCat(buf, "total ");
+		stringItoa(buf, dir->meta.blocksNum / 2);
+		stringCat(buf, "\n");
+	}
+	return (noErrors());
+}
+
+/*
+**	Рекурсивно заполняю буфер
+*/
+
+t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta)
 {
 	t_file	*file;
 	t_error	error;
@@ -33,36 +54,31 @@ t_error	displayShortFiles(t_string *buf, t_file *head)
 
 	wasPrintedFirstFile = 0;
 	file = head;
+	// displaying only filenames in current folder
 	while (file)
 	{
-		if (file->child != NULL)
+		if (file->child != NULL && file->isArgument)
 		{
 			file = file->next;
 			continue ;
 		}
 		if (wasPrintedFirstFile)
 		{
-			if (!stringCat(buf, "  "))
+			if (!(flags & FLAG_L) && !stringCat(buf, "  "))
 				return (allocateFailed());
 		}
 		else
 			wasPrintedFirstFile = 1;
-		if (file->isNeedQuotes)
-		{
-			if (!stringCat(buf, "'"))
-				return (allocateFailed());
-		}
-		if (!stringCat(buf, file->name))
-			return (allocateFailed());
-		if (file->isNeedQuotes)
-		{
-			if (!stringCat(buf, "'"))
-				return (allocateFailed());
-		}
+
+		if ((error = fillBufFile(flags, buf, file, meta)).wasSet)
+			return (error);
+
 		file = file->next;
 	}
 
 	file = head;
+
+	// displaing only folders
 	while (file)
 	{
 		if (file->child == NULL)
@@ -76,28 +92,11 @@ t_error	displayShortFiles(t_string *buf, t_file *head)
 				return (allocateFailed());
 		} else
 			wasPrintedFirstFile = 1;
-		if (file->isNeedQuotes)
-		{
-			if (!stringCat(buf, "'"))
-				return (allocateFailed());
-		}
-		if (file->path != NULL)
-		{
-			if (!stringCat(buf, file->path))
-				return (allocateFailed());
-			if (!stringCat(buf, "/"))
-				return (allocateFailed());
-		}
-		if (!stringCat(buf, file->name))
-			return (allocateFailed());
-		if (file->isNeedQuotes)
-		{
-			if (!stringCat(buf, "'"))
-				return (allocateFailed());
-		}
-		if (!stringCat(buf, ":\n"))
-			return (allocateFailed());
-		error = displayShortFiles(buf, file->child);
+
+		if ((error = fillBufDirFullpath(flags, buf, file)).wasSet)
+			return (error);
+
+		error = fillBufRecurs(flags, buf, file->child, file->meta);
 		if (error.wasSet)
 			return (error);
 		file = file->next;
@@ -116,22 +115,27 @@ t_error	displayFileTree(int flags, t_file *head)
 {
 	t_string	*buf;
 	t_error		error;
+	t_meta		meta;
 
-	if (!(buf = stringNew(10000)))
+	if (!(buf = stringNew(1000000)))
 		return (allocateFailed());
-	if (flags & FLAG_L)
+	meta = head->meta;
+	if ((flags & FLAG_FILE_ARGS || !(flags & FLAG_RR)) && head->child)
 	{
-		error = displayLongFileTree(flags, head);
-		if (error.wasSet && stringDel(&buf))
-			return (error);
+		meta = head->meta;
+		head = head->child;
+		if (head->next == NULL && head->child != NULL)
+		{
+			meta = head->meta;
+			head = head->child;
+		}
 	}
-	else
-	{
-		error = displayShortFiles(buf, head);
-		if (error.wasSet && stringDel(&buf))
-			return (error);
-	}
-	fprint("%s\n", buf->str);
+	error = fillBufRecurs(flags, buf, head, meta);
+	if (error.wasSet && stringDel(&buf))
+		return (error);
+	if (!(flags & FLAG_L) && !stringCat(buf, "\n"))
+		return (allocateFailed());
+	write(1, buf->str, buf->length);
 	stringDel(&buf);
 	return (noErrors());
 }

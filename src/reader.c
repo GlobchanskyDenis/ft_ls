@@ -63,7 +63,8 @@ t_error	reader(int ac, char **av, int *flags, t_list **filenames)
 		error = parseFlags(av[i], flags);
 		if (error.wasSet)
 		{
-			if (!isFileNotExist(av[i]) && freeError(&error))
+			if (!isFileNotExist(av[i]) && freeError(&error) &&
+					(*flags |= FLAG_FILE_ARGS))
 				addToFilenameList(av[i], filenames);
 			else
 			{

@@ -34,17 +34,32 @@
 # define FLAG_D						(1 << 8)
 # define FLAG_COLOR					(1 << 9)
 # define FLAG_HELP					(1 << 10)
+# define FLAG_FILE_ARGS				(1 << 11)
+# define COLOR_MODE					"\033[35m"
+# define COLOR_AUTHOR				"\033[36m"
+# define COLOR_NAME					"\033[34m"
+# define NO_COLOR					"\033[m"
 
 typedef struct stat		t_stat;
 typedef struct dirent	t_dirent;
 typedef struct passwd	t_passwd;
 typedef struct group	t_group;
 
+typedef struct		s_meta
+{
+	size_t			blocksNum;
+	size_t			maxLinksNumLen;
+	size_t			maxAuthorLen;
+	size_t			maxGroupLen;
+	size_t			maxSizeLen;
+	size_t			sum;
+}					t_meta;
+
 typedef	struct		s_file
 {
 	char			*name;
 	char			*alterName;
-	char			*path;
+	char			*fullpath;
 	char			*symlink;
 	char			*author;
 	char			*group;
@@ -52,6 +67,7 @@ typedef	struct		s_file
 	int				isNeedQuotes;
 	int				isArgument;
 	int				type;
+	t_meta			meta;
 	t_stat			stat;
 	struct s_file	*child;
 	struct s_file	*next;
@@ -82,6 +98,15 @@ t_error	readDirFiles(int flags, t_file *directory);
 t_error	displayFileTree(int flags, t_file *head);
 
 /*
+**	displayFile.c
+*/
+void	fillFileMode(int flags, t_string *buf, t_file *file);
+void	fillFileAuthor(int flags, t_string *buf, t_file *file, \
+		t_meta meta);
+t_error	fillFileTime(int flags, t_string *buf, t_file *file);
+t_error	fillFileName(int flags, t_string *buf, t_file *file);
+
+/*
 **	dump.c
 */
 void	DumpFlags(int flags);
@@ -107,8 +132,8 @@ int		handleError(t_error *error);
 /*
 **	file.c
 */
-t_file	*newFile(char const *name, char const *path, int type);
-t_error	createChildFilePath(t_file *directory, char **path);
+t_file	*newFile(char const *name, char *path, int type);
+// t_error	createChildFilePath(t_file *directory, char **path);
 void	freeFile(t_file **file);
 
 /*

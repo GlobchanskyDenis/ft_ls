@@ -18,8 +18,8 @@ static t_error	readSymLink(t_file *file)
 	char	buf[256];
 	int		ret;
 
-	if ((ret = readlink(file->name, buf, 256)) == -1)
-		return (newError(file->name, strerror(errno)));
+	if ((ret = readlink(file->fullpath, buf, 256)) == -1)
+		return (newError(file->fullpath, strerror(errno)));
 	if (!(file->symlink = ft_strnew(ret)))
 		return (allocateFailed());
 	ft_strncpy(file->symlink, buf, ret);
@@ -32,10 +32,10 @@ static t_error	readAuthorGroupNames(t_file *file)
 	t_group		*grp;
 
 	if (!(pass = getpwuid(file->stat.st_uid)))
-		return (newError(file->name, strerror(errno)));
+		return (newError(file->fullpath, strerror(errno)));
 	file->author = pass->pw_name;
 	if (!(grp = getgrgid(file->stat.st_gid)))
-		return (newError(file->name, strerror(errno)));
+		return (newError(file->fullpath, strerror(errno)));
 	file->group = grp->gr_name;
 	return (noErrors());
 }
@@ -44,8 +44,8 @@ t_error			readFileLstat(t_file *file)
 {
 	t_error	error;
 
-	if (lstat(file->name, &(file->stat)) != 0)
-		return (newError(file->name, strerror(errno)));
+	if (lstat(file->fullpath, &(file->stat)) != 0)
+		return (newError(file->fullpath, strerror(errno)));
 	file->type = file->stat.st_mode >> 12;
 	if (file->type == SYMBOLIC)
 	{

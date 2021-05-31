@@ -1,5 +1,21 @@
 #include "ft_ls.h"
 
+static char	*allocateFileFullpath(char *dirFullpath, char *name)
+{
+	char	*dst;
+	size_t	pathLen;
+
+	pathLen = ft_strlen(dirFullpath);
+	if (pathLen > 0 && dirFullpath[pathLen - 1] == '/')
+		pathLen--;
+	if (!(dst = (char *)malloc(pathLen + ft_strlen(name) + 2)))
+		return (NULL);
+	ft_strncpy(dst, dirFullpath, pathLen);
+	dst[pathLen] = '/';
+	ft_strcpy(&(dst[pathLen + 1]), name);
+	return (dst);
+}
+
 /*
 **	Creates a new file with path = folder path + folder name and name
 **	then adds a new file to the end of the list of child files.
@@ -10,15 +26,15 @@
 static t_error	addFileToDirectory(int flags, t_file *directory,
 	char *name, int type)
 {
-	char	*path;
+	char	*fullpath;
 	t_file	*newfile;
 	t_error	error;
 
-	if ((error = createChildFilePath(directory, &path)).wasSet)
-		return (error);
-	if (!(newfile = newFile(name, path, type)))
+	if (!(fullpath = allocateFileFullpath(directory->fullpath, name)))
+		return (allocateFailed());
+	if (!(newfile = newFile(name, fullpath, type)))
 	{
-		free(path);
+		free(fullpath);
 		return (allocateFailed());
 	}
 	if ((flags & FLAG_L) || (flags & FLAG_G) || (flags & FLAG_D) ||
@@ -32,34 +48,6 @@ static t_error	addFileToDirectory(int flags, t_file *directory,
 	{
 		if ((error = readDirFiles(flags, newfile)).wasSet)
 			return (error);
-	}
-	return (noErrors());
-}
-
-static t_error	openDirectory(t_file *directory, DIR **dir)
-{
-	char	fullPath[1024];
-	char	*buf;
-
-	if (directory->path == NULL)
-	{
-		if (!(*dir = opendir(directory->name)))
-			directory->accessErrno = errno;
-	}
-	else
-	{
-		if (ft_strlen(directory->name) + ft_strlen(directory->path) < 1022)
-		{
-			ft_bufconcat3(fullPath, directory->path, "/", directory->name);
-			if (!(*dir = opendir(fullPath)))
-				directory->accessErrno = errno;
-		} else {
-			if (!(buf = ft_concat3(directory->path, "/", directory->name)))
-				return (allocateFailed());
-			if (!(*dir = opendir(buf)))
-				directory->accessErrno = errno;
-			free(buf);
-		}
 	}
 	return (noErrors());
 }
@@ -90,11 +78,11 @@ t_error			readDirFiles(int flags, t_file *directory)
 	t_dirent	*entry;
 	t_error		error;
 
-	error = openDirectory(directory, &dir);
-	if (error.wasSet)
-		return (error);
-	if (directory->accessErrno)
+	if (!(dir = opendir(directory->fullpath)))
+	{
+		directory->accessErrno = errno;
 		return (noErrors());
+	}
 	while ((entry = readdir(dir)) != NULL)
 	{
 		if (isNeedToSkipFile(flags, entry->d_name))

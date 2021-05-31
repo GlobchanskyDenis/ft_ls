@@ -69,6 +69,7 @@ void			ft_memdel(void **ap);
 */
 
 size_t			ft_strlen(const char *s);
+size_t			safe_strlen(const char *s);
 char			*ft_strdup(const char *s1);
 char			*ft_strcpy(char *dst, const char *src);
 char			*ft_strncpy(char *dst, const char *src, size_t len);
@@ -225,12 +226,29 @@ void			fgnl_free(void);
 **	STRING VECTOR FUNCTIONS
 */
 
+int				stringCheckOverflow(size_t len1, size_t len2, \
+		size_t len3, size_t len4);
+t_string		*increaseStringLength(t_string *dst, size_t addLength);
+t_string		*stringGrantSize(t_string *dst, size_t size);
 int				stringDel(t_string **src);
 t_string		*stringNew(size_t maxLen);
 t_string		*stringDup(char *srcLine, size_t maxLen);
-t_string		*stringCat(t_string *dst, char *src);
 t_string		*stringConcat2(char *src1, char *src2, size_t maxLen);
 t_string		*stringConcat3(char *src1, char *src2, char *src3, \
 		size_t maxLen);
+t_string		*stringCatN(t_string *dst, char *src, size_t n);
+t_string		*stringCat(t_string *dst, char *src);
+t_string		*stringCat2(t_string *dst, char *src1, char *src2);
+t_string		*stringCat3(t_string *dst, char *src1, char *src2, \
+		char *src3);
+t_string		*stringCatAlignR(t_string *dst, char *src, \
+		size_t addLength, char c);
+t_string		*stringCatAlignL(t_string *dst, char *src, \
+		size_t addLength, char c);
+t_string		*stringItoa(t_string *dst, int nbr);
+t_string		*stringItoaAlignL(t_string *dst, int nbr, \
+		size_t addLength, char c);
+t_string		*stringItoaAlignR(t_string *dst, int nbr, \
+		size_t addLength, char c);
 
 #endif

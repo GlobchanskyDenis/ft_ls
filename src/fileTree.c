@@ -12,7 +12,7 @@ static t_error	initializeFromFileList(int flags, t_list *files,
 
 	while (files)
 	{
-		if (!(newfile = newFile((char *)(files->content), NULL, UNKNOWN)))
+		if (!(newfile = newFile(files->content, ft_strdup(files->content), UNKNOWN))) //(char *)
 			return (allocateFailed());
 		files = files->next;
 		error = readFileLstat(newfile);
@@ -31,7 +31,7 @@ t_error			initializeFileTree(int flags, t_list *files, t_file **fileTree)
 {
 	t_error	error;
 
-	if (!(*fileTree = newFile(".", NULL, DIRECTORY)))
+	if (!(*fileTree = newFile(".", ft_strdup("."), DIRECTORY)))
 		return (allocateFailed());
 	if (files == NULL)
 	{
