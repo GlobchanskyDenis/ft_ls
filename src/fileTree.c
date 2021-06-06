@@ -15,7 +15,7 @@ static t_error	initializeFromFileList(int flags, t_list *files,
 		if (!(newfile = newFile(files->content, ft_strdup(files->content), UNKNOWN))) //(char *)
 			return (allocateFailed());
 		files = files->next;
-		error = readFileLstat(newfile);
+		error = readHandleFileAttributes(newfile);//	readFileLstat
 		if (error.wasSet)
 			return (error);
 		if (newfile->type == DIRECTORY &&
@@ -27,6 +27,12 @@ static t_error	initializeFromFileList(int flags, t_list *files,
 	return (noErrors());
 }
 
+/*
+**	Рекурсионное (в случае флага l) считывание файлов и папок
+**	Зависит от считанных флагов, а также от того, были ли аргументом
+**	заданы интересующие нас файлы
+*/
+
 t_error			initializeFileTree(int flags, t_list *files, t_file **fileTree)
 {
 	t_error	error;
@@ -35,7 +41,7 @@ t_error			initializeFileTree(int flags, t_list *files, t_file **fileTree)
 		return (allocateFailed());
 	if (files == NULL)
 	{
-		error = readFileLstat(*fileTree);
+		error = readHandleFileAttributes(*fileTree);//	readFileLstat
 		if (error.wasSet)
 			return (error);
 		if ((flags & FLAG_D))

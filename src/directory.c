@@ -40,7 +40,7 @@ static t_error	addFileToDirectory(int flags, t_file *directory,
 	if ((flags & FLAG_L) || (flags & FLAG_G) || (flags & FLAG_D) ||
 		(flags & FLAG_T) || (flags & FLAG_U))
 	{
-		if ((error = readFileLstat(newfile)).wasSet)
+		if ((error = readHandleFileAttributes(newfile)).wasSet)//	readFileLstat
 			return (error);
 	}
 	insertByFlags(flags, directory, newfile);
@@ -98,4 +98,3 @@ t_error			readDirFiles(int flags, t_file *directory)
 	closedir(dir);
 	return (noErrors());
 }
-

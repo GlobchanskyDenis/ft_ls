@@ -1,5 +1,31 @@
 #include "ft_ls.h"
 
+static t_error 	checkFlags(const char c)
+{
+	if (c == 'l' || c == 'R' || c == 'a' || c == 'r' || c == 't')
+		return (noErrors());
+	if (c == 'u' || c == 'f' || c == 'g' || c == 'd' || c == '1')
+		return (noErrors());
+	return (invalidOption(c));
+}
+
+static t_error	checkForLongFlag(char const *av)
+{
+	if (!ft_strcmp("--all", av))
+		return (noErrors());
+	if (!ft_strcmp("--reverse", av))
+		return (noErrors());
+	if (!ft_strcmp("--recursive", av))
+		return (noErrors());
+	if (!ft_strcmp("--directory", av))
+		return (noErrors());
+	if (!ft_strcmp("--color", av))
+		return (noErrors());
+	if (!ft_strcmp("--help", av))
+		return (noErrors());
+	return (accessFailed(av, isFileNotExist(av)));
+}
+
 t_error	checkForErrors(char const *av)
 {
 	size_t	len;
@@ -46,6 +72,8 @@ void	printUsage()
 
 /*
 **	main function for parsing flags
+**	Парсит флаги. Если флаг незнаком - принимается как имя файла и пытается считать его lstat.
+**	Если lstat читается - значит это файл, если нет - значит это ошибка
 */
 
 t_error	reader(int ac, char **av, int *flags, t_list **filenames)
@@ -75,4 +103,3 @@ t_error	reader(int ac, char **av, int *flags, t_list **filenames)
 	}
 	return (toReturnError);
 }
-

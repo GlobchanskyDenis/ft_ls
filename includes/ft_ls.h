@@ -18,9 +18,13 @@
 # include <pwd.h>
 # include <grp.h>
 # include <errno.h>
+# include <sys/types.h>
+# include <sys/xattr.h>
 
 # define UNKNOWN					0
+# define SOCKET						2
 # define DIRECTORY					4
+# define BLOCK_DEV					6
 # define FILE						8
 # define SYMBOLIC					((1 << 3) | (1 << 1))
 # define FLAG_L						(1 << 0)
@@ -32,13 +36,15 @@
 # define FLAG_F						(1 << 6)
 # define FLAG_G						(1 << 7)
 # define FLAG_D						(1 << 8)
-# define FLAG_COLOR					(1 << 9)
-# define FLAG_HELP					(1 << 10)
-# define FLAG_FILE_ARGS				(1 << 11)
+# define FLAG_1						(1 << 9)
+# define FLAG_COLOR					(1 << 10)
+# define FLAG_HELP					(1 << 11)
+# define FLAG_FILE_ARGS				(1 << 12)
 # define COLOR_MODE					"\033[35m"
 # define COLOR_AUTHOR				"\033[36m"
 # define COLOR_NAME					"\033[34m"
 # define NO_COLOR					"\033[m"
+# define MAX_FILENAME				255
 
 typedef struct stat		t_stat;
 typedef struct dirent	t_dirent;
@@ -48,6 +54,7 @@ typedef struct group	t_group;
 typedef struct		s_meta
 {
 	size_t			blocksNum;
+	size_t			hasACL;
 	size_t			maxLinksNumLen;
 	size_t			maxAuthorLen;
 	size_t			maxGroupLen;
@@ -61,11 +68,12 @@ typedef	struct		s_file
 	char			*alterName;
 	char			*fullpath;
 	char			*symlink;
-	char			*author;
-	char			*group;
+	char			author[MAX_FILENAME + 1];
+	char			group[MAX_FILENAME + 1];
 	int				accessErrno;
 	int				isNeedQuotes;
 	int				isArgument;
+	int				hasACL;
 	int				type;
 	t_meta			meta;
 	t_stat			stat;
@@ -100,7 +108,7 @@ t_error	displayFileTree(int flags, t_file *head);
 /*
 **	displayFile.c
 */
-void	fillFileMode(int flags, t_string *buf, t_file *file);
+void	fillBufFileMode(int flags, t_string *buf, t_file *file, t_meta meta);
 void	fillFileAuthor(int flags, t_string *buf, t_file *file, \
 		t_meta meta);
 t_error	fillFileTime(int flags, t_string *buf, t_file *file);
@@ -186,16 +194,16 @@ int		insertWithoutOrder(t_file *dir, t_file *prev, t_file *next,
 **	lstat.c
 */
 int		isFileNotExist(char const *filename);
-t_error	readFileLstat(t_file *file);
+t_error	readHandleFileAttributes(t_file *file);
 
 /*
 **	parseFlags.c
 */
 t_error	parseFlags(const char *av, int *flags);
-t_error checkFlags(const char c);
-t_error	checkForLongFlag(char const *av);
-void	parseShortFlags(const char *av, int *flags);
-void	parseLongFlag(const char *av, int *flags);
+// t_error checkFlags(const char c);
+// t_error	checkForLongFlag(char const *av);
+// void	parseShortFlags(const char *av, int *flags);
+// void	parseLongFlag(const char *av, int *flags);
 
 /*
 **	reader.c

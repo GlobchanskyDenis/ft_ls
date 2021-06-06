@@ -9,6 +9,8 @@ void	DumpFlags(int flags)
 	fprint("--- Dump flags ---\n");
 	if (flags & FLAG_L)
 		fprint("flag 'l' -- use a long listing format\n");
+	if (flags & FLAG_1)
+		fprint("flag '1' -- display each file in own line");
 	if (flags & FLAG_R)
 		fprint("flag 'r' -- reverse order while sorting\n");
 	if (flags & FLAG_A)
@@ -54,9 +56,13 @@ void	DumpFile(int prefix, t_file *file)
 {
 	while (prefix--)
 		fprint("\t");
-	fprint("%s\t%s\t", file->name, file->fullpath);
+	fprint("%s\t", file->name);
 	if (ft_strlen(file->name) < 8)
 		fprint("\t");
+	fprint("%s\t", file->fullpath);
+	if (ft_strlen(file->fullpath) < 8)
+		fprint("\t");
+
 	// fprint("%s\t", (file->alterName == NULL) ? "NULL" : file->alterName);
 	// if (file->alterName != NULL)
 	// {
@@ -82,14 +88,17 @@ void	DumpFile(int prefix, t_file *file)
 	// 	fprint("\t");
 	// }
 
-	fprint("%s\t", (file->type == DIRECTORY) ? "DIR" : (
-		(file->type == FILE) ? "FILE" : (
-		(file->type == SYMBOLIC) ? "SYMLINK" : "NOT_SET")));
-	fprint("%d %d\t", file->accessErrno, file->isNeedQuotes);
-	DumpBits(file->stat.st_mode);
+	// fprint("%s\t", (file->type == DIRECTORY) ? "DIR" : (
+	// 	(file->type == FILE) ? "FILE" : (
+	// 	(file->type == SYMBOLIC) ? "SYMLINK" : "NOT_SET")));
+	// fprint("%d %d\t", file->accessErrno, file->isNeedQuotes);
+	// DumpBits(file->stat.st_mode);
+
 	// fprint("\t%s\t", (file->author == NULL) ? "NULL" : file->author);
 	// fprint("%s\t", (file->group == NULL) ? "NULL" : file->group);
 	// fprint("hard_links=%d\n", file->stat.st_nlink);
+
+	// fprint("\t%d %d %d %d %d %d ", file->meta.blocksNum, file->meta.maxLinksNumLen, file->meta.maxAuthorLen, file->meta.maxGroupLen,  file->meta.maxSizeLen,   file->meta.sum);
 
 	fprint("\n");
 }

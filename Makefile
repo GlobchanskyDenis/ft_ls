@@ -25,10 +25,10 @@ HEADER		=	$(addprefix $(DIR_INC), $(FILES_INC))
 .PHONY: all clean fclean re
 
 all:		$(NAME)
-			@cp $(NAME) test/test/
-			@cp $(NAME) test/try/
-			@cp $(NAME) test/rus/
-			@cp $(NAME) test/
+			# @cp $(NAME) test/test/
+			# @cp $(NAME) test/try/
+			# @cp $(NAME) test/rus/
+			# @cp $(NAME) test/
 
 $(NAME):	$(OBJECTS) $(SRC) $(DIR_INC)ft_ls.h
 			@make -C $(DIR_LFT)

@@ -1,16 +1,51 @@
 #include "ft_ls.h"
 
 /*
+**	В случае включенного файла COLOR добавляет цвет
+**	Заполняет буффер первым символом fileMode (тут сложная логика)
+*/
+
+static void	fillBufStartFileMode(int flags, t_string *buf, t_file *file)
+{
+	if (flags & FLAG_COLOR)
+		stringCat(buf, COLOR_MODE);
+	if (file->type == DIRECTORY)
+		stringCat(buf, "d");
+	else if (file->type == SYMBOLIC)
+		stringCat(buf, "l");
+	else if (!ft_strncmp(file->fullpath, "/dev", 4))
+	{
+		if (file->type == SOCKET)
+			stringCat(buf, "c");
+		else if (file->type == BLOCK_DEV)
+			stringCat(buf, "b");
+		else
+			stringCat(buf, "-");
+	}
+	else
+		stringCat(buf, "-");
+}
+
+static void	fillBufEndFileMode(int flags, t_string *buf, t_file *file, t_meta meta)
+{
+	if (file->hasACL)
+		stringCat(buf, "+");
+	else if (meta.hasACL)
+		stringCat(buf, " ");
+	if (flags & FLAG_COLOR)
+		stringCat(buf, NO_COLOR);
+	stringCat(buf, " ");
+}
+
+/*
 **	Fills buffer by file mode.
 **	This function calls only in case flag -l.
 **	In case flag --color, file mode will be in color.
 */
 
-void	fillFileMode(int flags, t_string *buf, t_file *file)
+void	fillBufFileMode(int flags, t_string *buf, t_file *file, t_meta meta)
 {
-	stringCat(buf, (flags & FLAG_COLOR) ? COLOR_MODE : "");
-	stringCat(buf, (file->type == DIRECTORY) ? "d" : ((file->type == 
-		SYMBOLIC) ? "l" : "-"));
+	fillBufStartFileMode(flags, buf, file);
 	stringCat(buf, (file->stat.st_mode & (1 << 8)) ? "r" : "-");
 	stringCat(buf, (file->stat.st_mode & (1 << 7)) ? "w" : "-");
 	if (file->stat.st_mode & (1 << 11))
@@ -29,8 +64,7 @@ void	fillFileMode(int flags, t_string *buf, t_file *file)
 		stringCat(buf, (file->stat.st_mode & (1 << 0)) ? "t" : "T");
 	else
 		stringCat(buf, (file->stat.st_mode & (1 << 0)) ? "x" : "-");
-	stringCat(buf, (flags & FLAG_COLOR) ? NO_COLOR : "");
-	stringCat(buf, " ");
+	fillBufEndFileMode(flags, buf, file, meta);
 }
 
 void	fillFileAuthor(int flags, t_string *buf, t_file *file,

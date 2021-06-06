@@ -1,5 +1,9 @@
 #include "ft_ls.h"
 
+/*
+**	Записывает в буффер все что касается данного файла
+*/
+
 static t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta)
 {
 	t_error	error;
@@ -8,7 +12,7 @@ static t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta)
 	{
 		if (!stringGrantSize(buf, 50 + meta.sum))
 			return (allocateFailed());
-		fillFileMode(flags, buf, file);
+		fillBufFileMode(flags, buf, file, meta);
 		stringItoaAlignR(buf, file->stat.st_nlink, meta.maxLinksNumLen, ' ');
 		stringCat(buf, " ");
 		fillFileAuthor(flags, buf, file, meta);
@@ -69,10 +73,8 @@ t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta)
 		}
 		else
 			wasPrintedFirstFile = 1;
-
 		if ((error = fillBufFile(flags, buf, file, meta)).wasSet)
 			return (error);
-
 		file = file->next;
 	}
 
@@ -111,6 +113,54 @@ t_error displayLongFileTree(int flags, t_file *head)
 	return (noErrors());
 }
 
+/*
+**	Нахожу мету головного файла и сам файл с которого рекурсивно начнется
+**	печать информации в буффер
+*/
+
+t_meta	findMetaAndHead(int flags, t_file **head)
+{
+	t_file	*fileNode;
+	t_meta	meta;
+
+	fileNode = *head;
+	meta = fileNode->meta;
+	if ((flags & FLAG_FILE_ARGS || !(flags & FLAG_RR)) && fileNode->child)
+	{
+		meta = fileNode->meta;
+		fileNode = fileNode->child;
+		if (fileNode->next == NULL && fileNode->child != NULL)
+		{
+			meta = fileNode->meta;
+			fileNode = fileNode->child;
+		}
+	}
+	*head = fileNode;
+	return (meta);
+}
+
+/*
+**	Безопасно печатаю первую строку в буффер (количество блоков)
+**	Количество блоков почему-то показывает вдвое большее оригинального
+**	ls, поэтому делю на 2
+*/
+
+t_error	fillBufFirstLine(t_string *buf, t_meta meta)
+{
+	if (!stringCat(buf, "total "))
+		return (allocateFailed());
+	if (!stringItoa(buf, meta.blocksNum / 2))
+		return (allocateFailed());
+	if (!stringCat(buf, "\n"))
+		return (allocateFailed());
+	return (noErrors());
+}
+
+/*
+**	Буфферизованный вывод накопленной информации в стандартный вывод
+**	(через строку-вектор из libft)
+*/
+
 t_error	displayFileTree(int flags, t_file *head)
 {
 	t_string	*buf;
@@ -119,17 +169,10 @@ t_error	displayFileTree(int flags, t_file *head)
 
 	if (!(buf = stringNew(1000000)))
 		return (allocateFailed());
-	meta = head->meta;
-	if ((flags & FLAG_FILE_ARGS || !(flags & FLAG_RR)) && head->child)
-	{
-		meta = head->meta;
-		head = head->child;
-		if (head->next == NULL && head->child != NULL)
-		{
-			meta = head->meta;
-			head = head->child;
-		}
-	}
+	meta = findMetaAndHead(flags, &head);
+	if ((flags & FLAG_L) && (error = fillBufFirstLine(buf, meta)).wasSet && \
+		stringDel(&buf))
+		return (allocateFailed());
 	error = fillBufRecurs(flags, buf, head, meta);
 	if (error.wasSet && stringDel(&buf))
 		return (error);

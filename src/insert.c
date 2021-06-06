@@ -38,6 +38,8 @@ static void	metaExchange(t_file *dir, t_file *newfile)
 	if (newfile->author == NULL || newfile->group == NULL)
 		return ;
 	dir->meta.blocksNum += newfile->stat.st_blocks;
+	if (newfile->hasACL)
+		dir->meta.hasACL = 1;
 	length = calcIntItoaLength(newfile->stat.st_nlink);
 	if (length > dir->meta.maxLinksNumLen)
 		dir->meta.maxLinksNumLen = length;
@@ -51,7 +53,7 @@ static void	metaExchange(t_file *dir, t_file *newfile)
 	if (length > dir->meta.maxSizeLen)
 		dir->meta.maxSizeLen = length;
 	dir->meta.sum = dir->meta.maxLinksNumLen + dir->meta.maxAuthorLen +
-		dir->meta.maxGroupLen + dir->meta.maxSizeLen;
+		dir->meta.maxGroupLen + dir->meta.maxSizeLen + dir->meta.hasACL;
 }
 
 void		insertByFlags(int flags, t_file *dir, t_file *newfile)

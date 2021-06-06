@@ -1,60 +1,59 @@
 #include "ft_ls.h"
 
-t_error checkFlags(const char c)
+static void handleShortFlag(const char c, int *flags)
 {
-	if (c == 'l' || c == 'R' || c == 'a' || c == 'r' || c == 't')
-		return (noErrors());
-	if (c == 'u' || c == 'f' || c == 'g' || c == 'd')
-		return (noErrors());
-	return (invalidOption(c));
+	if (c == 'l')
+		*flags |= FLAG_L;
+	else if (c == 'R')
+		*flags |=  FLAG_RR;
+	else if (c == 'a')
+		*flags |=  FLAG_A;
+	else if (c == 'r')
+		*flags |=  FLAG_R;
+	else if (c == 't')
+		*flags |=  FLAG_T;
+	else if (c == 'u')
+		*flags |=  FLAG_U;
+	else if (c == 'f')
+		*flags |=  FLAG_F;
+	else if (c == 'g')
+		*flags |=  FLAG_G;
+	else if (c == 'd')
+		*flags |=  FLAG_D;
+	else if (c == '1')
+		*flags |=  FLAG_1;
 }
 
-t_error	checkForLongFlag(char const *av)
-{
-	if (!ft_strcmp("--all", av))
-		return (noErrors());
-	if (!ft_strcmp("--reverse", av))
-		return (noErrors());
-	if (!ft_strcmp("--recursive", av))
-		return (noErrors());
-	if (!ft_strcmp("--directory", av))
-		return (noErrors());
-	if (!ft_strcmp("--color", av))
-		return (noErrors());
-	if (!ft_strcmp("--help", av))
-		return (noErrors());
-	return (accessFailed(av, isFileNotExist(av)));
-}
-
-void	parseShortFlags(const char *av, int *flags)
+static void	parseShortFlags(const char *av, int *flags)
 {
 	int	i;
 
 	i = 0;
 	while (av[++i])
 	{
-		if (av[i] == 'l')
-			*flags |= FLAG_L;
-		else if (av[i] == 'R')
-			*flags |=  FLAG_RR;
-		else if (av[i] == 'a')
-			*flags |=  FLAG_A;
-		else if (av[i] == 'r')
-			*flags |=  FLAG_R;
-		else if (av[i] == 't')
-			*flags |=  FLAG_T;
-		else if (av[i] == 'u')
-			*flags |=  FLAG_U;
-		else if (av[i] == 'f')
-			*flags |=  FLAG_F;
-		else if (av[i] == 'g')
-			*flags |=  FLAG_G;
-		else if (av[i] == 'd')
-			*flags |=  FLAG_D;
+		// if (av[i] == 'l')
+		// 	*flags |= FLAG_L;
+		// else if (av[i] == 'R')
+		// 	*flags |=  FLAG_RR;
+		// else if (av[i] == 'a')
+		// 	*flags |=  FLAG_A;
+		// else if (av[i] == 'r')
+		// 	*flags |=  FLAG_R;
+		// else if (av[i] == 't')
+		// 	*flags |=  FLAG_T;
+		// else if (av[i] == 'u')
+		// 	*flags |=  FLAG_U;
+		// else if (av[i] == 'f')
+		// 	*flags |=  FLAG_F;
+		// else if (av[i] == 'g')
+		// 	*flags |=  FLAG_G;
+		// else if (av[i] == 'd')
+		// 	*flags |=  FLAG_D;
+		handleShortFlag(av[i], flags);
 	}
 }
 
-void	parseLongFlag(const char *av, int *flags)
+static void	parseLongFlag(const char *av, int *flags)
 {
 	if (!ft_strcmp("--all", av))
 		*flags = *flags | FLAG_A;
@@ -74,7 +73,7 @@ void	parseLongFlag(const char *av, int *flags)
 **	Parsing one program argument for flags
 */
 
-t_error	parseFlags(const char *av, int *flags)
+t_error		parseFlags(const char *av, int *flags)
 {
 	t_error	error;
 
@@ -87,4 +86,3 @@ t_error	parseFlags(const char *av, int *flags)
 		parseShortFlags(av, flags);
 	return (noErrors());
 }
-
