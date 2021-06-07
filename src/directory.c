@@ -8,7 +8,8 @@ static char	*allocateFileFullpath(char *dirFullpath, char *name)
 	pathLen = ft_strlen(dirFullpath);
 	if (pathLen > 0 && dirFullpath[pathLen - 1] == '/')
 		pathLen--;
-	if (!(dst = (char *)malloc(pathLen + ft_strlen(name) + 2)))
+	dst = (char *)malloc(pathLen + ft_strlen(name) + size_t(2));
+	if (!dst)
 		return (NULL);
 	ft_strncpy(dst, dirFullpath, pathLen);
 	dst[pathLen] = '/';
@@ -21,6 +22,7 @@ static char	*allocateFileFullpath(char *dirFullpath, char *name)
 **	then adds a new file to the end of the list of child files.
 **	In case of recursion flag - this function goes to recursion
 **	(readDirFiles function call that calls current function)
+**	TODO - TOO MANY LINES
 */
 
 static t_error	addFileToDirectory(int flags, t_file *directory,
@@ -30,23 +32,27 @@ static t_error	addFileToDirectory(int flags, t_file *directory,
 	t_file	*newfile;
 	t_error	error;
 
-	if (!(fullpath = allocateFileFullpath(directory->fullpath, name)))
+	fullpath = allocateFileFullpath(directory->fullpath, name);
+	if (!fullpath)
 		return (allocateFailed());
-	if (!(newfile = newFile(name, fullpath, type)))
+	newfile = newFile(name, fullpath, type);
+	if (!newfile)
 	{
 		free(fullpath);
 		return (allocateFailed());
 	}
-	if ((flags & FLAG_L) || (flags & FLAG_G) || (flags & FLAG_D) ||
+	if ((flags & FLAG_L) || (flags & FLAG_G) || (flags & FLAG_D) || \
 		(flags & FLAG_T) || (flags & FLAG_U))
 	{
-		if ((error = readHandleFileAttributes(newfile)).wasSet)//	readFileLstat
+		error = readHandleFileAttributes(newfile);
+		if (error.wasSet)
 			return (error);
 	}
 	insertByFlags(flags, directory, newfile);
 	if ((flags & FLAG_RR) && (type == DIRECTORY))
 	{
-		if ((error = readDirFiles(flags, newfile)).wasSet)
+		error = readDirFiles(flags, newfile);
+		if (error.wasSet)
 			return (error);
 	}
 	return (noErrors());
@@ -57,11 +63,11 @@ static t_error	addFileToDirectory(int flags, t_file *directory,
 **	to the file list
 */
 
-static int		isNeedToSkipFile(int flags, char *filename)
+static int	isNeedToSkipFile(int flags, char *filename)
 {
 	if (filename == NULL)
 		return (1);
-	if (!ft_strncmp(filename, ".", 1) && !(flags & FLAG_A) &&
+	if (!ft_strncmp(filename, ".", 1) && !(flags & FLAG_A) && \
 		!(flags & FLAG_G))
 		return (1);
 	return (0);
@@ -72,18 +78,20 @@ static int		isNeedToSkipFile(int flags, char *filename)
 **	call that in case of recursion flag calls current function)
 */
 
-t_error			readDirFiles(int flags, t_file *directory)
+t_error	readDirFiles(int flags, t_file *directory)
 {
 	DIR			*dir;
 	t_dirent	*entry;
 	t_error		error;
 
-	if (!(dir = opendir(directory->fullpath)))
+	dir = opendir(directory->fullpath);
+	if (!dir)
 	{
 		directory->accessErrno = errno;
 		return (noErrors());
 	}
-	while ((entry = readdir(dir)) != NULL)
+	entry = readdir(dir);
+	while (entry != NULL)
 	{
 		if (isNeedToSkipFile(flags, entry->d_name))
 			continue ;
@@ -94,7 +102,7 @@ t_error			readDirFiles(int flags, t_file *directory)
 			closedir(dir);
 			return (error);
 		}
-    }
+	}
 	closedir(dir);
 	return (noErrors());
 }

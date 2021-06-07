@@ -17,18 +17,21 @@ static t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta)
 		stringCat(buf, " ");
 		fillFileAuthor(flags, buf, file, meta);
 		stringItoaAlignR(buf, file->stat.st_size, meta.maxSizeLen, ' ');
-		if ((error = fillFileTime(flags, buf, file)).wasSet)
+		error = fillFileTime(flags, buf, file);
+		if (error.wasSet)
 			return (error);
-		if ((error = fillFileName(flags, buf, file)).wasSet)
+		error = fillFileName(flags, buf, file);
+		if (error.wasSet)
 			return (error);
 		stringCat(buf, "\n");
 	}
-	else if ((error = fillFileName(flags, buf, file)).wasSet)
+	error = fillFileName(flags, buf, file);
+	else if (error.wasSet)
 		return (error);
 	return (noErrors());
 }
 
-static t_error fillBufDirFullpath(int flags, t_string *buf, t_file *dir)
+static t_error	fillBufDirFullpath(int flags, t_string *buf, t_file *dir)
 {
 	if (!stringGrantSize(buf, 50 + ft_strlen(dir->fullpath)))
 		return (allocateFailed());
@@ -58,7 +61,7 @@ t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta)
 
 	wasPrintedFirstFile = 0;
 	file = head;
-	// displaying only filenames in current folder
+	/*	displaying only filenames in current folder  */
 	while (file)
 	{
 		if (file->child != NULL && file->isArgument)
@@ -73,14 +76,13 @@ t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta)
 		}
 		else
 			wasPrintedFirstFile = 1;
-		if ((error = fillBufFile(flags, buf, file, meta)).wasSet)
+		error = fillBufFile(flags, buf, file, meta);
+		if (error.wasSet)
 			return (error);
 		file = file->next;
 	}
-
 	file = head;
-
-	// displaing only folders
+	/*	displaing only folders  */
 	while (file)
 	{
 		if (file->child == NULL)
@@ -92,12 +94,12 @@ t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta)
 		{
 			if (!stringCat(buf, "\n\n"))
 				return (allocateFailed());
-		} else
+		}
+		else
 			wasPrintedFirstFile = 1;
-
-		if ((error = fillBufDirFullpath(flags, buf, file)).wasSet)
+		error = fillBufDirFullpath(flags, buf, file);
+		if (error.wasSet)
 			return (error);
-
 		error = fillBufRecurs(flags, buf, file->child, file->meta);
 		if (error.wasSet)
 			return (error);
@@ -106,7 +108,7 @@ t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta)
 	return (noErrors());
 }
 
-t_error displayLongFileTree(int flags, t_file *head)
+t_error	displayLongFileTree(int flags, t_file *head)
 {
 	if (flags && !flags)
 		head->name = NULL;
@@ -167,12 +169,16 @@ t_error	displayFileTree(int flags, t_file *head)
 	t_error		error;
 	t_meta		meta;
 
-	if (!(buf = stringNew(1000000)))
+	buf = stringNew(1000000);
+	if (!buf)
 		return (allocateFailed());
 	meta = findMetaAndHead(flags, &head);
-	if ((flags & FLAG_L) && (error = fillBufFirstLine(buf, meta)).wasSet && \
-		stringDel(&buf))
-		return (allocateFailed());
+	if (flags & FLAG_L)
+	{
+		error = fillBufFirstLine(buf, meta);
+		if (error.wasSet && stringDel(&buf))
+			return (allocateFailed());
+	}
 	error = fillBufRecurs(flags, buf, head, meta);
 	if (error.wasSet && stringDel(&buf))
 		return (error);

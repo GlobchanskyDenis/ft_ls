@@ -26,7 +26,8 @@ static void	fillBufStartFileMode(int flags, t_string *buf, t_file *file)
 		stringCat(buf, "-");
 }
 
-static void	fillBufEndFileMode(int flags, t_string *buf, t_file *file, t_meta meta)
+static void	fillBufEndFileMode(int flags, t_string *buf, t_file *file, \
+	t_meta meta)
 {
 	if (file->hasACL)
 		stringCat(buf, "+");
@@ -90,7 +91,7 @@ void	fillFileAuthor(int flags, t_string *buf, t_file *file,
 
 t_error	fillFileTime(int flags, t_string *buf, t_file *file)
 {
-	char *printTime;
+	char	*printTime;
 
 	stringCat(buf, " ");
 	if (flags & FLAG_U)
@@ -98,7 +99,7 @@ t_error	fillFileTime(int flags, t_string *buf, t_file *file)
 	else
 		printTime = ctime(&(file->stat.st_mtime));
 	if (printTime == NULL)
-		return newError("ctime", strerror(errno));
+		return (newError("ctime", strerror(errno)));
 	printTime = &(printTime[4]);
 	stringCatN(buf, printTime, 12);
 	stringCat(buf, " ");
@@ -115,7 +116,7 @@ t_error	fillFileTime(int flags, t_string *buf, t_file *file)
 
 t_error	fillFileName(int flags, t_string *buf, t_file *file)
 {
-	if (!stringGrantSize(buf, 10 + ft_strlen(file->name) +
+	if (!stringGrantSize(buf, 10 + ft_strlen(file->name) + \
 		safe_strlen(file->symlink)))
 		return (allocateFailed());
 	if (flags & FLAG_COLOR)

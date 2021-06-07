@@ -53,7 +53,7 @@ static char	utf8LocaleRuToAlternateSecond(char c1, char c2)
 **	an indication of the presence of such a symbol.
 */
 
-static int  shouldPrintNameWithQuotes(char c)
+static int	shouldPrintNameWithQuotes(char c)
 {
 	if (c > 31 && c < 37)
 		return (1);
@@ -72,7 +72,7 @@ static int  shouldPrintNameWithQuotes(char c)
 **	Alternate string needed only for correct sorting of russian alphabet
 */
 
-int			initAlternateString(char *dst, char *src)
+int	initAlternateString(char *dst, char *src)
 {
 	size_t	i;
 	size_t	len;
@@ -100,4 +100,3 @@ int			initAlternateString(char *dst, char *src)
 	dst[i] = '\0';
 	return (isNeedQuotes);
 }
-
