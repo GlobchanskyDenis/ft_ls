@@ -8,7 +8,7 @@ static char	*allocateFileFullpath(char *dirFullpath, char *name)
 	pathLen = ft_strlen(dirFullpath);
 	if (pathLen > 0 && dirFullpath[pathLen - 1] == '/')
 		pathLen--;
-	dst = (char *)malloc(pathLen + ft_strlen(name) + size_t(2));
+	dst = (char *)malloc(pathLen + ft_strlen(name) + 2);
 	if (!dst)
 		return (NULL);
 	ft_strncpy(dst, dirFullpath, pathLen);
@@ -73,6 +73,12 @@ static int	isNeedToSkipFile(int flags, char *filename)
 	return (0);
 }
 
+static t_dirent *readDirrectory(DIR *dir, t_dirent **entry)
+{
+	*entry = readdir(dir);
+	return (*entry);
+}
+
 /*
 **	Function can fall in recursion (addFileToDirectory function
 **	call that in case of recursion flag calls current function)
@@ -91,7 +97,8 @@ t_error	readDirFiles(int flags, t_file *directory)
 		return (noErrors());
 	}
 	entry = readdir(dir);
-	while (entry != NULL)
+	// while (entry != NULL)
+	while (readDirrectory(dir, &entry))
 	{
 		if (isNeedToSkipFile(flags, entry->d_name))
 			continue ;

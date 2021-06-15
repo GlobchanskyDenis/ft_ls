@@ -30,7 +30,7 @@ int		main(int ac, char **av)
 	error = displayFileTree(flags, fileTree);
 	if (error.wasSet)
 		return (freeFileTree(&fileTree) + handleError(&error));
-	// DumpFileTree(0, fileTree);
+	DumpFileTree(0, fileTree);
 	freeFileTree(&fileTree);
 	return (0);
 }

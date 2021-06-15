@@ -25,9 +25,12 @@ static t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta)
 			return (error);
 		stringCat(buf, "\n");
 	}
-	error = fillFileName(flags, buf, file);
-	else if (error.wasSet)
-		return (error);
+	else 
+	{
+		error = fillFileName(flags, buf, file);
+		if (error.wasSet)
+			return (error);
+	}
 	return (noErrors());
 }
 

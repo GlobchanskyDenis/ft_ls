@@ -100,6 +100,20 @@ void	DumpFile(int prefix, t_file *file)
 
 	// fprint("\t%d %d %d %d %d %d ", file->meta.blocksNum, file->meta.maxLinksNumLen, file->meta.maxAuthorLen, file->meta.maxGroupLen,  file->meta.maxSizeLen,   file->meta.sum);
 
+	if (file->meta.blocksNum == 0)
+	fprint("\t%d %d %d %d %d %d %d %d %d %d %d %d %d %d ", file->meta.blocksNum, file->stat.st_dev, file->stat.st_ino, file->stat.st_mode,
+		file->stat.st_nlink, file->stat.st_uid, file->stat.st_gid, file->stat.st_rdev, file->stat.st_size, file->stat.st_blksize, file->stat.st_blocks,
+		file->stat.st_atime, file->stat.st_mtime, file->stat.st_ctime);
+
+	// ssize_t result;
+	// char  list[256];
+	// ft_bzero(&list, 256);
+	// result = listxattr(file->fullpath, list, 255);
+	// fprint("'%d %s'", result, list);
+
+	// ft_bzero(&list, 256);
+	// result = getxattr(file->fullpath, list, 255);
+
 	fprint("\n");
 }
 

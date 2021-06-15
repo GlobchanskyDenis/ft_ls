@@ -41,7 +41,7 @@ t_error			initializeFileTree(int flags, t_list *files, t_file **fileTree)
 		return (allocateFailed());
 	if (files == NULL)
 	{
-		error = readHandleFileAttributes(*fileTree);//	readFileLstat
+		error = readHandleFileAttributes(*fileTree);
 		if (error.wasSet)
 			return (error);
 		if ((flags & FLAG_D))
