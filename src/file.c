@@ -13,14 +13,16 @@ t_file	*newFile(char const *name, char *fullpath, int type)
 		ft_strdel(&fullpath);
 	if (fullpath == NULL)
 		return (NULL);
-	if (!(dst = (t_file *)ft_memalloc(sizeof(t_file))))
+	dst = (t_file *)ft_memalloc(sizeof(t_file));
+	if (!dst)
 		return (NULL);
 	dst->type = type;
 	nameLen = ft_strlen(name);
-	if (!(dst->name = (char *)malloc(nameLen * 2 + 2)))
+	dst->name = (char *)malloc(nameLen * 2 + 2);
+	if (!dst->name)
 	{
 		freeFile(&dst);
-		return NULL;
+		return (NULL);
 	}
 	ft_strcpy(dst->name, name);
 	dst->alterName = &(dst->name[nameLen + 1]);
@@ -42,4 +44,3 @@ void	freeFile(t_file **file)
 	free(*file);
 	*file = NULL;
 }
-

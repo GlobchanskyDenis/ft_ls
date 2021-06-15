@@ -13,8 +13,9 @@ t_error	addToFilenameList(char *filename, t_list **fileList)
 
 	if (filename == NULL || fileList == NULL)
 		return (newError("filename or fileList is NULL",
-					"addFilenameList function"));
-	if ((newFilenameNode = ft_lstnew_fag(filename, 0)) == NULL)
+				"addFilenameList function"));
+	newFilenameNode = ft_lstnew_fag(filename, 0);
+	if (newFilenameNode == NULL)
 		return (allocateFailed());
 	if (*fileList == NULL)
 		*fileList = newFilenameNode;
@@ -28,7 +29,7 @@ t_error	addToFilenameList(char *filename, t_list **fileList)
 	return (noErrors());
 }
 
-int		freeFilenameList(t_list **fileList)
+int	freeFilenameList(t_list **fileList)
 {
 	t_list	*node;
 	t_list	*toDelete;

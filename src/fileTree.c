@@ -12,15 +12,19 @@ static t_error	initializeFromFileList(int flags, t_list *files,
 
 	while (files)
 	{
-		if (!(newfile = newFile(files->content, ft_strdup(files->content), UNKNOWN))) //(char *)
+		newfile = newFile(files->content, ft_strdup(files->content), UNKNOWN);
+		if (!newfile)
 			return (allocateFailed());
 		files = files->next;
-		error = readHandleFileAttributes(newfile);//	readFileLstat
+		error = readHandleFileAttributes(newfile);
 		if (error.wasSet)
 			return (error);
-		if (newfile->type == DIRECTORY &&
-			(error = readDirFiles(flags, newfile)).wasSet)
-			return (error);
+		if (newfile->type == DIRECTORY)
+		{
+			error = readDirFiles(flags, newfile);
+			if (error.wasSet)
+				return (error);
+		}
 		newfile->isArgument = 1;
 		insertByFlags(flags, *fileTree, newfile);
 	}
@@ -33,11 +37,12 @@ static t_error	initializeFromFileList(int flags, t_list *files,
 **	заданы интересующие нас файлы
 */
 
-t_error			initializeFileTree(int flags, t_list *files, t_file **fileTree)
+t_error	initializeFileTree(int flags, t_list *files, t_file **fileTree)
 {
 	t_error	error;
 
-	if (!(*fileTree = newFile(".", ft_strdup("."), DIRECTORY)))
+	*fileTree = newFile(".", ft_strdup("."), DIRECTORY);
+	if (!(*fileTree))
 		return (allocateFailed());
 	if (files == NULL)
 	{
@@ -56,7 +61,7 @@ t_error			initializeFileTree(int flags, t_list *files, t_file **fileTree)
 	return (noErrors());
 }
 
-int				freeFileTree(t_file **fileTree)
+int	freeFileTree(t_file **fileTree)
 {
 	t_file	*next;
 	t_file	*child;
@@ -70,4 +75,3 @@ int				freeFileTree(t_file **fileTree)
 	freeFileTree(&child);
 	return (1);
 }
-

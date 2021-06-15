@@ -6,7 +6,7 @@
 
 t_error	newError(char *cause, char *description)
 {
-	t_error error;
+	t_error	error;
 
 	ft_bzero(&error, sizeof(error));
 	error.wasSet = 1;
@@ -14,9 +14,9 @@ t_error	newError(char *cause, char *description)
 	return (error);
 }
 
-t_error accessFailed(char const *av, int errNo)
+t_error	accessFailed(char const *av, int errNo)
 {
-	t_error error;
+	t_error	error;
 
 	ft_bzero(&error, sizeof(error));
 	error.wasSet = 1;
@@ -25,9 +25,9 @@ t_error accessFailed(char const *av, int errNo)
 	return (error);
 }
 
-t_error invalidOption(char c)
+t_error	invalidOption(char c)
 {
-	t_error error;
+	t_error	error;
 
 	ft_bzero(&error, sizeof(error));
 	error.wasSet = 1;
@@ -35,20 +35,19 @@ t_error invalidOption(char c)
 	return (error);
 }
 
-t_error noErrors()
+t_error	noErrors(void)
 {
-	t_error error;
+	t_error	error;
 
 	ft_bzero(&error, sizeof(error));
-	return(error);
+	return (error);
 }
 
-t_error	allocateFailed()
+t_error	allocateFailed(void)
 {
-	t_error error;
+	t_error	error;
 
 	ft_bzero(&error, sizeof(error));
 	error.wasSet = 1;
-	return(error);
+	return (error);
 }
-
