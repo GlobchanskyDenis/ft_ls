@@ -58,7 +58,7 @@ static size_t	fp_parser(char *src, va_list aptr, t_fp_string *string)
 	return (length);
 }
 
-size_t			fprint_fd(int fd, const char *format, ...)
+size_t	fprint_fd(int fd, const char *format, ...)
 {
 	va_list		argptr;
 	t_fp_string	string;
@@ -74,7 +74,7 @@ size_t			fprint_fd(int fd, const char *format, ...)
 	return (length);
 }
 
-size_t			fprint(const char *format, ...)
+size_t	fprint(const char *format, ...)
 {
 	va_list		argptr;
 	t_fp_string	string;

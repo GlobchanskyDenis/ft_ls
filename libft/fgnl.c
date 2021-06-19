@@ -37,7 +37,7 @@ static size_t	fgnl_find_line_length(t_fgnl_string *lst)
 	return (length + line_length);
 }
 
-static void		fgnl_delete_trash(t_fgnl_string **head, size_t length)
+static void	fgnl_delete_trash(t_fgnl_string **head, size_t length)
 {
 	t_fgnl_string			*lst;
 	t_fgnl_string			*to_free;
@@ -59,7 +59,7 @@ static void		fgnl_delete_trash(t_fgnl_string **head, size_t length)
 	*head = lst;
 }
 
-static char		*fgnl_concat_line(t_fgnl_string **head)
+static char	*fgnl_concat_line(t_fgnl_string **head)
 {
 	size_t					length;
 	char					*dst;
@@ -67,7 +67,8 @@ static char		*fgnl_concat_line(t_fgnl_string **head)
 	size_t					start;
 
 	length = fgnl_find_line_length(*head);
-	if (!(dst = ft_strnew(length)))
+	dst = ft_strnew(length);
+	if (dst == NULL)
 		return (NULL);
 	start = 0;
 	lst = *head;
@@ -82,7 +83,7 @@ static char		*fgnl_concat_line(t_fgnl_string **head)
 	return (dst);
 }
 
-static int		reader(int fd, t_fgnl_string *lst)
+static int	reader(int fd, t_fgnl_string *lst)
 {
 	int							ret;
 	int							out;
@@ -95,18 +96,18 @@ static int		reader(int fd, t_fgnl_string *lst)
 		lst->next = fgnl_lstnew(NULL, 0);
 		lst = lst->next;
 	}
-	while ((ret = read(fd, &(lst->str[lst->length]), \
-			FGNL_BUFF_SIZE - lst->length)) > 0)
+	ret = read(fd, &(lst->str[lst->length]), FGNL_BUFF_SIZE - lst->length);
+	while (ret > 0)
 	{
-		if (ret < 0)
-			return (ret);
 		out += ret;
 		lst->length += (size_t)ret;
 		if (ft_strnchr(lst->str, '\n', lst->length))
 			return (out);
-		if (!(lst->next = fgnl_lstnew(NULL, 0)))
+		lst->next = fgnl_lstnew(NULL, 0);
+		if (!(lst->next))
 			return (-1);
 		lst = lst->next;
+		ret = read(fd, &(lst->str[lst->length]), FGNL_BUFF_SIZE - lst->length);
 	}
 	return (out);
 }
@@ -118,15 +119,17 @@ static int		reader(int fd, t_fgnl_string *lst)
 **	untill its end. The function is not safety in case of various fd.
 */
 
-int				fgnl(int fd, char **line)
+int	fgnl(int fd, char **line)
 {
 	static t_fgnl_string			**head;
 
 	if (!line || fd < 0 || fd > FGNL_FD_MAX)
 		return (-1);
-	if (!(head = fgnl_head(fd, "get")) || !(*head))
+	head = fgnl_head(fd, "get");
+	if (!(head) || !(*head))
 	{
-		if (!(head = fgnl_head(fd, "create")) || !(*head))
+		head = fgnl_head(fd, "create");
+		if (!(head) || !(*head))
 			return (-1);
 	}
 	if (reader(fd, *head) < 0)
@@ -134,7 +137,8 @@ int				fgnl(int fd, char **line)
 		fgnl_head(fd, "delete");
 		return (-1);
 	}
-	if (!(*line = fgnl_concat_line(head)))
+	*line = fgnl_concat_line(head);
+	if (!(*line))
 	{
 		fgnl_head(fd, "delete");
 		return (-1);

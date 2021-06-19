@@ -12,12 +12,12 @@
 
 static int	ft_atoi_helper(char const *s, int *sign)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	*sign = 1;
 	while (s[i] == ' ' || s[i] == '\f' || s[i] == '\n' || s[i] == '\r'
-			|| s[i] == '\t' || s[i] == '\v')
+		|| s[i] == '\t' || s[i] == '\v')
 		i++;
 	if (s[i] == '-')
 		*sign = -1;
@@ -28,7 +28,7 @@ static int	ft_atoi_helper(char const *s, int *sign)
 	return (i);
 }
 
-int			ft_atoi(const char *str)
+int	ft_atoi(const char *str)
 {
 	int				sign;
 	long long		num;

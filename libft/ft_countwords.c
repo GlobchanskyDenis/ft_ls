@@ -14,8 +14,8 @@
 
 size_t	ft_countwords(char *str, char sep)
 {
-	size_t result;
-	size_t i;
+	size_t	result;
+	size_t	i;
 
 	i = 0;
 	result = 0;

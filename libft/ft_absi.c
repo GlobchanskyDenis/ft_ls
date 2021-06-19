@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-int		ft_absi(int nbr)
+int	ft_absi(int nbr)
 {
 	if (nbr < 0)
 		return (-nbr);

@@ -22,19 +22,21 @@ size_t	fp_int_specifier(va_list argptr, t_fp_string *string)
 
 	sign_value = (int)va_arg(argptr, int);
 	if (sign_value < 0)
-	{
 		output = fp_string_fill(string, "-", 1);
-		value = (size_t)(-sign_value);
-	}
 	else
-	{
 		output = 0;
+	if (sign_value < 0)
+		value = (size_t)(-sign_value);
+	else
 		value = (size_t)sign_value;
-	}
 	copy = value;
 	length = 1;
-	while ((copy = copy / 10))
+	copy = copy / 10;
+	while (copy)
+	{
 		length++;
+		copy = copy / 10;
+	}
 	return (output + fp_string_fill_nbr(string, value, length));
 }
 
@@ -64,19 +66,21 @@ size_t	fp_ll_specifier(va_list argptr, t_fp_string *string)
 
 	sign_value = (long long)va_arg(argptr, long long);
 	if (sign_value < 0)
-	{
 		output = fp_string_fill(string, "-", 1);
-		value = (size_t)(-sign_value);
-	}
 	else
-	{
 		output = 0;
+	if (sign_value < 0)
+		value = (size_t)(-sign_value);
+	else
 		value = (size_t)sign_value;
-	}
 	copy = value;
 	length = 1;
-	while ((copy = copy / 10))
+	copy = copy / 10;
+	while (copy)
+	{
 		length++;
+		copy = copy / 10;
+	}
 	return (output + fp_string_fill_nbr(string, value, length));
 }
 
@@ -89,7 +93,11 @@ size_t	fp_size_t_specifier(va_list argptr, t_fp_string *string)
 	value = (size_t)va_arg(argptr, unsigned long long);
 	copy = value;
 	length = 1;
-	while ((copy = copy / 10))
+	copy = copy / 10;
+	while (copy)
+	{
 		length++;
+		copy = copy / 10;
+	}
 	return (fp_string_fill_nbr(string, value, length));
 }

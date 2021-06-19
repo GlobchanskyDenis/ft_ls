@@ -23,7 +23,7 @@ static int	char_to_int_convert(char ch)
 	return (0);
 }
 
-int			ft_atoi_base(const char *str, int base)
+int	ft_atoi_base(const char *str, int base)
 {
 	int		dst;
 	short	len;

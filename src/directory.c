@@ -96,7 +96,7 @@ t_error	readDirFiles(int flags, t_file *directory)
 		directory->accessErrno = errno;
 		return (noErrors());
 	}
-	entry = readdir(dir);
+	// entry = readdir(dir); // Кажется эт строку тоже надо закомментить
 	// while (entry != NULL)
 	while (readDirrectory(dir, &entry))
 	{
