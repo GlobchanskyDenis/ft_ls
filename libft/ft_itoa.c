@@ -12,31 +12,45 @@
 
 #include "libft.h"
 
+static int	ft_itoa_countRanks(int src)
+{
+	int	rank;
+
+	rank = 1;
+	src = src / 10;
+	while (src)
+	{
+		rank++;
+		src = src / 10;
+	}
+	return (rank);
+}
+
 char	*ft_itoa(int n)
 {
 	char			*dst;
-	int				i;
-	int				buf;
+	int				ranks;
+	int				sign;
 	unsigned int	temp;
 
-	buf = n;
-	i = 1;
-	while ((buf = buf / 10))
-		i++;
-	buf = 0;
-	if (n < 0 && (buf = 1))
+	ranks = ft_itoa_countRanks(n);
+	sign = 0;
+	if (n < 0)
+		sign = 1;
+	if (n < 0)
 		temp = (unsigned int)(-n);
 	else
 		temp = (unsigned int)n;
-	if (!(dst = (char *)malloc(i + buf + 1)))
+	dst = (char *)malloc(ranks + sign + 1);
+	if (!(dst))
 		return (NULL);
-	dst[i + buf] = '\0';
-	while (--i > -1)
+	dst[ranks + sign] = '\0';
+	while (--ranks > -1)
 	{
-		dst[i + buf] = (char)(temp % 10 + '0');
+		dst[ranks + sign] = (char)(temp % 10 + '0');
 		temp = temp / 10;
 	}
-	if (buf)
+	if (sign)
 		dst[0] = '-';
 	return (dst);
 }

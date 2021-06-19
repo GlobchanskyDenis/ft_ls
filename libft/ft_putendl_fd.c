@@ -14,7 +14,7 @@
 
 void	ft_putendl_fd(char const *s, int fd)
 {
-	int i;
+	int	i;
 
 	if (s)
 	{

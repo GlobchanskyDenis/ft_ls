@@ -16,7 +16,8 @@ t_list	*ft_lstnew_fag(void *content, size_t content_size)
 {
 	t_list	*dst;
 
-	if (!(dst = (t_list *)malloc(sizeof(t_list))))
+	dst = (t_list *)malloc(sizeof(t_list));
+	if (!(dst))
 		return (NULL);
 	dst->content = content;
 	dst->content_size = content_size;

@@ -14,7 +14,7 @@
 
 void	ft_putnbrll(long long n)
 {
-	long long temp;
+	long long	temp;
 
 	temp = -9223372036854775807;
 	if (n < 0)

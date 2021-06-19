@@ -12,29 +12,55 @@
 
 #include "libft.h"
 
-char					*ft_lltoa_base(long long dgt, int base)
+static int	ft_lltoa_base_countRanks(long long dgt, int base)
+{
+	int	ranks;
+
+	ranks = 1;
+	dgt = ft_absll(dgt);
+	dgt = dgt / base;
+	while (dgt)
+	{
+		ranks++;
+		dgt = dgt / base;
+	}
+	return (ranks);
+}
+
+static char	ft_lltoa_base_returnNextSymbolWithBase(unsigned long long dgt, \
+	int base)
+{
+	unsigned long long	value;
+
+	value = dgt % base;
+	if (value > 9)
+		return ((char)(value - 10) + 'a');
+	return ((char)value + '0');
+}
+
+char	*ft_lltoa_base(long long dgt, int base)
 {
 	unsigned long long	temp;
-	int					i;
+	int					ranks;
 	char				*out;
-	int					is_neg;
+	int					negative;
 
-	i = 1;
-	is_neg = dgt < 0 ? 1 : 0;
+	negative = 0;
+	if (dgt < 0)
+		negative = 1;
 	if (base < 2 && base > 16)
 		return (NULL);
 	if (!dgt)
 		return (ft_strdup("0"));
-	temp = ft_absll(dgt);
-	while ((temp /= base))
-		i++;
-	out = (char*)ft_memalloc(i + is_neg + 1);
-	out[0] = dgt < 0 ? '-' : 0;
+	ranks = ft_lltoa_base_countRanks(dgt, base);
+	out = (char *)ft_memalloc(ranks + negative + 1);
+	if (dgt < 0)
+		out[0] = '-';
 	temp = ft_absll(dgt);
 	while (temp)
 	{
-		dgt = temp % base;
-		out[--i + is_neg] = (dgt > 9) ? (dgt - 10) + 'a' : dgt + '0';
+		out[--ranks + negative] = \
+			ft_lltoa_base_returnNextSymbolWithBase(temp, base);
 		temp /= base;
 	}
 	return (out);

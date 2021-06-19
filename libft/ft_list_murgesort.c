@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-static int		ft_chlist_length(t_list *list)
+static int	ft_chlist_length(t_list *list)
 {
 	int		count;
 
@@ -25,7 +25,7 @@ static int		ft_chlist_length(t_list *list)
 	return (count);
 }
 
-static void		ft_list_murgesort_split(t_list *begin_list, t_list **a,
+static void	ft_list_murgesort_split(t_list *begin_list, t_list **a,
 		t_list **b)
 {
 	int		len;
@@ -73,8 +73,7 @@ static t_list	*ft_listmurgesort_murge(t_list *a, t_list *b,
 	return (dst);
 }
 
-void			ft_list_murgesort(t_list **begin_list,
-		int (*f)(t_list *, t_list *))
+void	ft_list_murgesort(t_list **begin_list, int (*f)(t_list *, t_list *))
 {
 	t_list	*a;
 	t_list	*b;

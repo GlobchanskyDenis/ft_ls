@@ -24,7 +24,8 @@ t_list	*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem))
 	while (lst->next)
 	{
 		lst = lst->next;
-		if (!(new_lst->next = f(lst)))
+		new_lst->next = f(lst);
+		if (!(new_lst->next))
 		{
 			while (dst)
 			{

@@ -39,7 +39,7 @@ static void	ft_bsort_swap(t_list **prev_l, t_list **cur_l, t_list **nxt_l,
 	}
 }
 
-t_list		*ft_list_bublesort(t_list *begin_list, int (*f)(t_list *))
+t_list	*ft_list_bublesort(t_list *begin_list, int (*f)(t_list *))
 {
 	t_list	*list;
 	t_list	*prev_l;

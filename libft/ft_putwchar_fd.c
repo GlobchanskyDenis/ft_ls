@@ -12,6 +12,15 @@
 
 #include "libft.h"
 
+static size_t	ft_putwchar_fd_handler(wchar_t c, int fd)
+{
+	ft_putchar_fd_smpl(0xF0 | (c >> 18), fd);
+	ft_putchar_fd_smpl(0x80 | ((c >> 12) & 0x3F), fd);
+	ft_putchar_fd_smpl(0x80 | ((c >> 6) & 0x3F), fd);
+	ft_putchar_fd_smpl(0x80 | (c & 0x3F), fd);
+	return (4);
+}
+
 size_t	ft_putwchar_fd(wchar_t c, int fd)
 {
 	if (c < 0x80)
@@ -30,12 +39,8 @@ size_t	ft_putwchar_fd(wchar_t c, int fd)
 		return (3);
 	}
 	else if (c < 0x200000)
-	{
-		ft_putchar_fd_smpl(0xF0 | (c >> 18), fd);
-		ft_putchar_fd_smpl(0x80 | ((c >> 12) & 0x3F), fd);
-		ft_putchar_fd_smpl(0x80 | ((c >> 6) & 0x3F), fd);
-		ft_putchar_fd_smpl(0x80 | (c & 0x3F), fd);
-		return (4);
-	}
-	return (c < 0x80 ? 1 : -1);
+		return (ft_putwchar_fd_handler(c, fd));
+	if (c < 0x80)
+		return (1);
+	return (-1);
 }
