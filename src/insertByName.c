@@ -6,57 +6,33 @@
 **	Algorithm sorts files by filenames (russian alphabet correct too)
 */
 
-int insertByName(t_file *dir, t_file *prev, t_file *next, t_file *node)
+int	insertByName(t_file *dir, t_file *prev, t_file *next, t_file *newfile)
 {
 	int		ret;
 
-	if ((ret = ft_strcmp(dir->child->alterName, node->alterName)) > 0 ||
-		(ret == 0 && ft_strcmp(dir->child->name, node->name) < 0))
-	{
-		// fprint("files: %s %s ret %d\n", dir->child->alterName, node->alterName, ret);
-		node->next = dir->child;
-		dir->child = node;
-		return (1);
-	}
+	ret = ft_strcmp(dir->child->alterName, newfile->alterName);
+	if (ret > 0 || (ret == 0 && ft_strcmp(dir->child->name, newfile->name) < 0))
+		return (insertNewFileAsFirstInFolder(dir, newfile));
 	if (next == NULL)
-	{
-		prev->next = node;
-		return (1);
-	}
-	if ((ret = ft_strcmp(next->alterName, node->alterName)) > 0 ||
-		(ret == 0 && ft_strcmp(next->name, node->name) < 0))
-	{
-		// fprint("files: %s %s ret %d\n", next->alterName, node->alterName, ret);
-		node->next = next;
-		prev->next = node;
-		return (1);
-	}
+		return (insertNewFileAsLastInFolder(prev, newfile));
+	ret = ft_strcmp(next->alterName, newfile->alterName);
+	if (ret > 0 || (ret == 0 && ft_strcmp(next->name, newfile->name) < 0))
+		return (insertNewFileBetweenPrevAndNext(prev, next, newfile));
 	return (0);
 }
 
-int insertByNameReverse(t_file *dir, t_file *prev, t_file *next, t_file *node)
+int	insertByNameReverse(t_file *dir, t_file *prev, t_file *next, \
+	t_file *newfile)
 {
 	int		ret;
 
-	if ((ret = ft_strcmp(dir->child->alterName, node->alterName)) < 0 ||
-		(ret == 0 && ft_strcmp(dir->child->name, node->name) > 0))
-	{
-		node->next = dir->child;
-		dir->child = node;
-		return (1);
-	}
+	ret = ft_strcmp(dir->child->alterName, newfile->alterName);
+	if (ret < 0 || (ret == 0 && ft_strcmp(dir->child->name, newfile->name) > 0))
+		return (insertNewFileAsFirstInFolder(dir, newfile));
 	if (next == NULL)
-	{
-		prev->next = node;
-		return (1);
-	}
-	if ((ret = ft_strcmp(next->alterName, node->alterName)) < 0 ||
-		(ret == 0 && ft_strcmp(next->name, node->name) > 0))
-	{
-		node->next = next;
-		prev->next = node;
-		return (1);
-	}
+		return (insertNewFileAsLastInFolder(prev, newfile));
+	ret = ft_strcmp(next->alterName, newfile->alterName);
+	if (ret < 0 || (ret == 0 && ft_strcmp(next->name, newfile->name) > 0))
+		return (insertNewFileBetweenPrevAndNext(prev, next, newfile));
 	return (0);
 }
-

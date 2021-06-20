@@ -32,25 +32,27 @@
 # define DIRECTORY					4
 # define BLOCK_DEV					6
 # define FILE						8
-# define SYMBOLIC					((1 << 3) | (1 << 1))
+# define SYMBOLIC					10
+
+// ((1 << 3) | (1 << 1))
 
 /*
 **	Тут описываю флаги, которые обрабатываю
 */
 
-# define FLAG_L						(1 << 0)
-# define FLAG_R						(1 << 1)
-# define FLAG_RR					(1 << 2)
-# define FLAG_A						(1 << 3)
-# define FLAG_T						(1 << 4)
-# define FLAG_U						(1 << 5)
-# define FLAG_F						(1 << 6)
-# define FLAG_G						(1 << 7)
-# define FLAG_D						(1 << 8)
-# define FLAG_1						(1 << 9)
-# define FLAG_COLOR					(1 << 10)
-# define FLAG_HELP					(1 << 11)
-# define FLAG_FILE_ARGS				(1 << 12)
+# define FLAG_L						1 //(1 << 0)
+# define FLAG_R						2 //(1 << 1)
+# define FLAG_RR					4 //(1 << 2)
+# define FLAG_A						8 //(1 << 3)
+# define FLAG_T						16 //(1 << 4)
+# define FLAG_U						32 //(1 << 5)
+# define FLAG_F						64 //(1 << 6)
+# define FLAG_G						128 //(1 << 7)
+# define FLAG_D						256 //(1 << 8)
+# define FLAG_1						512 //(1 << 9)
+# define FLAG_COLOR					1024 //(1 << 10)
+# define FLAG_HELP					2048 //(1 << 11)
+# define FLAG_FILE_ARGS				4092 //(1 << 12)
 
 /*
 **	Константы escape последовательностей
@@ -73,11 +75,6 @@
 **	ТИПЫ ДАННЫХ
 */
 
-typedef struct stat		t_stat;
-typedef struct dirent	t_dirent;
-typedef struct passwd	t_passwd;
-typedef struct group	t_group;
-
 /*
 **	Структура, описывающая метаинформацию файла или папки
 **	Данная структура входит в состав данных структуры файла
@@ -86,22 +83,22 @@ typedef struct group	t_group;
 **	каждой колонки и так далее
 */
 
-typedef struct		s_meta
+typedef struct s_meta
 {
-	size_t			blocksNum;
-	size_t			hasACL;
-	size_t			maxLinksNumLen;
-	size_t			maxAuthorLen;
-	size_t			maxGroupLen;
-	size_t			maxSizeLen;
-	size_t			sum;
-}					t_meta;
+	size_t	blocksNum;
+	size_t	hasACL;
+	size_t	maxLinksNumLen;
+	size_t	maxAuthorLen;
+	size_t	maxGroupLen;
+	size_t	maxSizeLen;
+	size_t	sum;
+}	t_meta;
 
 /*
 **	Ключевая структура проекта - файл
 */
 
-typedef	struct		s_file
+typedef struct s_file
 {
 	char			*name;
 	char			*alterName;
@@ -115,10 +112,10 @@ typedef	struct		s_file
 	int				hasACL;
 	int				type;
 	t_meta			meta;
-	t_stat			stat;
+	struct stat		stat;
 	struct s_file	*child;
 	struct s_file	*next;
-}					t_file;
+}	t_file;
 
 /*
 **	Структура ошибки. В проекте реализована обработка
@@ -131,40 +128,32 @@ typedef	struct		s_file
 **	подходу в проекте не используется функция exit()
 */
 
-typedef struct      s_error
+typedef struct s_error
 {
-	int				wasSet;
-	char			*panic;
-	char const		*access;
-	char			option;
-	int				errNo;
-}					t_error;
+	int			wasSet;
+	char		*panic;
+	char const	*access;
+	char		option;
+	int			errNo;
+}	t_error;
 
 /*
 **	ПРОТОТИПЫ ФУНКЦИЙ РАСБРОСАННЫХ ПО ФАЙЛАМ
 */
 
-/*
-**		alternate.c
-*/
+/*	alternate.c  */
 
 int		initAlternateString(char *dst, char *src);
 
-/*
-**	directory.c
-*/
+/*	directory.c  */
 
 t_error	readDirFiles(int flags, t_file *directory);
 
-/*
-**	display.c
-*/
+/*	display.c  */
 
 t_error	displayFileTree(int flags, t_file *head);
 
-/*
-**	displayFile.c
-*/
+/*	displayFile.c  */
 
 void	fillBufFileMode(int flags, t_string *buf, t_file *file, t_meta meta);
 void	fillFileAuthor(int flags, t_string *buf, t_file *file, \
@@ -172,115 +161,97 @@ void	fillFileAuthor(int flags, t_string *buf, t_file *file, \
 t_error	fillFileTime(int flags, t_string *buf, t_file *file);
 t_error	fillFileName(int flags, t_string *buf, t_file *file);
 
-/*
-**	dump.c
-*/
+/*	dump.c */
 
 void	DumpFlags(int flags);
 void	DumpFiles(t_list *files);
 void	DumpFileTree(int prefix, t_file *currentFile);
 void	DumpBits(int value);
 
-/*
-**	error_constructor.c
-*/
+/*	error_constructor.c  */
 
 t_error	newError(char *cause, char *description);
-t_error accessFailed(char const *av, int errNo);
-t_error invalidOption(char c);
-t_error allocateFailed();
-t_error noErrors();
+t_error	accessFailed(char const *av, int errNo);
+t_error	invalidOption(char c);
+t_error	allocateFailed(void);
+t_error	noErrors(void);
 
-/*
-**	error_handler.c
-*/
+/*	error_handler.c  */
 
 int		freeError(t_error *error);
 int		handleError(t_error *error);
 
-/*
-**	file.c
-*/
+/*	file.c  */
 
 t_file	*newFile(char const *name, char *path, int type);
-// t_error	createChildFilePath(t_file *directory, char **path);
-void	freeFile(t_file **file);
 
-/*
-**	filenameList.c
-*/
+// t_error	createChildFilePath(t_file *directory, char **path);
+
+void	freeFile(t_file **file);
+int		isFileNotExist(char const *filename);
+
+/*	filenameList.c  */
 
 t_error	addToFilenameList(char *filename, t_list **fileList);
 int		freeFilenameList(t_list **fileList);
 
-/*
-**	fileTree.c
-*/
+/*	fileTree.c  */
 
 t_error	initializeFileTree(int flags, t_list *files, t_file **fileTree);
 int		freeFileTree(t_file **fileTree);
 
-/*
-**	insert.c
-*/
+/*	insert.c  */
 
 void	insertByFlags(int flags, t_file *dir, t_file *newfile);
 
-/*
-**	insertByAccessTime.c
-*/
+/*	insertByAccessTime.c  */
 
-int		insertByAccessTime(t_file *dir, t_file *prev, t_file *next,
-		t_file *node);
-int		insertByAccessTimeReverse(t_file *dir, t_file *prev, t_file *next,
-		t_file *node);
+int		insertByAccessTime(t_file *dir, t_file *prev, t_file *next, \
+	t_file *node);
+int		insertByAccessTimeReverse(t_file *dir, t_file *prev, t_file *next, \
+	t_file *node);
 
-/*
-**	insertByModTime.c
-*/
+/*	insertByModTime.c  */
 
 int		insertByModTime(t_file *dir, t_file *prev, t_file *next, t_file *node);
-int		insertByModTimeReverse(t_file *dir, t_file *prev, t_file *next,
-		t_file *node);
+int		insertByModTimeReverse(t_file *dir, t_file *prev, t_file *next, \
+	t_file *node);
 
-/*
-**	insertByName.c
-*/
+/*	insertByName.c  */
 
 int		insertByName(t_file *dir, t_file *prev, t_file *next, t_file *node);
-int		insertByNameReverse(t_file *dir, t_file *prev, t_file *next,
-		t_file *node);
+int		insertByNameReverse(t_file *dir, t_file *prev, t_file *next, \
+	t_file *node);
 
-/*
-**	insertWithoutOrder.c
-*/
+/*	insertHandlers  */
 
-int		insertWithoutOrder(t_file *dir, t_file *prev, t_file *next,
-		t_file *node);
+int		insertNewFileAsFirstInFolder(t_file *dir, t_file *newfile);
+int		insertNewFileBetweenPrevAndNext(t_file *prev, t_file *next, t_file \
+	*newfile);
+int		insertNewFileAsLastInFolder(t_file *prev, t_file *newfile);
 
-/*
-**	lstat.c
-*/
+/*	insertWithoutOrder.c  */
 
-int		isFileNotExist(char const *filename);
+int		insertWithoutOrder(t_file *dir, t_file *prev, t_file *next, \
+	t_file *node);
+
+/*	lstat.c  */
+
 t_error	readHandleFileAttributes(t_file *file);
 
-/*
-**	parseFlags.c
-*/
+/*	parseFlags.c  */
 
 t_error	parseFlags(const char *av, int *flags);
+
 // t_error checkFlags(const char c);
 // t_error	checkForLongFlag(char const *av);
 // void	parseShortFlags(const char *av, int *flags);
 // void	parseLongFlag(const char *av, int *flags);
 
-/*
-**	reader.c
-*/
+/*	reader.c  */
 
 t_error	checkForErrors(char const *av);
 t_error	reader(int ac, char **av, int *flags, t_list **filenames);
-void	printUsage();
+void	printUsage(void);
 
 #endif

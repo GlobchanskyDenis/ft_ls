@@ -6,7 +6,7 @@
 **	displayFileTree - буфферизованный вывод накопленной информации
 */
 
-int		main(int ac, char **av)
+int	main(int ac, char **av)
 {
 	int			flags;
 	t_error		error;
@@ -34,4 +34,3 @@ int		main(int ac, char **av)
 	freeFileTree(&fileTree);
 	return (0);
 }
-

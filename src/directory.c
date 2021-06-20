@@ -25,6 +25,12 @@ static char	*allocateFileFullpath(char *dirFullpath, char *name)
 **	TODO - TOO MANY LINES
 */
 
+// {
+// 		error = readDirFiles(flags, newfile);
+// 		if (error.wasSet)
+// 			return (error);
+// 	}
+
 static t_error	addFileToDirectory(int flags, t_file *directory,
 	char *name, int type)
 {
@@ -50,11 +56,7 @@ static t_error	addFileToDirectory(int flags, t_file *directory,
 	}
 	insertByFlags(flags, directory, newfile);
 	if ((flags & FLAG_RR) && (type == DIRECTORY))
-	{
-		error = readDirFiles(flags, newfile);
-		if (error.wasSet)
-			return (error);
-	}
+		return (readDirFiles(flags, newfile));
 	return (noErrors());
 }
 
@@ -73,7 +75,7 @@ static int	isNeedToSkipFile(int flags, char *filename)
 	return (0);
 }
 
-static t_dirent *readDirrectory(DIR *dir, t_dirent **entry)
+static struct dirent	*readDirrectory(DIR *dir, struct dirent **entry)
 {
 	*entry = readdir(dir);
 	return (*entry);
@@ -84,11 +86,14 @@ static t_dirent *readDirrectory(DIR *dir, t_dirent **entry)
 **	call that in case of recursion flag calls current function)
 */
 
+// entry = readdir(dir); // Кажется эт строку тоже надо закомментить
+// while (entry != NULL)
+
 t_error	readDirFiles(int flags, t_file *directory)
 {
-	DIR			*dir;
-	t_dirent	*entry;
-	t_error		error;
+	DIR				*dir;
+	struct dirent	*entry;
+	t_error			error;
 
 	dir = opendir(directory->fullpath);
 	if (!dir)
@@ -96,8 +101,6 @@ t_error	readDirFiles(int flags, t_file *directory)
 		directory->accessErrno = errno;
 		return (noErrors());
 	}
-	// entry = readdir(dir); // Кажется эт строку тоже надо закомментить
-	// while (entry != NULL)
 	while (readDirrectory(dir, &entry))
 	{
 		if (isNeedToSkipFile(flags, entry->d_name))

@@ -8,7 +8,7 @@
 static void	insert(t_file *dir, t_file *newfile,
 	int (*insert)(t_file *dir, t_file *prev, t_file *next, t_file *node))
 {
-	t_file *node;
+	t_file	*node;
 
 	if (dir->child == NULL)
 		dir->child = newfile;
@@ -25,8 +25,12 @@ static size_t	calcIntItoaLength(int nbr)
 	size_t	length;
 
 	length = 1;
-	while ((nbr = nbr / 10))
+	nbr = nbr / 10;
+	while (nbr)
+	{
 		length++;
+		nbr = nbr / 10;
+	}
 	return (length);
 }
 
@@ -52,11 +56,11 @@ static void	metaExchange(t_file *dir, t_file *newfile)
 	length = calcIntItoaLength(newfile->stat.st_size);
 	if (length > dir->meta.maxSizeLen)
 		dir->meta.maxSizeLen = length;
-	dir->meta.sum = dir->meta.maxLinksNumLen + dir->meta.maxAuthorLen +
+	dir->meta.sum = dir->meta.maxLinksNumLen + dir->meta.maxAuthorLen + \
 		dir->meta.maxGroupLen + dir->meta.maxSizeLen + dir->meta.hasACL;
 }
 
-void		insertByFlags(int flags, t_file *dir, t_file *newfile)
+void	insertByFlags(int flags, t_file *dir, t_file *newfile)
 {
 	metaExchange(dir, newfile);
 	if (flags & FLAG_R)
@@ -82,4 +86,3 @@ void		insertByFlags(int flags, t_file *dir, t_file *newfile)
 			insert(dir, newfile, insertWithoutOrder);
 	}
 }
-

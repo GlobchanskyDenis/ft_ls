@@ -44,3 +44,12 @@ void	freeFile(t_file **file)
 	free(*file);
 	*file = NULL;
 }
+
+int	isFileNotExist(char const *filename)
+{
+	struct stat	stat;
+
+	if (lstat(filename, &stat) != 0)
+		return (errno);
+	return (0);
+}

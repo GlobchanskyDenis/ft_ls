@@ -1,6 +1,6 @@
 #include "ft_ls.h"
 
-static t_error 	checkFlags(const char c)
+static t_error	checkFlags(const char c)
 {
 	if (c == 'l' || c == 'R' || c == 'a' || c == 'r' || c == 't')
 		return (noErrors());
@@ -30,11 +30,12 @@ t_error	checkForErrors(char const *av)
 {
 	size_t	len;
 	size_t	i;
-	t_error error;
+	t_error	error;
 
-	if ((len = ft_strlen(av)) < 1)
+	len = ft_strlen(av);
+	if (len < 1)
 		return (newError("Program arguments are invalid",
-					"checkForErrors function"));
+				"checkForErrors function"));
 	if (av[0] != '-' || (av[0] == '-' && len == 1))
 		return (accessFailed(av, isFileNotExist(av)));
 	if ((ft_strncmp("--", av, 2) == 0) && len > 2)
@@ -50,7 +51,7 @@ t_error	checkForErrors(char const *av)
 	return (noErrors());
 }
 
-void	printUsage()
+void	printUsage(void)
 {
 	fprint("Usage: ft_ls [OPTION]... [FILE]...\nList information ");
 	fprint("about the FILEs (the current directory by default).\n");
@@ -72,15 +73,16 @@ void	printUsage()
 
 /*
 **	main function for parsing flags
-**	Парсит флаги. Если флаг незнаком - принимается как имя файла и пытается считать его lstat.
-**	Если lstat читается - значит это файл, если нет - значит это ошибка
+**	Парсит флаги. Если флаг незнаком - принимается как имя файла и пытается
+**	считать его lstat. Если lstat читается - значит это файл, если нет -
+**	значит это ошибка
 */
 
 t_error	reader(int ac, char **av, int *flags, t_list **filenames)
 {
 	int		i;
-	t_error error;
-	t_error toReturnError;
+	t_error	error;
+	t_error	toReturnError;
 
 	*flags = 0;
 	*filenames = NULL;
@@ -91,14 +93,13 @@ t_error	reader(int ac, char **av, int *flags, t_list **filenames)
 		error = parseFlags(av[i], flags);
 		if (error.wasSet)
 		{
-			if (!isFileNotExist(av[i]) && freeError(&error) &&
-					(*flags |= FLAG_FILE_ARGS))
-				addToFilenameList(av[i], filenames);
-			else
+			if (!isFileNotExist(av[i]) && freeError(&error))
 			{
-				if (!toReturnError.wasSet)
-					toReturnError = error;
+				*flags = *flags | FLAG_FILE_ARGS;
+				addToFilenameList(av[i], filenames);
 			}
+			else if (!toReturnError.wasSet)
+				toReturnError = error;
 		}
 	}
 	return (toReturnError);

@@ -13,7 +13,8 @@ FILES		=	alternate.c				directory.c			\
 				file.c					filenameList.c		\
 				fileTree.c				insert.c			\
 				insertByAccessTime.c	insertByModTime.c	\
-				insertByName.c			insertWithoutOrder.c\
+				insertByName.c			insertHandlers.c	\
+				insertWithoutOrder.c\
 				lstat.c				\
 				main.c					parseFlags.c		\
 				reader.c				
@@ -25,9 +26,6 @@ HEADER		=	$(addprefix $(DIR_INC), $(FILES_INC))
 .PHONY: all clean fclean re
 
 all:		$(NAME)
-			# @cp $(NAME) test/test/
-			# @cp $(NAME) test/try/
-			# @cp $(NAME) test/rus/
 			# @cp $(NAME) test/
 
 $(NAME):	$(OBJECTS) $(SRC) $(DIR_INC)ft_ls.h

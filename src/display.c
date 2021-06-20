@@ -4,6 +4,20 @@
 **	Записывает в буффер все что касается данного файла
 */
 
+// Отладка начало
+		// if (!stringGrantSize(buf, 200))
+		// 	return (allocateFailed());
+		// stringCat(buf, "\t| ");
+		// stringItoa(buf, file->stat.st_dev);
+		// stringCat(buf, "\t| ");
+		// stringItoa(buf, file->stat.st_rdev);
+		// stringCat(buf, "\t| ");
+		// stringItoa(buf, file->stat.st_rdev >> 8);
+		// stringCat(buf, "\t| ");
+		// stringItoa(buf, file->stat.st_rdev & 0b11111111);
+		// stringCat(buf, " |");
+		// Отладка конец
+
 static t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta)
 {
 	t_error	error;
@@ -23,22 +37,9 @@ static t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta)
 		error = fillFileName(flags, buf, file);
 		if (error.wasSet)
 			return (error);
-		// Отладка начало
-		// if (!stringGrantSize(buf, 200))
-		// 	return (allocateFailed());
-		// stringCat(buf, "\t| ");
-		// stringItoa(buf, file->stat.st_dev);
-		// stringCat(buf, "\t| ");
-		// stringItoa(buf, file->stat.st_rdev);
-		// stringCat(buf, "\t| ");
-		// stringItoa(buf, file->stat.st_rdev >> 8);
-		// stringCat(buf, "\t| ");
-		// stringItoa(buf, file->stat.st_rdev & 0b11111111);
-		// stringCat(buf, " |");
-		// Отладка конец
 		stringCat(buf, "\n");
 	}
-	else 
+	else
 	{
 		error = fillFileName(flags, buf, file);
 		if (error.wasSet)

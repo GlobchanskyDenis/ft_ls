@@ -1,28 +1,32 @@
 #include "ft_ls.h"
 
-static void handleShortFlag(const char c, int *flags)
+/*	Этот блок просто не помещался в вызывающую функцию  */
+
+static void	handleShortFlag(const char c, int *flags)
 {
 	if (c == 'l')
 		*flags |= FLAG_L;
 	else if (c == 'R')
-		*flags |=  FLAG_RR;
+		*flags |= FLAG_RR;
 	else if (c == 'a')
-		*flags |=  FLAG_A;
+		*flags |= FLAG_A;
 	else if (c == 'r')
-		*flags |=  FLAG_R;
+		*flags |= FLAG_R;
 	else if (c == 't')
-		*flags |=  FLAG_T;
+		*flags |= FLAG_T;
 	else if (c == 'u')
-		*flags |=  FLAG_U;
+		*flags |= FLAG_U;
 	else if (c == 'f')
-		*flags |=  FLAG_F;
+		*flags |= FLAG_F;
 	else if (c == 'g')
-		*flags |=  FLAG_G;
+		*flags |= FLAG_G;
 	else if (c == 'd')
-		*flags |=  FLAG_D;
+		*flags |= FLAG_D;
 	else if (c == '1')
-		*flags |=  FLAG_1;
+		*flags |= FLAG_1;
 }
+
+/*	По одному парсит все флаги из строки  */
 
 static void	parseShortFlags(const char *av, int *flags)
 {
@@ -31,27 +35,11 @@ static void	parseShortFlags(const char *av, int *flags)
 	i = 0;
 	while (av[++i])
 	{
-		// if (av[i] == 'l')
-		// 	*flags |= FLAG_L;
-		// else if (av[i] == 'R')
-		// 	*flags |=  FLAG_RR;
-		// else if (av[i] == 'a')
-		// 	*flags |=  FLAG_A;
-		// else if (av[i] == 'r')
-		// 	*flags |=  FLAG_R;
-		// else if (av[i] == 't')
-		// 	*flags |=  FLAG_T;
-		// else if (av[i] == 'u')
-		// 	*flags |=  FLAG_U;
-		// else if (av[i] == 'f')
-		// 	*flags |=  FLAG_F;
-		// else if (av[i] == 'g')
-		// 	*flags |=  FLAG_G;
-		// else if (av[i] == 'd')
-		// 	*flags |=  FLAG_D;
 		handleShortFlag(av[i], flags);
 	}
 }
+
+/*	Парсит строку как длинный флаг  */
 
 static void	parseLongFlag(const char *av, int *flags)
 {
@@ -62,7 +50,7 @@ static void	parseLongFlag(const char *av, int *flags)
 	else if (!ft_strcmp("--recursive", av))
 		*flags = *flags | FLAG_RR;
 	else if (!ft_strcmp("--directory", av))
-		*flags = *flags	| FLAG_D;
+		*flags = *flags | FLAG_D;
 	else if (!ft_strcmp("--color", av))
 		*flags = *flags | FLAG_COLOR;
 	else if (!ft_strcmp("--help", av))
@@ -73,7 +61,7 @@ static void	parseLongFlag(const char *av, int *flags)
 **	Parsing one program argument for flags
 */
 
-t_error		parseFlags(const char *av, int *flags)
+t_error	parseFlags(const char *av, int *flags)
 {
 	t_error	error;
 

@@ -4,23 +4,16 @@
 **	Functions that reads file metadata.
 */
 
-int		isFileNotExist(char const *filename)
-{
-	t_stat		stat;
-
-	if (lstat(filename, &stat) != 0)
-		return (errno);
-	return (0);
-}
-
 static t_error	readSymLink(t_file *file)
 {
 	char	buf[256];
 	int		ret;
 
-	if ((ret = readlink(file->fullpath, buf, 256)) == -1)
+	ret = readlink(file->fullpath, buf, 256);
+	if (ret == -1)
 		return (newError(file->fullpath, strerror(errno)));
-	if (!(file->symlink = ft_strnew(ret)))
+	file->symlink = ft_strnew(ret);
+	if (!(file->symlink))
 		return (allocateFailed());
 	ft_strncpy(file->symlink, buf, ret);
 	return (noErrors());
@@ -28,15 +21,17 @@ static t_error	readSymLink(t_file *file)
 
 static t_error	readAuthorGroupNames(t_file *file)
 {
-	t_passwd	*pass;
-	t_group		*grp;
+	struct passwd	*pass;
+	struct group	*grp;
 
-	if (!(pass = getpwuid(file->stat.st_uid)))
+	pass = getpwuid(file->stat.st_uid);
+	if (!pass)
 		return (newError(file->fullpath, strerror(errno)));
 	if (ft_strlen(pass->pw_name) > MAX_FILENAME)
 		return (newError(file->fullpath, "too long author name"));
 	ft_strcpy(file->author, pass->pw_name);
-	if (!(grp = getgrgid(file->stat.st_gid)))
+	grp = getgrgid(file->stat.st_gid);
+	if (!grp)
 		return (newError(file->fullpath, strerror(errno)));
 	if (ft_strlen(grp->gr_name) > MAX_FILENAME)
 		return (newError(file->fullpath, "too long group name"));
@@ -51,13 +46,13 @@ static t_error	readAuthorGroupNames(t_file *file)
 
 static t_error	readFileACL(t_file *file)
 {
-	ssize_t result;
-	char list[256];
+	ssize_t	result;
+	char	list[256];
 
 	result = listxattr(file->fullpath, list, 255);
 	if (result < 0)
 	{
-		return newError(file->fullpath, strerror(errno));
+		return (newError(file->fullpath, strerror(errno)));
 	}
 	if (result > 0)
 	{
@@ -68,8 +63,6 @@ static t_error	readFileACL(t_file *file)
 
 static t_error	readFileLstat(t_file *file)
 {
-	// t_error	error;
-
 	if (lstat(file->fullpath, &(file->stat)) != 0)
 	{
 		return (newError(file->fullpath, strerror(errno)));
@@ -82,28 +75,22 @@ static t_error	readFileLstat(t_file *file)
 **	по ID полученным из аттрибутов, считываю расширенные аттрибуты, если
 **	они существуют - помечаю у файла их наличие
 */
+// if (!ft_strcmp(file->name, "..")) // В комментарии отправлено в связи
+	// с тем, что при выводе может быть сега
+// 	return (noErrors());			 // Осторожнее с этими строками !!!
+// fprint("%s %s\n", file->name, file->fullpath);
 
-t_error		readHandleFileAttributes(t_file *file)
+t_error	readHandleFileAttributes(t_file *file)
 {
 	t_error	error;
 
-	// if (!ft_strcmp(file->name, "..")) // В комментарии отправлено в связи с тем, что при выводе может быть сега
-	// 	return (noErrors());			 // Осторожнее с этими строками !!!
-
-	// fprint("%s %s\n", file->name, file->fullpath);
-
-	// Считываю lstat
-	error = readFileLstat(file);
+	error = readFileLstat(file); // Считываю lstat
 	if (error.wasSet)
 	{
 		return (error);
 	}
-
-	// обрабатываю полученные результаты
-	file->type = file->stat.st_mode >> 12;
-
-	// Считываю куда ссылается символическая ссылка
-	if (file->type == SYMBOLIC)
+	file->type = file->stat.st_mode >> 12; // обрабатываю полученные результаты
+	if (file->type == SYMBOLIC) // Считываю куда ссылается символическая ссылка
 	{
 		error = readSymLink(file);
 		if (error.wasSet)
@@ -111,21 +98,15 @@ t_error		readHandleFileAttributes(t_file *file)
 			return (error);
 		}
 	}
-
-	// Считываю имена автора и группы по ID
-	error = readAuthorGroupNames(file);
+	error = readAuthorGroupNames(file); // Считываю имена автора и группы по ID
 	if (error.wasSet)
 	{
 		return (error);
 	}
-
-	// Считываю расширенное значение аттрибутов
-	error = readFileACL(file);
+	error = readFileACL(file); // Считываю расширенное значение аттрибутов
 	if (error.wasSet)
 	{
 		return (error);
 	}
-
 	return (noErrors());
 }
-
