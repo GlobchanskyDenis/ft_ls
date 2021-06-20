@@ -6,11 +6,13 @@ t_string	*stringNew(size_t maxLen)
 
 	if (maxLen > maxLen + 1)
 		return (NULL);
-	if (!(newString = (t_string *)ft_memalloc(sizeof(t_string))))
+	newString = (t_string *)ft_memalloc(sizeof(t_string));
+	if (!newString)
 		return (NULL);
 	newString->length = 0;
 	newString->maxLen = maxLen;
-	if (!(newString->str = (char *)ft_memalloc(maxLen + 1)))
+	newString->str = (char *)ft_memalloc(maxLen + 1);
+	if (!(newString->str))
 	{
 		free(newString);
 		return (NULL);
@@ -26,11 +28,13 @@ t_string	*stringDup(char *srcLine, size_t maxLen)
 	srcLength = ft_strlen(srcLine);
 	if ((maxLen > maxLen + 1) || (srcLength > srcLength + 1))
 		return (NULL);
-	if (!(newString = (t_string *)ft_memalloc(sizeof(t_string))))
+	newString = (t_string *)ft_memalloc(sizeof(t_string));
+	if (!newString)
 		return (NULL);
 	if (srcLength > maxLen)
 		maxLen = srcLength;
-	if (!(newString->str = (char *)ft_memalloc(maxLen + 1)))
+	newString->str = (char *)ft_memalloc(maxLen + 1);
+	if (!(newString->str))
 	{
 		free(newString);
 		return (NULL);
@@ -51,7 +55,8 @@ t_string	*stringConcat2(char *src1, char *src2, size_t maxLen)
 	length2 = ft_strlen(src2);
 	if (length1 + length2 + 1 > maxLen)
 		maxLen = length1 + length2 + 1;
-	if (!(dst = stringDup(src1, maxLen)))
+	dst = stringDup(src1, maxLen);
+	if (!dst)
 		return (NULL);
 	if (!stringCat(dst, src2))
 	{
@@ -73,7 +78,8 @@ t_string	*stringConcat3(char *src1, char *src2, char *src3, size_t maxLen)
 	length3 = ft_strlen(src3);
 	if (length1 + length2 + length3 + 1 > maxLen)
 		maxLen = length1 + length2 + length3 + 1;
-	if (!(dst = stringDup(src1, maxLen)))
+	dst = stringDup(src1, maxLen);
+	if (!dst)
 		return (NULL);
 	if (!stringCat(dst, src2))
 	{
@@ -88,7 +94,7 @@ t_string	*stringConcat3(char *src1, char *src2, char *src3, size_t maxLen)
 	return (dst);
 }
 
-int			stringDel(t_string **src)
+int	stringDel(t_string **src)
 {
 	t_string	*toDelete;
 

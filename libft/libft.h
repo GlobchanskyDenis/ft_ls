@@ -105,6 +105,7 @@ char			*ft_concat2(char *src1, char *src2);
 char			*ft_concat3(char *src1, char *src2, char *src3);
 char			*ft_bufconcat2(char *dst, char *src1, char *src2);
 char			*ft_bufconcat3(char *dst, char *src1, char *src2, char *src3);
+int				cmpUtf8(char c11, char c12, char c21, char c22);
 
 /*
 **	LOGIC FUNCTIONS

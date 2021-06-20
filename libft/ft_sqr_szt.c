@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-size_t		ft_sqr_szt(size_t nbr, size_t rank)
+size_t	ft_sqr_szt(size_t nbr, size_t rank)
 {
 	size_t		dst;
 

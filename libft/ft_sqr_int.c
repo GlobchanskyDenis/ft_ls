@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-int		ft_sqr_int(int nbr, size_t rank)
+int	ft_sqr_int(int nbr, size_t rank)
 {
 	int		dst;
 

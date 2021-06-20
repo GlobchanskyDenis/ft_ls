@@ -12,7 +12,17 @@
 
 #include "libft.h"
 
-char					*ft_ulltoa_base(unsigned long long dgt, int base)
+static char	ft_ulltoa_base_getNextSymbol(unsigned long long dgt, int base)
+{
+	unsigned long long	number;
+
+	number = dgt % base;
+	if (number > 9)
+		return ((number - 10) + 'a');
+	return (number + '0');
+}
+
+char	*ft_ulltoa_base(unsigned long long dgt, int base)
 {
 	unsigned long long	temp;
 	int					i;
@@ -29,12 +39,12 @@ char					*ft_ulltoa_base(unsigned long long dgt, int base)
 		temp /= base;
 		i++;
 	}
-	out = (char*)malloc(i + 1);
+	out = (char *)malloc(i + 1);
 	out[i] = '\0';
 	while (dgt)
 	{
-		temp = dgt % base;
-		out[--i] = (temp > 9) ? (temp - 10) + 'a' : temp + '0';
+		i--;
+		out[i] = ft_ulltoa_base_getNextSymbol(dgt, base);
 		dgt /= base;
 	}
 	return (out);

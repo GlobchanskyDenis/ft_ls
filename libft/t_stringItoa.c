@@ -1,27 +1,41 @@
 #include "libft.h"
 
+static size_t	itoa_countRanks(int n)
+{
+	size_t	ranks;
+
+	ranks = 1;
+	n = n / 10;
+	while (n)
+	{
+		ranks++;
+		n = n / 10;
+	}
+	return (ranks);
+}
+
 static void	itoaToBuf(char *dst, int n)
 {
-	int				i;
-	int				buf;
+	int				ranks;
+	int				sign;
 	unsigned int	temp;
 
-	buf = n;
-	i = 1;
-	while ((buf = buf / 10))
-		i++;
-	buf = 0;
-	if (n < 0 && (buf = 1))
+	ranks = itoa_countRanks(n);
+	sign = 0;
+	if (n < 0)
+	{
 		temp = (unsigned int)(-n);
+		sign = 1;
+	}
 	else
 		temp = (unsigned int)n;
-	dst[i + buf] = '\0';
-	while (--i > -1)
+	dst[ranks + sign] = '\0';
+	while (--ranks > -1)
 	{
-		dst[i + buf] = (char)(temp % 10 + '0');
+		dst[ranks + sign] = (char)(temp % 10 + '0');
 		temp = temp / 10;
 	}
-	if (buf)
+	if (sign)
 		dst[0] = '-';
 }
 
@@ -33,12 +47,8 @@ static void	itoaToBuf(char *dst, int n)
 t_string	*stringItoa(t_string *dst, int nbr)
 {
 	size_t	addLength;
-	int 	cpy;
 
-	addLength = 1;
-	cpy = nbr;
-	while ((cpy = cpy / 10))
-		addLength++;
+	addLength = itoa_countRanks(nbr);
 	if (nbr < 0)
 		addLength++;
 	if (dst->maxLen + addLength < dst->maxLen)
@@ -53,12 +63,8 @@ t_string	*stringItoa(t_string *dst, int nbr)
 t_string	*stringItoaAlignL(t_string *dst, int nbr, size_t addLength, char c)
 {
 	size_t	nbrLength;
-	int 	cpy;
 
-	nbrLength = 1;
-	cpy = nbr;
-	while ((cpy = cpy / 10))
-		nbrLength++;
+	nbrLength = itoa_countRanks(nbr);
 	if (nbr < 0)
 		nbrLength++;
 	if (addLength < nbrLength)
@@ -69,7 +75,7 @@ t_string	*stringItoaAlignL(t_string *dst, int nbr, size_t addLength, char c)
 		return (NULL);
 	itoaToBuf(&(dst->str[dst->length]), nbr);
 	dst->length += nbrLength;
-	while(addLength > nbrLength)
+	while (addLength > nbrLength)
 	{
 		dst->str[dst->length] = c;
 		dst->length++;
@@ -82,12 +88,8 @@ t_string	*stringItoaAlignL(t_string *dst, int nbr, size_t addLength, char c)
 t_string	*stringItoaAlignR(t_string *dst, int nbr, size_t addLength, char c)
 {
 	size_t	nbrLength;
-	int 	cpy;
 
-	nbrLength = 1;
-	cpy = nbr;
-	while ((cpy = cpy / 10))
-		nbrLength++;
+	nbrLength = itoa_countRanks(nbr);
 	if (nbr < 0)
 		nbrLength++;
 	if (addLength < nbrLength)
@@ -96,7 +98,7 @@ t_string	*stringItoaAlignR(t_string *dst, int nbr, size_t addLength, char c)
 		return (NULL);
 	if (!stringGrantSize(dst, addLength))
 		return (NULL);
-	while(addLength > nbrLength)
+	while (addLength > nbrLength)
 	{
 		dst->str[dst->length] = c;
 		dst->length++;

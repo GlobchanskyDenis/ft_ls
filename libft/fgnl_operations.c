@@ -19,7 +19,7 @@
 **	With this function you can delete all data that stores in heap
 */
 
-void			fgnl_free(void)
+void	fgnl_free(void)
 {
 	int						i;
 
@@ -63,7 +63,8 @@ t_fgnl_string	*fgnl_lstnew(const char *src, size_t length)
 {
 	t_fgnl_string			*dst;
 
-	if (!(dst = (t_fgnl_string *)malloc(sizeof(t_fgnl_string))))
+	dst = (t_fgnl_string *)malloc(sizeof(t_fgnl_string));
+	if (!dst)
 		return (NULL);
 	if (src)
 		ft_memcpy(dst->str, src, length);
@@ -72,7 +73,7 @@ t_fgnl_string	*fgnl_lstnew(const char *src, size_t length)
 	return (dst);
 }
 
-void			fgnl_lstdel(t_fgnl_string **head)
+void	fgnl_lstdel(t_fgnl_string **head)
 {
 	t_fgnl_string			*lst;
 	t_fgnl_string			*to_delete;

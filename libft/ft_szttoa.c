@@ -20,9 +20,14 @@ char	*ft_szttoa(size_t n)
 
 	temp = n;
 	len = 1;
-	while ((temp = temp / 10))
+	temp = temp / 10;
+	while (temp)
+	{
 		len++;
-	if (!(dst = (char *)malloc(sizeof(char) * (len + 1))))
+		temp = temp / 10;
+	}
+	dst = (char *)malloc(sizeof(char) * (len + 1));
+	if (!dst)
 		return (NULL);
 	dst[len] = '\0';
 	while (--len >= 0)

@@ -31,7 +31,7 @@ static size_t	ft_strsplit_count(char const *s, char c)
 	return (dst);
 }
 
-static char		*ft_strsplit_newword(char const *s, char c, size_t *begin)
+static char	*ft_strsplit_newword(char const *s, char c, size_t *begin)
 {
 	char	*dst;
 	size_t	end;
@@ -46,19 +46,21 @@ static char		*ft_strsplit_newword(char const *s, char c, size_t *begin)
 	return (dst);
 }
 
-static void		ft_strsplit_abortfunc(char **s, size_t len)
+static void	ft_strsplit_abortfunc(char ***s, size_t len)
 {
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	while (i < len)
 	{
-		ft_strdel(&s[i]);
+		ft_strdel(&(*s)[i]);
 		i++;
 	}
+	free(*s);
+	*s = NULL;
 }
 
-char			**ft_strsplit(char const *s, char c)
+char	**ft_strsplit(char const *s, char c)
 {
 	char	**dst;
 	size_t	words;
@@ -68,17 +70,17 @@ char			**ft_strsplit(char const *s, char c)
 	if (!s)
 		return (NULL);
 	words = ft_strsplit_count(s, c);
-	if (!(dst = (char **)malloc(sizeof(char *) * (words + 1))))
+	dst = (char **)malloc(sizeof(char *) * (words + 1));
+	if (!dst)
 		return (NULL);
 	i = 0;
 	j = 0;
 	while (j < words)
 	{
-		if (!(dst[j] = ft_strsplit_newword(s, c, &i)))
+		dst[j] = ft_strsplit_newword(s, c, &i);
+		if (!dst[j])
 		{
-			ft_strsplit_abortfunc(dst, words);
-			free(dst);
-			dst = NULL;
+			ft_strsplit_abortfunc(&dst, words);
 			return (NULL);
 		}
 		j++;

@@ -20,7 +20,8 @@ char	*ft_strnewc(size_t size, char c)
 	if (size + 1 < size)
 		return (NULL);
 	i = 0;
-	if (!(dst = (char *)malloc(size + 1)))
+	dst = (char *)malloc(size + 1);
+	if (!dst)
 		return (NULL);
 	while (i < size)
 	{
