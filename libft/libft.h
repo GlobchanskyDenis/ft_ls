@@ -198,6 +198,13 @@ double			ft_absd(double nbr);
 long long		ft_absll(long long nbr);
 
 /*
+**	NUMBER HANDLERS
+*/
+
+size_t			countRanksSizeT(size_t value, int base);
+size_t			countRanksLLsigned(long long value, int base);
+
+/*
 **	FPRINT FUNCTIONS
 */
 
@@ -250,6 +257,11 @@ t_string		*stringItoa(t_string *dst, int nbr);
 t_string		*stringItoaAlignL(t_string *dst, int nbr, \
 		size_t addLength, char c);
 t_string		*stringItoaAlignR(t_string *dst, int nbr, \
+		size_t addLength, char c);
+t_string		*stringSizeTtoa(t_string *dst, size_t nbr);
+t_string		*stringSizeTtoaAlignL(t_string *dst, size_t nbr, \
+		size_t addLength, char c);
+t_string		*stringSizeTtoaAlignR(t_string *dst, size_t nbr, \
 		size_t addLength, char c);
 
 #endif

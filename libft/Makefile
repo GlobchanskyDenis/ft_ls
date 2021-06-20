@@ -46,7 +46,8 @@ FILES 	=	ft_atoi.c		ft_atoll.c		ft_countwords.c	\
 			fgnl.c					fgnl_operations.c		ft_strnchr.c	\
 			ft_bufconcat.c			ft_strcmpOneCase.c		t_stringCat.c	\
 			t_stringItoa.c			t_stringHandlers.c		safe_strlen.c	\
-			cmpUtf8.c				t_stringCatAlign.c
+			cmpUtf8.c				t_stringCatAlign.c		ft_countRanks.c	\
+			t_stringSizeTtoa.c
 
 OBJECTS =	$(addprefix $(DIR_O)/,$(FILES:.c=.o))
 
