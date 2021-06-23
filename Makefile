@@ -7,8 +7,9 @@ DIR_INC		=	includes/
 DIR_SRC		=	src/
 FILES_INC	=	ft_ls.h
 FILES		=	alternate.c					directory.c			\
-				display_fillBufFileMode.c	\
+				directoryHandlers.c								\
 				display.c					displayFile.c		\
+				displayFileMode.c	\
 				dump.c						\
 				error_constructor.c			error_handler.c		\
 				file.c						filenameList.c		\
@@ -27,7 +28,7 @@ HEADER		=	$(addprefix $(DIR_INC), $(FILES_INC))
 .PHONY: all clean fclean re
 
 all:		$(NAME)
-			# @cp $(NAME) test/
+			@cp $(NAME) test/
 
 $(NAME):	$(OBJECTS) $(SRC) $(DIR_INC)ft_ls.h
 			@make -C $(DIR_LFT)

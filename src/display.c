@@ -104,14 +104,16 @@ t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta)
 	/*	displaing only folders  */
 	while (file)
 	{
-		if (file->child == NULL)
+		if (file->type != DIRECTORY)
 		{
 			file = file->next;
 			continue ;
 		}
 		if (wasPrintedFirstFile)
 		{
-			if (!stringCat(buf, "\n\n"))
+			if (!stringCat(buf, "\n"))
+				return (allocateFailed());
+			if (!(flags & (1 << FLAG_L)) && !stringCat(buf, "\n"))
 				return (allocateFailed());
 		}
 		else
@@ -127,19 +129,19 @@ t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta)
 	return (noErrors());
 }
 
-t_error	displayLongFileTree(int flags, t_file *head)
-{
-	if (flags && !flags)
-		head->name = NULL;
-	return (noErrors());
-}
+// t_error	displayLongFileTree(int flags, t_file *head)
+// {
+// 	if (flags && !flags)
+// 		head->name = NULL;
+// 	return (noErrors());
+// }
 
 /*
 **	Нахожу мету головного файла и сам файл с которого рекурсивно начнется
 **	печать информации в буффер
 */
 
-t_meta	findMetaAndHead(int flags, t_file **head)
+static t_meta	findMetaAndHead(int flags, t_file **head)
 {
 	t_file	*fileNode;
 	t_meta	meta;
@@ -166,16 +168,35 @@ t_meta	findMetaAndHead(int flags, t_file **head)
 **	ls, поэтому делю на 2
 */
 
-t_error	fillBufFirstLine(t_string *buf, t_meta meta)
-{
-	if (!stringCat(buf, "total "))
-		return (allocateFailed());
-	if (!stringItoa(buf, meta.blocksNum / 2))
-		return (allocateFailed());
-	if (!stringCat(buf, "\n"))
-		return (allocateFailed());
-	return (noErrors());
-}
+// static t_error	fillBufRootDirectoryTotal(t_string *buf, int flags, t_meta meta)
+// {
+// 	if (flags & (1 << FLAG_L))
+// 	{
+// 		if (!stringCat(buf, "total "))
+// 			return (allocateFailed());
+// 		if (!stringItoa(buf, meta.blocksNum / 2))
+// 			return (allocateFailed());
+// 		if (!stringCat(buf, "\n"))
+// 			return (allocateFailed());
+// 	}
+// 	return (noErrors());
+// }
+
+/*
+**	Если есть рекурсия (ориентируется не на флаг а на фактически присутствующие
+**	файлы в подпапках) - выводит в буффер первую строку - имя папки с двоеточием
+*/
+
+// static t_error	fillBufRootDirectoryName(t_string *buf, t_file *head)
+// {
+// 	head = head->child;
+// 	if (head && isDirecoryHasRecursion(head))
+// 	{
+// 		if (!stringCat2(buf, head->fullpath, ":\n"))
+// 			return (allocateFailed());
+// 	}
+// 	return (noErrors());
+// }
 
 /*
 **	Буфферизованный вывод накопленной информации в стандартный вывод
@@ -191,17 +212,20 @@ t_error	displayFileTree(int flags, t_file *head)
 	buf = stringNew(1000000);
 	if (!buf)
 		return (allocateFailed());
+	error = fillBufDirFullpath(flags, buf, head);
+	if (error.wasSet && stringDel(&buf))
+		return (error);
+	// error = fillBufRootDirectoryName(buf, head);
+	// if (error.wasSet && stringDel(&buf))
+	// 	return (error);
 	meta = findMetaAndHead(flags, &head);
-	if (flags & (1 << FLAG_L))
-	{
-		error = fillBufFirstLine(buf, meta);
-		if (error.wasSet && stringDel(&buf))
-			return (allocateFailed());
-	}
+	// error = fillBufRootDirectoryTotal(buf, flags, meta);
+	// if (error.wasSet && stringDel(&buf))
+	// 	return (error);
 	error = fillBufRecurs(flags, buf, head, meta);
 	if (error.wasSet && stringDel(&buf))
 		return (error);
-	if (!(flags & (1 << FLAG_L)) && !stringCat(buf, "\n"))
+	if (!(flags & (1 << FLAG_L)) && !stringCat(buf, "\n")) // какой-то костыль
 		return (allocateFailed());
 	write(1, buf->str, buf->length);
 	stringDel(&buf);

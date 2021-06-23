@@ -153,6 +153,10 @@ int		initAlternateString(char *dst, char *src);
 
 t_error	readDirFiles(int flags, t_file *directory);
 
+/*	directoryHandlers.c  */
+
+int		isDirecoryHasRecursion(t_file *directory);
+
 /*	display_fillBufFileMode.c  */
 
 void	fillBufFileMode(int flags, t_string *buf, t_file *file, t_meta meta);

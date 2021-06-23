@@ -55,7 +55,7 @@ static t_error	addFileToDirectory(int flags, t_file *directory,
 			return (error);
 	}
 	insertByFlags(flags, directory, newfile);
-	if ((flags & (1 << FLAG_RR)) && (type == DIRECTORY))
+	if ((flags & (1 << FLAG_RR)) && (type == DIRECTORY) && (ft_strcmp(newfile->name, ".")) && (ft_strcmp(newfile->name, "..")))
 		return (readDirFiles(flags, newfile));
 	return (noErrors());
 }
@@ -95,6 +95,7 @@ t_error	readDirFiles(int flags, t_file *directory)
 	struct dirent	*entry;
 	t_error			error;
 
+	// fprint("readDirFiles %s\n", directory->name);
 	dir = opendir(directory->fullpath);
 	if (!dir)
 	{
@@ -104,7 +105,10 @@ t_error	readDirFiles(int flags, t_file *directory)
 	while (readDirrectory(dir, &entry))
 	{
 		if (isNeedToSkipFile(flags, entry->d_name))
-			continue ;
+			{
+				// fprint("readDirFiles scip %s\n", entry->d_name);
+				continue ;
+			}
 		error = addFileToDirectory(flags, directory, entry->d_name,
 				entry->d_type);
 		if (error.wasSet)
