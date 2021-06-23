@@ -15,7 +15,7 @@ int	main(int ac, char **av)
 
 	filenames = NULL;
 	error = reader(ac, av, &flags, &filenames);
-	if (flags & FLAG_HELP)
+	if (flags & (1 << FLAG_HELP))
 	{
 		printUsage();
 		return (freeError(&error) + freeFilenameList(&filenames));

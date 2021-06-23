@@ -40,19 +40,19 @@
 **	Тут описываю флаги, которые обрабатываю
 */
 
-# define FLAG_L						1 //(1 << 0)
-# define FLAG_R						2 //(1 << 1)
-# define FLAG_RR					4 //(1 << 2)
-# define FLAG_A						8 //(1 << 3)
-# define FLAG_T						16 //(1 << 4)
-# define FLAG_U						32 //(1 << 5)
-# define FLAG_F						64 //(1 << 6)
-# define FLAG_G						128 //(1 << 7)
-# define FLAG_D						256 //(1 << 8)
-# define FLAG_1						512 //(1 << 9)
-# define FLAG_COLOR					1024 //(1 << 10)
-# define FLAG_HELP					2048 //(1 << 11)
-# define FLAG_FILE_ARGS				4092 //(1 << 12)
+# define FLAG_L						0
+# define FLAG_R						1
+# define FLAG_RR					2
+# define FLAG_A						3
+# define FLAG_T						4
+# define FLAG_U						5
+# define FLAG_F						6
+# define FLAG_G						7
+# define FLAG_D						8
+# define FLAG_1						9
+# define FLAG_COLOR					10
+# define FLAG_HELP					11
+# define FLAG_FILE_ARGS				12
 
 /*
 **	Константы escape последовательностей
@@ -70,6 +70,7 @@
 */
 
 # define MAX_FILENAME				255
+# define MAX_DEVICESIZE				60
 
 /*
 **	ТИПЫ ДАННЫХ
@@ -91,6 +92,8 @@ typedef struct s_meta
 	size_t	maxAuthorLen;
 	size_t	maxGroupLen;
 	size_t	maxSizeLen;
+	size_t	maxMajorLen;
+	size_t	maxMinorLen;
 	size_t	sum;
 }	t_meta;
 
@@ -106,6 +109,7 @@ typedef struct s_file
 	char			*symlink;
 	char			author[MAX_FILENAME + 1];
 	char			group[MAX_FILENAME + 1];
+	char			devId[MAX_DEVICESIZE + 1];
 	int				accessErrno;
 	int				isNeedQuotes;
 	int				isArgument;
@@ -149,13 +153,17 @@ int		initAlternateString(char *dst, char *src);
 
 t_error	readDirFiles(int flags, t_file *directory);
 
+/*	display_fillBufFileMode.c  */
+
+void	fillBufFileMode(int flags, t_string *buf, t_file *file, t_meta meta);
+
 /*	display.c  */
 
 t_error	displayFileTree(int flags, t_file *head);
 
 /*	displayFile.c  */
 
-void	fillBufFileMode(int flags, t_string *buf, t_file *file, t_meta meta);
+void	fillBufStartFileMode(int flags, t_string *buf, t_file *file);
 void	fillFileAuthor(int flags, t_string *buf, t_file *file, \
 		t_meta meta);
 t_error	fillFileTime(int flags, t_string *buf, t_file *file);
@@ -238,6 +246,10 @@ int		insertWithoutOrder(t_file *dir, t_file *prev, t_file *next, \
 /*	lstat.c  */
 
 t_error	readHandleFileAttributes(t_file *file);
+
+/*	majorMinor.c  */
+t_meta	calcDeviceMajorMinorLength(t_file *file);
+void	fillBufByFileSizeColumn(t_string *buf, t_file *file, t_meta meta);
 
 /*	parseFlags.c  */
 

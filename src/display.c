@@ -18,11 +18,13 @@
 		// stringCat(buf, " |");
 		// Отладка конец
 
+		// stringSizeTtoaAlignR(buf, file->stat.st_size, meta.maxSizeLen, ' ');
+
 static t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta)
 {
 	t_error	error;
 
-	if (flags & FLAG_L)
+	if (flags & (1 << FLAG_L))
 	{
 		if (!stringGrantSize(buf, 50 + meta.sum))
 			return (allocateFailed());
@@ -30,7 +32,7 @@ static t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta)
 		stringItoaAlignR(buf, file->stat.st_nlink, meta.maxLinksNumLen, ' ');
 		stringCat(buf, " ");
 		fillFileAuthor(flags, buf, file, meta);
-		stringItoaAlignR(buf, file->stat.st_size, meta.maxSizeLen, ' ');
+		fillBufByFileSizeColumn(buf, file, meta);
 		error = fillFileTime(flags, buf, file);
 		if (error.wasSet)
 			return (error);
@@ -57,7 +59,7 @@ static t_error	fillBufDirFullpath(int flags, t_string *buf, t_file *dir)
 	else
 		stringCat(buf, dir->fullpath);
 	stringCat(buf, ":\n");
-	if (flags & FLAG_L)
+	if (flags & (1 << FLAG_L))
 	{
 		stringCat(buf, "total ");
 		stringItoa(buf, dir->meta.blocksNum / 2);
@@ -88,7 +90,7 @@ t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta)
 		}
 		if (wasPrintedFirstFile)
 		{
-			if (!(flags & FLAG_L) && !stringCat(buf, "  "))
+			if (!(flags & (1 << FLAG_L)) && !stringCat(buf, "  "))
 				return (allocateFailed());
 		}
 		else
@@ -144,7 +146,7 @@ t_meta	findMetaAndHead(int flags, t_file **head)
 
 	fileNode = *head;
 	meta = fileNode->meta;
-	if ((flags & FLAG_FILE_ARGS || !(flags & FLAG_RR)) && fileNode->child)
+	if ((flags & (1 << FLAG_FILE_ARGS) || !(flags & (1 << FLAG_RR))) && fileNode->child)
 	{
 		meta = fileNode->meta;
 		fileNode = fileNode->child;
@@ -190,7 +192,7 @@ t_error	displayFileTree(int flags, t_file *head)
 	if (!buf)
 		return (allocateFailed());
 	meta = findMetaAndHead(flags, &head);
-	if (flags & FLAG_L)
+	if (flags & (1 << FLAG_L))
 	{
 		error = fillBufFirstLine(buf, meta);
 		if (error.wasSet && stringDel(&buf))
@@ -199,7 +201,7 @@ t_error	displayFileTree(int flags, t_file *head)
 	error = fillBufRecurs(flags, buf, head, meta);
 	if (error.wasSet && stringDel(&buf))
 		return (error);
-	if (!(flags & FLAG_L) && !stringCat(buf, "\n"))
+	if (!(flags & (1 << FLAG_L)) && !stringCat(buf, "\n"))
 		return (allocateFailed());
 	write(1, buf->str, buf->length);
 	stringDel(&buf);

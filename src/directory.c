@@ -47,15 +47,15 @@ static t_error	addFileToDirectory(int flags, t_file *directory,
 		free(fullpath);
 		return (allocateFailed());
 	}
-	if ((flags & FLAG_L) || (flags & FLAG_G) || (flags & FLAG_D) || \
-		(flags & FLAG_T) || (flags & FLAG_U))
+	if ((flags & (1 << FLAG_L)) || (flags & (1 << FLAG_G)) || (flags & (1 << \
+		FLAG_D)) || (flags & (1 << FLAG_T)) || (flags & (1 << FLAG_U)))
 	{
 		error = readHandleFileAttributes(newfile);
 		if (error.wasSet)
 			return (error);
 	}
 	insertByFlags(flags, directory, newfile);
-	if ((flags & FLAG_RR) && (type == DIRECTORY))
+	if ((flags & (1 << FLAG_RR)) && (type == DIRECTORY))
 		return (readDirFiles(flags, newfile));
 	return (noErrors());
 }
@@ -69,8 +69,8 @@ static int	isNeedToSkipFile(int flags, char *filename)
 {
 	if (filename == NULL)
 		return (1);
-	if (!ft_strncmp(filename, ".", 1) && !(flags & FLAG_A) && \
-		!(flags & FLAG_G))
+	if (!ft_strncmp(filename, ".", 1) && !(flags & (1 << FLAG_A)) && \
+		!(flags & (1 << FLAG_G)))
 		return (1);
 	return (0);
 }

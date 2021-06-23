@@ -1,6 +1,6 @@
 #include "libft.h"
 
-static void	sizeTtoBuf(char *dst, size_t n)
+void	sizeTtoBuf(char *dst, size_t n)
 {
 	size_t			ranks;
 

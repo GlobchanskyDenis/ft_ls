@@ -6,18 +6,19 @@ LFT			=	$(DIR_LFT)libft.a
 DIR_INC		=	includes/
 DIR_SRC		=	src/
 FILES_INC	=	ft_ls.h
-FILES		=	alternate.c				directory.c			\
-				display.c				displayFile.c		\
-				dump.c				\
-				error_constructor.c		error_handler.c		\
-				file.c					filenameList.c		\
-				fileTree.c				insert.c			\
-				insertByAccessTime.c	insertByModTime.c	\
-				insertByName.c			insertHandlers.c	\
-				insertWithoutOrder.c\
-				lstat.c				\
-				main.c					parseFlags.c		\
-				reader.c				
+FILES		=	alternate.c					directory.c			\
+				display_fillBufFileMode.c	\
+				display.c					displayFile.c		\
+				dump.c						\
+				error_constructor.c			error_handler.c		\
+				file.c						filenameList.c		\
+				fileTree.c					insert.c			\
+				insertByAccessTime.c		insertByModTime.c	\
+				insertByName.c				insertHandlers.c	\
+				insertWithoutOrder.c		\
+				lstat.c						majorMinor.c		\
+				main.c						parseFlags.c		\
+				reader.c
 OBJECTS		=	$(addprefix $(DIR_SRC),$(FILES:.c=.o))
 SRC			=	$(addprefix $(DIR_SRC),$(FILES))
 INCLUDES	= 	-I $(DIR_INC) -I $(DIR_LFT)$(DIR_INC)

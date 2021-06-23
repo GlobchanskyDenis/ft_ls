@@ -14,7 +14,7 @@ static size_t	itoa_countRanks(int n)
 	return (ranks);
 }
 
-static void	itoaToBuf(char *dst, int n)
+void	itoaToBuf(char *dst, int n)
 {
 	int				ranks;
 	int				sign;

@@ -28,6 +28,7 @@ t_file	*newFile(char const *name, char *fullpath, int type)
 	dst->alterName = &(dst->name[nameLen + 1]);
 	dst->isNeedQuotes = initAlternateString(dst->alterName, dst->name);
 	dst->fullpath = fullpath;
+	ft_bzero(dst->devId, MAX_DEVICESIZE + 1);
 	return (dst);
 }
 

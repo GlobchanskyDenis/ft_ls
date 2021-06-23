@@ -20,23 +20,38 @@ static void	insert(t_file *dir, t_file *newfile,
 	}
 }
 
-static size_t	calcIntItoaLength(int nbr)
-{
-	size_t	length;
+// static void	metaFromFileToDir(t_file *dir, t_file *newfile)
+// {
+// 	size_t	length;
+// 	// t_meta	meta;
 
-	length = 1;
-	nbr = nbr / 10;
-	while (nbr)
-	{
-		length++;
-		nbr = nbr / 10;
-	}
-	return (length);
-}
+// 	dir->meta.blocksNum += newfile->stat.st_blocks;
+// 	if (newfile->hasACL)
+// 		dir->meta.hasACL = 1;
+// 	length = countRanksSizeT(newfile->stat.st_nlink, 10); // calcIntItoaLength
+// 	if (length > dir->meta.maxLinksNumLen)
+// 		dir->meta.maxLinksNumLen = length;
+// 	length = ft_strlen(newfile->author);
+// 	if (length > dir->meta.maxAuthorLen)
+// 		dir->meta.maxAuthorLen = length;
+// 	length = ft_strlen(newfile->group);
+// 	if (length > dir->meta.maxGroupLen)
+// 		dir->meta.maxGroupLen = length;
+// 	if (file->stat.st_size == 0 && file->stat.st_rdev != 0)
+// 		length = calcDeviceMajorMinorLength(file).maxSizeLen;
+// 	else
+// 		length = countRanksSizeT(newfile->stat.st_size, 10);
+// 	if (length > dir->meta.maxSizeLen)
+// 		dir->meta.maxSizeLen = length;
+	
+// 	// length = countRanksSizeT(newfile->stat.st_size, 10); // calcIntItoaLength
+	
+// }
 
 static void	metaExchange(t_file *dir, t_file *newfile)
 {
 	size_t	length;
+	t_meta  fileMeta;
 
 	newfile->isNeedQuotes = dir->isNeedQuotes;
 	if (newfile->author == NULL || newfile->group == NULL)
@@ -44,7 +59,7 @@ static void	metaExchange(t_file *dir, t_file *newfile)
 	dir->meta.blocksNum += newfile->stat.st_blocks;
 	if (newfile->hasACL)
 		dir->meta.hasACL = 1;
-	length = calcIntItoaLength(newfile->stat.st_nlink);
+	length = countRanksSizeT(newfile->stat.st_nlink, 10);
 	if (length > dir->meta.maxLinksNumLen)
 		dir->meta.maxLinksNumLen = length;
 	length = ft_strlen(newfile->author);
@@ -53,9 +68,23 @@ static void	metaExchange(t_file *dir, t_file *newfile)
 	length = ft_strlen(newfile->group);
 	if (length > dir->meta.maxGroupLen)
 		dir->meta.maxGroupLen = length;
-	length = calcIntItoaLength(newfile->stat.st_size);
-	if (length > dir->meta.maxSizeLen)
-		dir->meta.maxSizeLen = length;
+	if (newfile->stat.st_size == 0 && newfile->stat.st_rdev != 0)
+	{
+		fileMeta = calcDeviceMajorMinorLength(newfile);
+		if (fileMeta.maxMajorLen > dir->meta.maxMajorLen)
+			dir->meta.maxMajorLen = fileMeta.maxMajorLen;
+		if (fileMeta.maxMinorLen > dir->meta.maxMinorLen)
+			dir->meta.maxMinorLen = fileMeta.maxMinorLen;
+		if (dir->meta.maxMajorLen + 2 + dir->meta.maxMinorLen > dir->meta.maxSizeLen)
+			dir->meta.maxSizeLen = dir->meta.maxMajorLen + 2 + dir->meta.maxMinorLen;
+	}
+		
+	else
+	{
+		length = countRanksSizeT(newfile->stat.st_size, 10);
+		if (length > dir->meta.maxSizeLen)
+			dir->meta.maxSizeLen = length;
+	}
 	dir->meta.sum = dir->meta.maxLinksNumLen + dir->meta.maxAuthorLen + \
 		dir->meta.maxGroupLen + dir->meta.maxSizeLen + dir->meta.hasACL;
 }
@@ -63,24 +92,24 @@ static void	metaExchange(t_file *dir, t_file *newfile)
 void	insertByFlags(int flags, t_file *dir, t_file *newfile)
 {
 	metaExchange(dir, newfile);
-	if (flags & FLAG_R)
+	if (flags & (1 << FLAG_R))
 	{
-		if (flags & FLAG_T)
+		if (flags & (1 << FLAG_T))
 			insert(dir, newfile, insertByModTimeReverse);
-		else if (flags & FLAG_U)
+		else if (flags & (1 << FLAG_U))
 			insert(dir, newfile, insertByAccessTimeReverse);
-		else if (!(flags & FLAG_F))
+		else if (!(flags & (1 << FLAG_F)))
 			insert(dir, newfile, insertByNameReverse);
 		else
 			insert(dir, newfile, insertWithoutOrder);
 	}
 	else
 	{
-		if (flags & FLAG_T)
+		if (flags & (1 << FLAG_T))
 			insert(dir, newfile, insertByModTime);
-		else if (flags & FLAG_U)
+		else if (flags & (1 << FLAG_U))
 			insert(dir, newfile, insertByAccessTime);
-		else if (!(flags & FLAG_F))
+		else if (!(flags & (1 << FLAG_F)))
 			insert(dir, newfile, insertByName);
 		else
 			insert(dir, newfile, insertWithoutOrder);

@@ -71,7 +71,11 @@ static t_error	readFileLstat(t_file *file)
 }
 
 /*
-**	Считываю стандартные аттрибуты файла, считываю имена автора и группы
+**	Считываю стандартные аттрибуты файла
+**	обрабатываю полученные результаты
+**	если файл - устройство, то вычисляю мажор и минор id
+**	если файл - символическая ссылка, определяю на что она ссылается
+**	считываю имена автора и группы
 **	по ID полученным из аттрибутов, считываю расширенные аттрибуты, если
 **	они существуют - помечаю у файла их наличие
 */
@@ -86,27 +90,22 @@ t_error	readHandleFileAttributes(t_file *file)
 
 	error = readFileLstat(file); // Считываю lstat
 	if (error.wasSet)
-	{
 		return (error);
-	}
 	file->type = file->stat.st_mode >> 12; // обрабатываю полученные результаты
+	// if (file->stat.st_size == 0 && file->stat.st_rdev != 0) // 
+	// 	calcDeviceMajorMinorLength(file);
 	if (file->type == SYMBOLIC) // Считываю куда ссылается символическая ссылка
 	{
 		error = readSymLink(file);
 		if (error.wasSet)
-		{
 			return (error);
-		}
 	}
 	error = readAuthorGroupNames(file); // Считываю имена автора и группы по ID
 	if (error.wasSet)
-	{
 		return (error);
-	}
 	error = readFileACL(file); // Считываю расширенное значение аттрибутов
 	if (error.wasSet)
-	{
 		return (error);
-	}
+	
 	return (noErrors());
 }

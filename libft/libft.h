@@ -179,6 +179,8 @@ char			*ft_lltoa_base(long long dgt, int base);
 char			*ft_ulltoa_base(unsigned long long dgt, int base);
 char			*ft_lltoa(long long n);
 char			*ft_szttoa(size_t n);
+void			sizeTtoBuf(char *dst, size_t n);
+void			itoaToBuf(char *dst, int n);
 
 /*
 **	MIN MAX ABS

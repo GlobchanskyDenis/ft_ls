@@ -7,31 +7,32 @@
 void	DumpFlags(int flags)
 {
 	fprint("--- Dump flags ---\n");
-	if (flags & FLAG_L)
+	if (flags & (1 << FLAG_L))
 		fprint("flag 'l' -- use a long listing format\n");
-	if (flags & FLAG_1)
+	if (flags & (1 << FLAG_1))
 		fprint("flag '1' -- display each file in own line");
-	if (flags & FLAG_R)
+	if (flags & (1 << FLAG_R))
 		fprint("flag 'r' -- reverse order while sorting\n");
-	if (flags & FLAG_A)
+	if (flags & (1 << FLAG_A))
 		fprint("flag 'a' -- show hidden .\n");
-	if (flags & FLAG_RR)
+	if (flags & (1 << FLAG_RR))
 		fprint("flag 'R' -- list subdirectories recursively\n");
-	if (flags & FLAG_T)
+	if (flags & (1 << FLAG_T))
 		fprint("flag 't' -- sort by modification time, newest first\n");
-	if (flags & FLAG_U)
+	if (flags & (1 << FLAG_U))
 		fprint("flag 'u' -- sort by, and show, access time\n");
-	if (flags & FLAG_F)
+	if (flags & (1 << FLAG_F))
 		fprint("flag 'f' -- disable sorting\n");
-	if (flags & FLAG_G)
+	if (flags & (1 << FLAG_G))
 		fprint("flag 'g' -- like -l, but do not list owner\n");
-	if (flags & FLAG_D)
+	if (flags & (1 << FLAG_D))
 		fprint("flag 'd' -- list directories, not content\n");
-	if (flags & FLAG_COLOR)
+	if (flags & (1 << FLAG_COLOR))
 		fprint("flag '--color' -- display in color\n");
-	if (flags & FLAG_FILE_ARGS)
+	if (flags & (1 << FLAG_FILE_ARGS))
 		fprint("file names in arguments\n");
 	fprint("------------------\n");
+
 }
 
 void	DumpFiles(t_list *files)

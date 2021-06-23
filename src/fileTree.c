@@ -49,7 +49,7 @@ t_error	initializeFileTree(int flags, t_list *files, t_file **fileTree)
 		error = readHandleFileAttributes(*fileTree);
 		if (error.wasSet)
 			return (error);
-		if ((flags & FLAG_D))
+		if (flags & (1 << FLAG_D))
 			return (noErrors());
 		error = readDirFiles(flags, *fileTree);
 		if (error.wasSet)

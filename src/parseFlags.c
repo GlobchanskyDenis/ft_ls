@@ -5,25 +5,25 @@
 static void	handleShortFlag(const char c, int *flags)
 {
 	if (c == 'l')
-		*flags |= FLAG_L;
+		*flags |= (1 << FLAG_L);
 	else if (c == 'R')
-		*flags |= FLAG_RR;
+		*flags |= (1 << FLAG_RR);
 	else if (c == 'a')
-		*flags |= FLAG_A;
+		*flags |= (1 << FLAG_A);
 	else if (c == 'r')
-		*flags |= FLAG_R;
+		*flags |= (1 << FLAG_R);
 	else if (c == 't')
-		*flags |= FLAG_T;
+		*flags |= (1 << FLAG_T);
 	else if (c == 'u')
-		*flags |= FLAG_U;
+		*flags |= (1 << FLAG_U);
 	else if (c == 'f')
-		*flags |= FLAG_F;
+		*flags |= (1 << FLAG_F);
 	else if (c == 'g')
-		*flags |= FLAG_G;
+		*flags |= (1 << FLAG_G);
 	else if (c == 'd')
-		*flags |= FLAG_D;
+		*flags |= (1 << FLAG_D);
 	else if (c == '1')
-		*flags |= FLAG_1;
+		*flags |= (1 << FLAG_1);
 }
 
 /*	По одному парсит все флаги из строки  */
@@ -44,17 +44,17 @@ static void	parseShortFlags(const char *av, int *flags)
 static void	parseLongFlag(const char *av, int *flags)
 {
 	if (!ft_strcmp("--all", av))
-		*flags = *flags | FLAG_A;
+		*flags = *flags | (1 << FLAG_A);
 	else if (!ft_strcmp("--reverse", av))
-		*flags = *flags | FLAG_R;
+		*flags = *flags | (1 << FLAG_R);
 	else if (!ft_strcmp("--recursive", av))
-		*flags = *flags | FLAG_RR;
+		*flags = *flags | (1 << FLAG_RR);
 	else if (!ft_strcmp("--directory", av))
-		*flags = *flags | FLAG_D;
+		*flags = *flags | (1 << FLAG_D);
 	else if (!ft_strcmp("--color", av))
-		*flags = *flags | FLAG_COLOR;
+		*flags = *flags | (1 << FLAG_COLOR);
 	else if (!ft_strcmp("--help", av))
-		*flags = *flags | FLAG_HELP;
+		*flags = *flags | (1 << FLAG_HELP);
 }
 
 /*
@@ -69,8 +69,14 @@ t_error	parseFlags(const char *av, int *flags)
 	if (error.wasSet)
 		return (error);
 	if (!ft_strncmp("--", av, 2))
+	{
+		// fprint("Marker 1\n");
 		parseLongFlag(av, flags);
+	}
 	else if (av[0] == '-')
+	{
+		// fprint("Marker 2\n");
 		parseShortFlags(av, flags);
+	}
 	return (noErrors());
 }
