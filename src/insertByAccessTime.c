@@ -6,7 +6,7 @@
 **	Algorithm sorts files by access time
 */
 
-int	insertByAccessTime(t_file *dir, t_file *prev, t_file *next, t_file *newfile)
+int	insertByAccessTimeReverse(t_file *dir, t_file *prev, t_file *next, t_file *newfile)
 {
 	int	ret1;
 	int	ret2;
@@ -17,7 +17,8 @@ int	insertByAccessTime(t_file *dir, t_file *prev, t_file *next, t_file *newfile)
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	ret2 = ft_strcmp(dir->child->alterName, newfile->alterName);
 	ret3 = ft_strcmp(dir->child->name, newfile->name);
-	if ((ret1 == 0 && ret2 > 0) || (ret1 == 0 && ret2 == 0 && ret3 < 0))
+	// if ((ret1 == 0 && ret2 > 0) || (ret1 == 0 && ret2 == 0 && ret3 < 0))
+	if ((ret1 == 0 && ret2 < 0) || (ret1 == 0 && ret2 == 0 && ret3 < 0))
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	if (next == NULL)
 		return (insertNewFileAsLastInFolder(prev, newfile));
@@ -31,7 +32,7 @@ int	insertByAccessTime(t_file *dir, t_file *prev, t_file *next, t_file *newfile)
 	return (0);
 }
 
-int	insertByAccessTimeReverse(t_file *dir, t_file *prev, t_file *next, \
+int	insertByAccessTime(t_file *dir, t_file *prev, t_file *next, \
 	t_file *newfile)
 {
 	int	ret1;
@@ -43,7 +44,7 @@ int	insertByAccessTimeReverse(t_file *dir, t_file *prev, t_file *next, \
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	ret2 = ft_strcmp(dir->child->alterName, newfile->alterName);
 	ret3 = ft_strcmp(dir->child->name, newfile->name);
-	if ((ret1 == 0 && ret2 < 0) || (ret1 == 0 && ret2 == 0 && ret3 > 0))
+	if ((ret1 == 0 && ret2 > 0) || (ret1 == 0 && ret2 == 0 && ret3 > 0))
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	if (next == NULL)
 		return (insertNewFileAsLastInFolder(prev, newfile));
@@ -52,7 +53,7 @@ int	insertByAccessTimeReverse(t_file *dir, t_file *prev, t_file *next, \
 		return (insertNewFileBetweenPrevAndNext(prev, next, newfile));
 	ret2 = ft_strcmp(next->alterName, newfile->alterName);
 	ret3 = ft_strcmp(next->name, newfile->name);
-	if ((ret1 == 0 && ret2 < 0) || (ret1 == 0 && ret2 == 0 && ret3 > 0))
+	if ((ret1 == 0 && ret2 > 0) || (ret1 == 0 && ret2 == 0 && ret3 > 0))
 		return (insertNewFileBetweenPrevAndNext(prev, next, newfile));
 	return (0);
 }

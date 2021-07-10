@@ -164,14 +164,16 @@ void	fillBufFileMode(int flags, t_string *buf, t_file *file, t_meta meta);
 /*	display.c  */
 
 t_error	displayFileTree(int flags, t_file *head);
+t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta);
+
+/*	displayDirHeader.c  */
+
+t_error	fillBufDirFullpathTotal(int flags, t_string *buf, t_file *head);
 
 /*	displayFile.c  */
 
 void	fillBufStartFileMode(int flags, t_string *buf, t_file *file);
-void	fillFileAuthor(int flags, t_string *buf, t_file *file, \
-		t_meta meta);
-t_error	fillFileTime(int flags, t_string *buf, t_file *file);
-t_error	fillFileName(int flags, t_string *buf, t_file *file);
+t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta);
 
 /*	dump.c */
 

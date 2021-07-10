@@ -23,14 +23,15 @@ int	main(int ac, char **av)
 	if (error.wasSet)
 		return (handleError(&error) + freeFilenameList(&filenames));
 	// DumpFlags(flags);
+	// DumpFiles(filenames);
 	error = initializeFileTree(flags, filenames, &fileTree);
 	freeFilenameList(&filenames);
 	if (error.wasSet)
 		return (freeFileTree(&fileTree) + handleError(&error));
+	// DumpFileTree(0, fileTree);
 	error = displayFileTree(flags, fileTree);
 	if (error.wasSet)
 		return (freeFileTree(&fileTree) + handleError(&error));
-	// DumpFileTree(0, fileTree);
 	freeFileTree(&fileTree);
 	return (0);
 }

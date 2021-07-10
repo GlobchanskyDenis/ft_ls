@@ -90,3 +90,36 @@ t_error	fillFileName(int flags, t_string *buf, t_file *file)
 		stringCat2(buf, " -> ", file->symlink);
 	return (noErrors());
 }
+
+/*
+**	Записывает в буффер все что касается данного файла
+*/
+
+t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta)
+{
+	t_error	error;
+
+	if (flags & (1 << FLAG_L))
+	{
+		if (!stringGrantSize(buf, 50 + meta.sum))
+			return (allocateFailed());
+		fillBufFileMode(flags, buf, file, meta);
+		stringItoaAlignR(buf, file->stat.st_nlink, meta.maxLinksNumLen, ' ');
+		stringCat(buf, " ");
+		fillFileAuthor(flags, buf, file, meta);
+		fillBufByFileSizeColumn(buf, file, meta);
+		error = fillFileTime(flags, buf, file);
+		if (error.wasSet)
+			return (error);
+		error = fillFileName(flags, buf, file);
+		if (error.wasSet)
+			return (error);
+	}
+	else
+	{
+		error = fillFileName(flags, buf, file);
+		if (error.wasSet)
+			return (error);
+	}
+	return (noErrors());
+}

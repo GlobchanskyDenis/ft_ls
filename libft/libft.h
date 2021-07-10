@@ -22,33 +22,33 @@
 # define FGNL_BUFF_SIZE		100
 # define FGNL_FD_MAX		100
 
-typedef struct	s_list
+typedef struct s_list
 {
-	void					*content;
-	size_t					content_size;
-	struct s_list			*next;
-}				t_list;
+	void			*content;
+	size_t			content_size;
+	struct s_list	*next;
+}		t_list;
 
-typedef struct	s_fp_string
+typedef struct s_fp_string
 {
-	char					str[MAX_STRING_VECTOR];
-	size_t					length;
-	int						fd;
-}				t_fp_string;
+	char		str[MAX_STRING_VECTOR];
+	size_t		length;
+	int			fd;
+}		t_fp_string;
 
-typedef struct	s_fgnl_string
+typedef struct s_fgnl_string
 {
 	char					str[FGNL_BUFF_SIZE];
 	size_t					length;
 	struct s_fgnl_string	*next;
-}				t_fgnl_string;
+}		t_fgnl_string;
 
-typedef struct	s_string
+typedef struct s_string
 {
-	char					*str;
-	size_t					maxLen;
-	size_t					length;
-}				t_string;
+	char		*str;
+	size_t		maxLen;
+	size_t		length;
+}		t_string;
 
 /*
 **	MEMORY FUNCTIONS

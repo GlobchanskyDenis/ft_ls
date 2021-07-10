@@ -90,9 +90,12 @@ t_error	reader(int ac, char **av, int *flags, t_list **filenames)
 	toReturnError = noErrors();
 	while (++i < ac)
 	{
+		// fprint("flag %s ", av[i]);
 		error = parseFlags(av[i], flags);
+		// fprint("%d\n", error.wasSet);
 		if (error.wasSet)
 		{
+			// fprint("file exists? %d\n", !isFileNotExist(av[i]));
 			if (!isFileNotExist(av[i]) && freeError(&error))
 			{
 				*flags = *flags | (1 << FLAG_FILE_ARGS);
