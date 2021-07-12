@@ -11,10 +11,13 @@ int	insertByName(t_file *dir, t_file *prev, t_file *next, t_file *newfile)
 	int		ret;
 
 	ret = ft_strcmp(dir->child->alterName, newfile->alterName);
+	// if (ret == 0)
+		// fprint("%s (%s)\n", dir->child->alterName, newfile->alterName);
 	if (ret > 0 || (ret == 0 && ft_strcmp(dir->child->name, newfile->name) < 0))
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	if (next == NULL)
 		return (insertNewFileAsLastInFolder(prev, newfile));
+	// fprint("%s (%s)\n", next->alterName, newfile->alterName);
 	ret = ft_strcmp(next->alterName, newfile->alterName);
 	if (ret > 0 || (ret == 0 && ft_strcmp(next->name, newfile->name) < 0))
 		return (insertNewFileBetweenPrevAndNext(prev, next, newfile));
@@ -27,10 +30,13 @@ int	insertByNameReverse(t_file *dir, t_file *prev, t_file *next, \
 	int		ret;
 
 	ret = ft_strcmp(dir->child->alterName, newfile->alterName);
+	// if (ret == 0)
+		// fprint("%s (%s)\n", dir->child->alterName, newfile->alterName);
 	if (ret < 0 || (ret == 0 && ft_strcmp(dir->child->name, newfile->name) > 0))
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	if (next == NULL)
 		return (insertNewFileAsLastInFolder(prev, newfile));
+	// fprint("%s (%s)\n", next->alterName, newfile->alterName);
 	ret = ft_strcmp(next->alterName, newfile->alterName);
 	if (ret < 0 || (ret == 0 && ft_strcmp(next->name, newfile->name) > 0))
 		return (insertNewFileBetweenPrevAndNext(prev, next, newfile));

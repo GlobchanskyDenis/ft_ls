@@ -18,7 +18,7 @@ static void	fillBufDirFullpath(t_string *buf, t_file *dir)
 static void	fillBufDirTotal(t_string *buf, t_file *dir)
 {
 	stringCat(buf, "total ");
-	stringItoa(buf, dir->meta.blocksNum / 2);
+	stringSizeTtoa(buf, dir->meta.blocksNum / 2);
 	stringCat(buf, "\n");
 }
 

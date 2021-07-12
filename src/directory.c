@@ -41,7 +41,7 @@ static t_error	addFileToDirectory(int flags, t_file *directory,
 	fullpath = allocateFileFullpath(directory->fullpath, name);
 	if (!fullpath)
 		return (allocateFailed());
-	newfile = newFile(name, fullpath, type);
+	newfile = newFile(name, fullpath, type, flags);
 	if (!newfile)
 	{
 		free(fullpath);

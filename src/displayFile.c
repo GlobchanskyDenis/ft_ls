@@ -57,10 +57,18 @@ t_error	fillFileTime(int flags, t_string *buf, t_file *file)
 	else
 		printTime = ctime(&(file->stat.st_mtime));
 	if (printTime == NULL)
-		return (newError("ctime", strerror(errno)));
+		return (newError("(a/m)time", strerror(errno)));
 	printTime = &(printTime[4]);
 	stringCatN(buf, printTime, 12);
 	stringCat(buf, " ");
+
+	// printTime = ctime(&(file->stat.st_atime));
+	// if (printTime == NULL)
+	// 	return (newError("(a/m)time", strerror(errno)));
+	// printTime = &(printTime[4]);
+	// stringCatN(buf, printTime, 12);
+	// stringCat(buf, " ");
+
 	return (noErrors());
 }
 
@@ -88,6 +96,39 @@ t_error	fillFileName(int flags, t_string *buf, t_file *file)
 		stringCat(buf, NO_COLOR);
 	if ((flags & (1 << FLAG_L)) && file->type == SYMBOLIC)
 		stringCat2(buf, " -> ", file->symlink);
+	
+	// stringCat(buf, "\t");
+	// if (ft_strlen(file->name) <= 15)
+	// 	stringCat(buf, "\t");
+	// if (ft_strlen(file->name) <= 7)
+	// 	stringCat(buf, "\t");
+	// stringSizeTtoa(buf, file->stat.st_mtime);
+	// stringCat(buf, "\t");
+	// stringSizeTtoa(buf, file->stat.st_atime);
+	// stringCat(buf, "\t");
+	// stringSizeTtoa(buf, file->stat.st_dev);
+	// stringCat(buf, "\t");
+	// stringSizeTtoa(buf, file->stat.st_ino);
+	// stringCat(buf, "\t");
+	// stringSizeTtoa(buf, file->stat.st_mode);
+	// stringCat(buf, "\t");
+	// stringSizeTtoa(buf, file->stat.st_ctime);
+	// stringCat(buf, "\t");
+	// stringSizeTtoa(buf, file->stat.st_nlink);
+	// stringCat(buf, "\t");
+	// stringSizeTtoa(buf, file->stat.st_uid);
+	// stringCat(buf, "\t");
+	// stringSizeTtoa(buf, file->stat.st_gid);
+	// stringCat(buf, "\t");
+	// stringSizeTtoa(buf, file->stat.st_rdev);
+	// stringCat(buf, "\t");
+	// stringSizeTtoa(buf, file->stat.st_size);
+	// stringCat(buf, "\t");
+	// stringSizeTtoa(buf, file->stat.st_blksize);
+	// stringCat(buf, "\t");
+	// stringSizeTtoa(buf, file->stat.st_blocks);
+
+
 	return (noErrors());
 }
 
@@ -104,7 +145,7 @@ t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta)
 		if (!stringGrantSize(buf, 50 + meta.sum))
 			return (allocateFailed());
 		fillBufFileMode(flags, buf, file, meta);
-		stringItoaAlignR(buf, file->stat.st_nlink, meta.maxLinksNumLen, ' ');
+		stringSizeTtoaAlignR(buf, file->stat.st_nlink, meta.maxLinksNumLen, ' ');
 		stringCat(buf, " ");
 		fillFileAuthor(flags, buf, file, meta);
 		fillBufByFileSizeColumn(buf, file, meta);

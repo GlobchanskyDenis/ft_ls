@@ -17,7 +17,8 @@ int	insertByModTimeReverse(t_file *dir, t_file *prev, t_file *next, t_file *newf
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	ret2 = ft_strcmp(dir->child->alterName, newfile->alterName);
 	ret3 = ft_strcmp(dir->child->name, newfile->name);
-	if ((ret1 == 0 && ret2 < 0) || (ret1 == 0 && ret2 == 0 && ret3 < 0))
+	// fprint("%s (%s) {%d %d} %s (%s)\n", dir->child->alterName, dir->child->name, ret2, ret3, newfile->alterName, newfile->name);
+	if ((ret1 == 0 && ret2 > 0) || (ret1 == 0 && ret2 == 0 && ret3 > 0))
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	if (next == NULL)
 		return (insertNewFileAsLastInFolder(prev, newfile));
@@ -26,7 +27,7 @@ int	insertByModTimeReverse(t_file *dir, t_file *prev, t_file *next, t_file *newf
 		return (insertNewFileBetweenPrevAndNext(prev, next, newfile));
 	ret2 = ft_strcmp(next->alterName, newfile->alterName);
 	ret3 = ft_strcmp(next->name, newfile->name);
-	if ((ret1 == 0 && ret2 < 0) || (ret1 == 0 && ret2 == 0 && ret3 < 0)) // было ret2 > 0
+	if ((ret1 == 0 && ret2 > 0) || (ret1 == 0 && ret2 == 0 && ret3 > 0)) // было ret2 > 0
 		return (insertNewFileBetweenPrevAndNext(prev, next, newfile));
 	return (0);
 }
@@ -43,7 +44,8 @@ int	insertByModTime(t_file *dir, t_file *prev, t_file *next,
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	ret2 = ft_strcmp(dir->child->alterName, newfile->alterName);
 	ret3 = ft_strcmp(dir->child->name, newfile->name);
-	if ((ret1 == 0 && ret2 > 0) || (ret1 == 0 && ret2 == 0 && ret3 > 0))
+	// fprint("%s (%s) {%d %d} %s (%s)\n", dir->child->alterName, dir->child->name, ret2, ret3, newfile->alterName, newfile->name);
+	if ((ret1 == 0 && ret2 < 0) || (ret1 == 0 && ret2 == 0 && ret3 < 0))
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	if (next == NULL)
 		return (insertNewFileAsLastInFolder(prev, newfile));
@@ -52,7 +54,7 @@ int	insertByModTime(t_file *dir, t_file *prev, t_file *next,
 		return (insertNewFileBetweenPrevAndNext(prev, next, newfile));
 	ret2 = ft_strcmp(next->alterName, newfile->alterName);
 	ret3 = ft_strcmp(next->name, newfile->name);
-	if ((ret1 == 0 && ret2 > 0) || (ret1 == 0 && ret2 == 0 && ret3 > 0))
+	if ((ret1 == 0 && ret2 < 0) || (ret1 == 0 && ret2 == 0 && ret3 < 0))
 		return (insertNewFileBetweenPrevAndNext(prev, next, newfile));
 	return (0);
 }

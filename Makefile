@@ -7,10 +7,10 @@ DIR_INC		=	includes/
 DIR_SRC		=	src/
 FILES_INC	=	ft_ls.h
 FILES		=	alternate.c					directory.c			\
-				directoryHandlers.c								\
+				directoryHandlers.c			\
 				display.c					displayDirHeader.c	\
-				displayFile.c		\
-				displayFileMode.c	\
+				displayFile.c				\
+				displayFileMode.c			\
 				dump.c						\
 				error_constructor.c			error_handler.c		\
 				file.c						filenameList.c		\
@@ -18,8 +18,9 @@ FILES		=	alternate.c					directory.c			\
 				insertByAccessTime.c		insertByModTime.c	\
 				insertByName.c				insertHandlers.c	\
 				insertWithoutOrder.c		\
-				lstat.c						majorMinor.c		\
-				main.c						parseFlags.c		\
+				lstat.c						\
+				main.c						majorMinor.c		\
+				meta.c						parseFlags.c		\
 				reader.c
 OBJECTS		=	$(addprefix $(DIR_SRC),$(FILES:.c=.o))
 SRC			=	$(addprefix $(DIR_SRC),$(FILES))

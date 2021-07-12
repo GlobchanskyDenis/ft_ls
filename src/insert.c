@@ -78,7 +78,6 @@ static void	metaExchange(t_file *dir, t_file *newfile)
 		if (dir->meta.maxMajorLen + 2 + dir->meta.maxMinorLen > dir->meta.maxSizeLen)
 			dir->meta.maxSizeLen = dir->meta.maxMajorLen + 2 + dir->meta.maxMinorLen;
 	}
-		
 	else
 	{
 		length = countRanksSizeT(newfile->stat.st_size, 10);
@@ -89,6 +88,10 @@ static void	metaExchange(t_file *dir, t_file *newfile)
 		dir->meta.maxGroupLen + dir->meta.maxSizeLen + dir->meta.hasACL;
 }
 
+/*	Исключение для сортировки по времени доступа (-u)
+**	Если файлы были поданы как аргумент CLI - это блокирует
+**	выполнение флага -u  */
+
 void	insertByFlags(int flags, t_file *dir, t_file *newfile)
 {
 	metaExchange(dir, newfile);
@@ -96,7 +99,7 @@ void	insertByFlags(int flags, t_file *dir, t_file *newfile)
 	{
 		if (flags & (1 << FLAG_T))
 			insert(dir, newfile, insertByModTimeReverse);
-		else if (flags & (1 << FLAG_U))
+		else if ((flags & (1 << FLAG_U)) && !newfile->isArgument)
 			insert(dir, newfile, insertByAccessTimeReverse);
 		else if (!(flags & (1 << FLAG_F)))
 			insert(dir, newfile, insertByNameReverse);
@@ -107,7 +110,7 @@ void	insertByFlags(int flags, t_file *dir, t_file *newfile)
 	{
 		if (flags & (1 << FLAG_T))
 			insert(dir, newfile, insertByModTime);
-		else if (flags & (1 << FLAG_U))
+		else if ((flags & (1 << FLAG_U)) && !newfile->isArgument)
 			insert(dir, newfile, insertByAccessTime);
 		else if (!(flags & (1 << FLAG_F)))
 			insert(dir, newfile, insertByName);

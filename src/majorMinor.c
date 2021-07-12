@@ -18,11 +18,8 @@ t_meta	calcDeviceMajorMinorLength(t_file *file)
 
 	major = file->stat.st_rdev >> 8;
 	minor = file->stat.st_rdev & 255;
-	// file->
 	meta.maxMajorLen = countRanksSizeT(major, 10);
-	// file->
 	meta.maxMinorLen = countRanksSizeT(minor, 10);
-	// file->
 	meta.maxSizeLen = meta.maxMajorLen + 2 + meta.maxMinorLen;
 	return (meta);
 }
@@ -44,19 +41,14 @@ static void	fillBufDeviceMajorMinor(t_string *buf, t_file *file, t_meta meta)
 	major = file->stat.st_rdev >> 8;
 	minor = file->stat.st_rdev & 255;
 	tab = (int)meta.maxSizeLen - (int)meta.maxMajorLen - 2 - (int)meta.maxMinorLen;
-	// fprint("%s maxSize %d maxMajor %d maxMinor %d major %d minor %d\n", file->name, meta.maxSizeLen,
-	// 	meta.maxMajorLen, meta.maxMinorLen, countRanksSizeT(major, 10), countRanksSizeT(minor, 10));
-	// fprint("TAB %d\n", tab);
 	while (tab-- > 0)
 		stringCat(buf, " ");
 	tab = (int)meta.maxMajorLen - (int)countRanksSizeT(major, 10);
-	// fprint("TAB %d\n", tab);
 	while (tab-- > 0)
 		stringCat(buf, " ");
 	stringSizeTtoa(buf, major);
 	stringCat(buf, ", ");
 	tab = (int)meta.maxMinorLen - (int)countRanksSizeT(minor, 10);
-	// fprint("TAB %d\n", tab);
 	while (tab-- > 0)
 		stringCat(buf, " ");
 	stringSizeTtoa(buf, minor);

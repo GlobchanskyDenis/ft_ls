@@ -147,7 +147,8 @@ typedef struct s_error
 
 /*	alternate.c  */
 
-int		initAlternateString(char *dst, char *src);
+int		initAlternateString(char *dst, char *src, int flags);
+// char	changeTextCases(char c);
 
 /*	directory.c  */
 
@@ -197,7 +198,7 @@ int		handleError(t_error *error);
 
 /*	file.c  */
 
-t_file	*newFile(char const *name, char *path, int type);
+t_file	*newFile(char const *name, char *path, int type, int flags);
 
 // t_error	createChildFilePath(t_file *directory, char **path);
 
@@ -256,6 +257,10 @@ t_error	readHandleFileAttributes(t_file *file);
 /*	majorMinor.c  */
 t_meta	calcDeviceMajorMinorLength(t_file *file);
 void	fillBufByFileSizeColumn(t_string *buf, t_file *file, t_meta meta);
+
+/*	meta.c  */
+
+t_meta	calcMetaOnlyFromFiles(t_file *file);
 
 /*	parseFlags.c  */
 

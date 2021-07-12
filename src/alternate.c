@@ -68,11 +68,32 @@ static int	shouldPrintNameWithQuotes(char c)
 	return (0);
 }
 
-/*
-**	Alternate string needed only for correct sorting of russian alphabet
-*/
+/*	Костыль для последующей сортировки. Отправляет LowCase в UpCase
+**	и наоборот в зависимости от того, какой флаг был включен */
 
-int	initAlternateString(char *dst, char *src)
+static char	changeTextCases(char c, int flags)
+{
+	if (flags & (1 << FLAG_T))
+	{
+		if (c >= 'a' && c <= 'z')
+			return (c - 'a' + 'A');
+		if (c >= 'A' && c <= 'Z')
+			return (c - 'A' + 'a');
+		// if (c == '.')
+		// 	return (126);
+	}
+	return (c);
+}
+
+/*	Альтернативное имя используется для корректной сортировки русского
+**	алфавита а также в качестве костыля (на моей Ubuntu даже при
+**	включенной локали я получаю некорректную сортировку по имени в случаях
+**	когда первичная сортировка идет по времени (модификации / доступа).
+**	Сортировка отличается при флагах -u -t).
+**	Поэтому я передаю аргументом в эту функцию флаги, хотя в такой
+**	низкоуровневой функции это выглядит странно  */
+
+int	initAlternateString(char *dst, char *src, int flags)
 {
 	size_t	i;
 	size_t	len;
@@ -91,8 +112,8 @@ int	initAlternateString(char *dst, char *src)
 		}
 		else
 		{
-			dst[i] = src[i];
-			if (shouldPrintNameWithQuotes(dst[i]))
+			dst[i] = changeTextCases(src[i], flags);
+			if (shouldPrintNameWithQuotes(src[i]))
 				isNeedQuotes = 1;
 		}
 		i++;

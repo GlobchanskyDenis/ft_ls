@@ -1,10 +1,14 @@
 #include "ft_ls.h"
 
+// static void	fillAlternateStringDependOfFlags()
+// {
+// }
+
 /*
 **	Constructor and handlers for t_file file type
 */
 
-t_file	*newFile(char const *name, char *fullpath, int type)
+t_file	*newFile(char const *name, char *fullpath, int type, int flags)
 {
 	t_file	*dst;
 	size_t	nameLen;
@@ -26,7 +30,7 @@ t_file	*newFile(char const *name, char *fullpath, int type)
 	}
 	ft_strcpy(dst->name, name);
 	dst->alterName = &(dst->name[nameLen + 1]);
-	dst->isNeedQuotes = initAlternateString(dst->alterName, dst->name);
+	dst->isNeedQuotes = initAlternateString(dst->alterName, dst->name, flags);
 	dst->fullpath = fullpath;
 	ft_bzero(dst->devId, MAX_DEVICESIZE + 1);
 	return (dst);
