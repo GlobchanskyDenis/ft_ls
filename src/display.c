@@ -7,7 +7,8 @@ static t_error	fillBufFileSepatator(int flags, t_string *buf, t_file *nextFile)
 {
 	if (!stringGrantSize(buf, 3))
 		return (allocateFailed());
-	if (nextFile == NULL || (flags & (1 << FLAG_L)) || (flags & (1 << FLAG_1)))
+	if (nextFile == NULL || (flags & (1 << FLAG_L)) || \
+		(flags & (1 << FLAG_1)) || (flags & (1 << FLAG_G)))
 		stringCat(buf, "\n");
 	else
 		stringCat(buf, "  ");
@@ -43,7 +44,7 @@ static t_error	fillBufFilenames(int flags, t_string *buf, t_file *head, \
 **	Проверка должна осуществляться в функции выше  */
 
 static t_error	displayFoldersRecursively(int flags, t_string *buf, \
-	t_file *head, int doNotDisplayFirstEOL)
+	t_file *head)
 {
 	t_file	*file;
 	t_error	error;
@@ -57,9 +58,10 @@ static t_error	displayFoldersRecursively(int flags, t_string *buf, \
 			file = file->next;
 			continue ;
 		}
-		if ((file != head || !doNotDisplayFirstEOL) && !stringCat(buf, "\n"))
+		if ((calcOnlyNotDirectories(head) > 0 || (calcOnlyDirectories(head) > 1 \
+			&& file != head)) && !stringCat(buf, "\n"))
 			return (allocateFailed());
-		error = fillBufDirFullpathTotal(flags, buf, file);
+		error = fillBufDirFullpathTotal(flags, buf, file, calcOnlyDirectories(head));
 		if (error.wasSet)
 			return (error);
 		error = fillBufRecurs(flags, buf, file->child, file->meta);
@@ -83,7 +85,7 @@ t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta)
 		return (error);
 	if (flags & (1 << FLAG_RR))
 	{
-		error = displayFoldersRecursively(flags, buf, head, 0);
+		error = displayFoldersRecursively(flags, buf, head);
 		if (error.wasSet)
 			return (error);
 	}
@@ -99,27 +101,27 @@ t_error	displayCLIarguments(int flags, t_string *buf, t_file *head)
 {
 	t_error	error;
 	t_file	*file;
-	int		filesWasPrinted;
+	// int		filesWasPrinted;
 	t_meta	commonFilesMeta;
 
 	file = head;
-	filesWasPrinted = 0;
+	// filesWasPrinted = 0;
 	commonFilesMeta = calcMetaOnlyFromFiles(head);
 	while (file)
 	{
 		if (file->type != DIRECTORY)
 		{
-			error = fillBufFile(flags, buf, file, commonFilesMeta); // !!!! meta not from parents folder
+			error = fillBufFile(flags, buf, file, commonFilesMeta);
 			if (error.wasSet)
 				return (error);
 			error = fillBufFileSepatator(flags, buf, file->next);
 			if (error.wasSet)
 				return (error);
-			filesWasPrinted = 1;
+			// filesWasPrinted = 1;
 		}
 		file = file->next;
 	}
-	error = displayFoldersRecursively(flags, buf, head, filesWasPrinted);
+	error = displayFoldersRecursively(flags, buf, head);
 	if (error.wasSet)
 		return (error);
 	return (noErrors());
@@ -128,13 +130,22 @@ t_error	displayCLIarguments(int flags, t_string *buf, t_file *head)
 t_error	displayCurrentFolder(int flags, t_string *buf, t_file *head)
 {
 	t_error	error;
+	t_meta	commonFilesMeta;
 
-	error = fillBufDirFullpathTotal(flags, buf, head);
-	if (error.wasSet)
-		return (error);
-	error = fillBufRecurs(flags, buf, head->child, head->meta);
-	if (error.wasSet)
-		return (error);
+	if (flags & (1 << FLAG_D))
+	{
+		commonFilesMeta = calcMetaOnlyFromFiles(head);
+		error = fillBufRecurs(flags, buf, head, commonFilesMeta);
+	}
+	else
+	{
+		error = fillBufDirFullpathTotal(flags, buf, head, calcOnlyDirectories(head));
+		if (error.wasSet)
+			return (error);
+		error = fillBufRecurs(flags, buf, head->child, head->meta);
+		if (error.wasSet)
+			return (error);
+	}
 	return (noErrors());
 }
 
@@ -149,9 +160,7 @@ t_error	displayFileTree(int flags, t_file *head)
 {
 	t_string	*buf;
 	t_error		error;
-	// t_file		*file;
 
-	// file = head;
 	buf = stringNew(1000000);
 	if (!buf)
 		return (allocateFailed());
@@ -159,22 +168,8 @@ t_error	displayFileTree(int flags, t_file *head)
 		error = displayCLIarguments(flags, buf, head);
 	else
 		error = displayCurrentFolder(flags, buf, head);
-	// while (file)
-	// {
-	// 	if (file != head || file->next != NULL)
-	// 		error = fillBufDirFullpathTotal(flags, buf, file);
-	// 	if (error.wasSet && stringDel(&buf))
-	// 		return (error);
-	// 	if (file->isArgument)
-	// 		error = fillBufRecurs(flags, buf, file, file->meta);
-	// 	else
-	// 		error = fillBufRecurs(flags, buf, file->child, file->meta);
-		if (error.wasSet && stringDel(&buf))
-			return (error);
-	// 	file = file->next;
-	// 	if (file != NULL && !stringCat(buf, "\n"))
-	// 		return (allocateFailed());
-	// }
+	if (error.wasSet && stringDel(&buf))
+		return (error);
 	write(1, buf->str, buf->length);
 	stringDel(&buf);
 	return (noErrors());

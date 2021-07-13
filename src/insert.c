@@ -97,9 +97,9 @@ void	insertByFlags(int flags, t_file *dir, t_file *newfile)
 	metaExchange(dir, newfile);
 	if (flags & (1 << FLAG_R))
 	{
-		if (flags & (1 << FLAG_T))
+		if (flags & (1 << SORT_BY_MODIF))
 			insert(dir, newfile, insertByModTimeReverse);
-		else if ((flags & (1 << FLAG_U)) && !newfile->isArgument)
+		else if ((flags & (1 << SORT_BY_ACCESS)) && !newfile->isArgument)
 			insert(dir, newfile, insertByAccessTimeReverse);
 		else if (!(flags & (1 << FLAG_F)))
 			insert(dir, newfile, insertByNameReverse);
@@ -108,9 +108,9 @@ void	insertByFlags(int flags, t_file *dir, t_file *newfile)
 	}
 	else
 	{
-		if (flags & (1 << FLAG_T))
+		if (flags & (1 << SORT_BY_MODIF))
 			insert(dir, newfile, insertByModTime);
-		else if ((flags & (1 << FLAG_U)) && !newfile->isArgument)
+		else if ((flags & (1 << SORT_BY_ACCESS)) && !newfile->isArgument)
 			insert(dir, newfile, insertByAccessTime);
 		else if (!(flags & (1 << FLAG_F)))
 			insert(dir, newfile, insertByName);

@@ -14,7 +14,8 @@ FILES		=	alternate.c					directory.c			\
 				dump.c						\
 				error_constructor.c			error_handler.c		\
 				file.c						filenameList.c		\
-				fileTree.c					insert.c			\
+				fileTree.c					handleFlags.c		\
+				insert.c			\
 				insertByAccessTime.c		insertByModTime.c	\
 				insertByName.c				insertHandlers.c	\
 				insertWithoutOrder.c		\

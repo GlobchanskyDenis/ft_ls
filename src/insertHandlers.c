@@ -1,9 +1,5 @@
 #include "ft_ls.h"
 
-// fprint("files: %s %s ret %d\n", dir->child->alterName, newfile->alterName, 
-// 		ret);
-// fprint("files: %s %s ret %d\n", next->alterName, newfile->alterName, ret);
-
 /*	Вставляю первым файлом в папку (dir->child)  */
 
 int	insertNewFileAsFirstInFolder(t_file *dir, t_file *newfile)

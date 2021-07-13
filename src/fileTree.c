@@ -12,7 +12,7 @@
 
 // static 
 
-t_error	initFileFromCLIinsertToTree(int flags, t_list *filename, \
+static t_error	initFileFromCLIinsertToTree(int flags, t_list *filename, \
 	t_file **fileTree)
 {
 	t_file	*newfile;
@@ -26,9 +26,12 @@ t_error	initFileFromCLIinsertToTree(int flags, t_list *filename, \
 		return (error);
 	if (newfile->type == DIRECTORY)
 	{
-		error = readDirFiles(flags, newfile);
-		if (error.wasSet)
-			return (error);
+		if ((flags & (1 << FLAG_RR)) || !(flags & (1 << FLAG_D)))
+		{
+			error = readDirFiles(flags, newfile);
+			if (error.wasSet)
+				return (error);
+		}
 	}
 	newfile->isArgument = 1;
 	insertByFlags(flags, *fileTree, newfile);
@@ -47,51 +50,16 @@ static t_error	initializeFromFileList(int flags, t_list *files,
 
 	while (files)
 	{
-		newfile = newFile(files->content, ft_strdup(files->content), UNKNOWN, flags);
-		if (!newfile)
-			return (allocateFailed());
-		files = files->next;
-		error = readHandleFileAttributes(newfile);
+		error = initFileFromCLIinsertToTree(flags, files, fileTree);
 		if (error.wasSet)
 			return (error);
-		if (newfile->type == DIRECTORY)
-		{
-			error = readDirFiles(flags, newfile);
-			if (error.wasSet)
-				return (error);
-		}
-		newfile->isArgument = 1;
-		insertByFlags(flags, *fileTree, newfile);
+		files = files->next;
 	}
 	newfile = *fileTree;
 	*fileTree = (*fileTree)->child;
 	freeFile(&newfile);
 	return (noErrors());
 }
-
-/*
-**	Если в аргументах не было указано имен файлов, то начинаю
-**	формировать файловое дерево с текущей папки (.)
-**	(.) -> считываются дочерние файлы и папки -> Если включен
-**	флаг R - считываем рекурсивно
-**	readDirFiles проверяет наличие рекурсии и осуществляет ее
-*/
-
-// static t_error	initializeFromCurrentDirectory(int flags, t_file **fileTree)
-// {
-// 	*fileTree = newFile(".", ft_strdup("."), DIRECTORY);
-// 	if (!(*fileTree))
-// 		return (allocateFailed());
-// 	error = readHandleFileAttributes(*fileTree);
-// 	if (error.wasSet)
-// 		return (error);
-// 	if (flags & (1 << FLAG_D))
-// 		return (noErrors());
-// 	error = readDirFiles(flags, *fileTree);
-// 	if (error.wasSet)
-// 		return (error);
-// 	return (noErrors());
-// }
 
 /*
 **	Рекурсионное (в случае флага l) считывание файлов и папок

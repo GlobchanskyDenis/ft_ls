@@ -70,8 +70,7 @@ static int	isNeedToSkipFile(int flags, char *filename)
 {
 	if (filename == NULL)
 		return (1);
-	if (!ft_strncmp(filename, ".", 1) && !(flags & (1 << FLAG_A)) && \
-		!(flags & (1 << FLAG_G)))
+	if (!ft_strncmp(filename, ".", 1) && !(flags & (1 << FLAG_A)))
 		return (1);
 	return (0);
 }
@@ -86,9 +85,6 @@ static struct dirent	*readDirrectory(DIR *dir, struct dirent **entry)
 **	Function can fall in recursion (addFileToDirectory function
 **	call that in case of recursion flag calls current function)
 */
-
-// entry = readdir(dir); // Кажется эт строку тоже надо закомментить
-// while (entry != NULL)
 
 t_error	readDirFiles(int flags, t_file *directory)
 {

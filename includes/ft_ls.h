@@ -54,6 +54,11 @@
 # define FLAG_HELP					11
 # define FLAG_FILE_ARGS				12
 
+# define SORT_BY_ACCESS				14
+# define SORT_BY_MODIF				15
+# define SHOW_ACCESS_TIME			16
+# define SHOW_MODIF_TIME			17
+
 /*
 **	Константы escape последовательностей
 */
@@ -169,7 +174,7 @@ t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta);
 
 /*	displayDirHeader.c  */
 
-t_error	fillBufDirFullpathTotal(int flags, t_string *buf, t_file *head);
+t_error	fillBufDirFullpathTotal(int flags, t_string *buf, t_file *head, int amountOfDirectories);
 
 /*	displayFile.c  */
 
@@ -199,11 +204,10 @@ int		handleError(t_error *error);
 /*	file.c  */
 
 t_file	*newFile(char const *name, char *path, int type, int flags);
-
-// t_error	createChildFilePath(t_file *directory, char **path);
-
 void	freeFile(t_file **file);
 int		isFileNotExist(char const *filename);
+int		calcOnlyDirectories(t_file *file);
+int		calcOnlyNotDirectories(t_file *file);
 
 /*	filenameList.c  */
 
@@ -214,6 +218,10 @@ int		freeFilenameList(t_list **fileList);
 
 t_error	initializeFileTree(int flags, t_list *files, t_file **fileTree);
 int		freeFileTree(t_file **fileTree);
+
+/*	handleFlags.c  */
+
+int		handleFlags(int flags);
 
 /*	insert.c  */
 

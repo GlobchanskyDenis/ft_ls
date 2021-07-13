@@ -1,9 +1,5 @@
 #include "ft_ls.h"
 
-// static void	fillAlternateStringDependOfFlags()
-// {
-// }
-
 /*
 **	Constructor and handlers for t_file file type
 */
@@ -57,4 +53,32 @@ int	isFileNotExist(char const *filename)
 	if (lstat(filename, &stat) != 0)
 		return (errno);
 	return (0);
+}
+
+int	calcOnlyDirectories(t_file *file)
+{
+	int	i;
+
+	i = 0;
+	while (file)
+	{
+		if (file->type == DIRECTORY)
+			i++;
+		file = file->next;
+	}
+	return (i);
+}
+
+int	calcOnlyNotDirectories(t_file *file)
+{
+	int	i;
+
+	i = 0;
+	while (file)
+	{
+		if (file->type != DIRECTORY)
+			i++;
+		file = file->next;
+	}
+	return (i);
 }

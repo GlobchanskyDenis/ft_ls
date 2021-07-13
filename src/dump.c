@@ -31,6 +31,14 @@ void	DumpFlags(int flags)
 		fprint("flag '--color' -- display in color\n");
 	if (flags & (1 << FLAG_FILE_ARGS))
 		fprint("file names in arguments\n");
+	if (flags & (1 << SORT_BY_ACCESS))
+		fprint("sort files by access\n");
+	if (flags & (1 << SORT_BY_MODIF))
+		fprint("sort files by modification\n");
+	if (flags & (1 << SHOW_ACCESS_TIME))
+		fprint("show access time\n");
+	if (flags & (1 << SHOW_MODIF_TIME))
+		fprint("show modification time\n");
 	fprint("------------------\n");
 
 }

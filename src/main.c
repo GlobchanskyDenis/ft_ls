@@ -22,6 +22,7 @@ int	main(int ac, char **av)
 	}
 	if (error.wasSet)
 		return (handleError(&error) + freeFilenameList(&filenames));
+	flags = handleFlags(flags);
 	// DumpFlags(flags);
 	// DumpFiles(filenames);
 	error = initializeFileTree(flags, filenames, &fileTree);

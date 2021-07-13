@@ -13,12 +13,10 @@ int	insertByAccessTimeReverse(t_file *dir, t_file *prev, t_file *next, t_file *n
 	int	ret3;
 
 	ret1 = dir->child->stat.st_atime - newfile->stat.st_atime;
-	// fprint("%s (%s) {%d} %s (%s)\n", dir->child->alterName, dir->child->name, ret1, newfile->alterName, newfile->name);
 	if (ret1 > 0)
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	ret2 = ft_strcmp(dir->child->alterName, newfile->alterName);
 	ret3 = ft_strcmp(dir->child->name, newfile->name);
-	// fprint("%s (%s) {%d %d} %s (%s)\n", dir->child->alterName, dir->child->name, ret2, ret3, newfile->alterName, newfile->name);
 	if ((ret1 == 0 && ret2 < 0) || (ret1 == 0 && ret2 == 0 && ret3 < 0))
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	if (next == NULL)
@@ -41,12 +39,10 @@ int	insertByAccessTime(t_file *dir, t_file *prev, t_file *next, \
 	int	ret3;
 
 	ret1 = dir->child->stat.st_atime - newfile->stat.st_atime;
-	// fprint("%s (%s) {%d} %s (%s)\n", dir->child->alterName, dir->child->name, ret1, newfile->alterName, newfile->name);
 	if (ret1 < 0)
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	ret2 = ft_strcmp(dir->child->alterName, newfile->alterName);
 	ret3 = ft_strcmp(dir->child->name, newfile->name);
-	fprint("%s (%s) {%d %d} %s (%s)\n", dir->child->alterName, dir->child->name, ret2, ret3, newfile->alterName, newfile->name);
 	if ((ret1 == 0 && ret2 > 0) || (ret1 == 0 && ret2 == 0 && ret3 > 0))
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	if (next == NULL)
