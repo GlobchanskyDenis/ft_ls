@@ -70,7 +70,8 @@ static int	isNeedToSkipFile(int flags, char *filename)
 {
 	if (filename == NULL)
 		return (1);
-	if (!ft_strncmp(filename, ".", 1) && !(flags & (1 << FLAG_A)))
+	if (!ft_strncmp(filename, ".", 1) && !(flags & (1 << FLAG_A)) && \
+		!(flags & (1 << FLAG_F)))
 		return (1);
 	return (0);
 }

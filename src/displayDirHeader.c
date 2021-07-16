@@ -27,16 +27,37 @@ static void	fillBufDirTotal(t_string *buf, t_file *dir)
 **	файлы в подпапках) - выводит в буффер первую строку - имя папки с двоеточием
 */
 
-t_error	fillBufDirFullpathTotal(int flags, t_string *buf, t_file *head, int amountOfDirectories)
+t_error	fillBufDirFullpathTotal(int flags, t_string *buf, t_file *dir)
 {
-	if (!head)
+	if (!dir)
 		return (noErrors());
-	if (!stringGrantSize(buf, 50 + ft_strlen(head->fullpath)))
+	if (!stringGrantSize(buf, 50 + ft_strlen(dir->fullpath)))
 		return (allocateFailed());
-	if ((flags & (1 << FLAG_RR)) || ((flags & (1 << FLAG_FILE_ARGS)) && \
-		amountOfDirectories > 1))
-		fillBufDirFullpath(buf, head);
+	if (flags & (1 << FLAG_RR))
+		fillBufDirFullpath(buf, dir);
 	if ((flags & (1 << FLAG_L)) || (flags & (1 << FLAG_G)))
-		fillBufDirTotal(buf, head);
+		fillBufDirTotal(buf, dir);
+	return (noErrors());
+}
+
+/*	dirHead - это head односвязного списка, в котором dir один из элементов
+**	логика следующая. DirFullpath (в случае если папка была указана через CLI)
+**	должен отображаться либо если есть рекурсия, либо если папка не одна
+**	в списке и нет файлов, либо одна но есть также и файлы */
+
+t_error fillBufDirFullpathTotalWithCLICondition(int flags, t_string *buf, t_file *dir, t_file *dirHead)
+{
+	if (!dir)
+		return (noErrors());
+	if (!stringGrantSize(buf, 50 + ft_strlen(dir->fullpath)))
+		return (allocateFailed());
+	if (flags & (1 << FLAG_RR))
+		fillBufDirFullpath(buf, dir);
+	else if ((flags & (1 << FLAG_FILE_ARGS)) && \
+		(calcOnlyNotDirectories(dirHead) > 0 || \
+		calcOnlyDirectories(dirHead) > 1))
+		fillBufDirFullpath(buf, dir);
+	if ((flags & (1 << FLAG_L)) || (flags & (1 << FLAG_G)))
+		fillBufDirTotal(buf, dir);
 	return (noErrors());
 }

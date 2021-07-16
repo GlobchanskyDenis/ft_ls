@@ -54,10 +54,15 @@
 # define FLAG_HELP					11
 # define FLAG_FILE_ARGS				12
 
-# define SORT_BY_ACCESS				14
-# define SORT_BY_MODIF				15
-# define SHOW_ACCESS_TIME			16
-# define SHOW_MODIF_TIME			17
+# define SORT_BY_NAME				14
+# define SORT_BY_ACCESS				15
+# define SORT_BY_MODIF				16
+# define SHOW_ACCESS_TIME			17
+# define SHOW_MODIF_TIME			18
+# define SHOW_RIGHTS				19
+# define SHOW_AUTHOR				20
+
+# define FLAG_PRINT_EOL				22
 
 /*
 **	Константы escape последовательностей
@@ -174,7 +179,9 @@ t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta);
 
 /*	displayDirHeader.c  */
 
-t_error	fillBufDirFullpathTotal(int flags, t_string *buf, t_file *head, int amountOfDirectories);
+t_error	fillBufDirFullpathTotal(int flags, t_string *buf, t_file *dir);
+t_error fillBufDirFullpathTotalWithCLICondition(int flags, t_string *buf, \
+	t_file *dir, t_file *dirHead);
 
 /*	displayFile.c  */
 
@@ -236,9 +243,14 @@ int		insertByAccessTimeReverse(t_file *dir, t_file *prev, t_file *next, \
 
 /*	insertByModTime.c  */
 
-int		insertByModTime(t_file *dir, t_file *prev, t_file *next, t_file *node);
-int		insertByModTimeReverse(t_file *dir, t_file *prev, t_file *next, \
+int		insertByModTimeNameDesc(t_file *dir, t_file *prev, t_file *next, \
 	t_file *node);
+int		insertByModTimeReverseNameDesc(t_file *dir, t_file *prev, \
+	t_file *next, t_file *node);
+int		insertByModTimeNameAsc(t_file *dir, t_file *prev, t_file *next, \
+	t_file *node);
+int		insertByModTimeReverseNameAsc(t_file *dir, t_file *prev, \
+	t_file *next, t_file *node);
 
 /*	insertByName.c  */
 

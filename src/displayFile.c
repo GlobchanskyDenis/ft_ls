@@ -102,15 +102,20 @@ t_error	fillFileName(int flags, t_string *buf, t_file *file)
 	
 	// if (ft_strlen(file->name) <= 7)
 	// 	stringCat(buf, "\t");
-	// stringCat2(buf, "\t", file->alterName);
-	// stringCat(buf, "\t");
 	// if (ft_strlen(file->name) <= 15)
 	// 	stringCat(buf, "\t");
+
+	// stringCat2(buf, "\t", file->alterName);
+	// stringCat(buf, "\t");
 	// if (ft_strlen(file->name) <= 7)
 	// 	stringCat(buf, "\t");
 	// stringSizeTtoa(buf, file->stat.st_mtime);
+
 	// stringCat(buf, "\t");
 	// stringSizeTtoa(buf, file->stat.st_atime);
+	// stringCat(buf, "\t");
+	// stringSizeTtoa(buf, file->stat.st_atime / 60);
+
 	// stringCat(buf, "\t");
 	// stringSizeTtoa(buf, file->stat.st_dev);
 	// stringCat(buf, "\t");

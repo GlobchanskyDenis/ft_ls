@@ -40,6 +40,24 @@ static t_error	fillBufFilenames(int flags, t_string *buf, t_file *head, \
 	return (noErrors());
 }
 
+static t_error	displayEOL(t_string *buf, t_file *head, t_file *file, \
+	int *flags)
+{
+	if ((*flags) & (1 << FLAG_PRINT_EOL))
+	{
+		if (!stringCat(buf, "\n"))
+			return (allocateFailed());
+	}
+	else if (file != head && (calcOnlyNotDirectories(head) > 0 || \
+		calcOnlyDirectories(head) > 1))
+	{
+		if (!stringCat(buf, "\n"))
+			return (allocateFailed());
+		(*flags) |= (1 << FLAG_PRINT_EOL);
+	}
+	return (noErrors());
+}
+
 /*	Данная функция вызывается только в случае включенного флага рекурсии
 **	Проверка должна осуществляться в функции выше  */
 
@@ -52,18 +70,24 @@ static t_error	displayFoldersRecursively(int flags, t_string *buf, \
 	file = head;
 	while (file)
 	{
-		if (file->type != DIRECTORY || !ft_strcmp(file->name, ".") || \
-			!ft_strcmp(file->name, ".."))
+		if (file->type != DIRECTORY || ((!ft_strcmp(file->name, ".") || \
+			!ft_strcmp(file->name, "..")) && !file->isArgument))
 		{
 			file = file->next;
 			continue ;
 		}
-		if ((calcOnlyNotDirectories(head) > 0 || (calcOnlyDirectories(head) > 1 \
-			&& file != head)) && !stringCat(buf, "\n"))
-			return (allocateFailed());
-		error = fillBufDirFullpathTotal(flags, buf, file, calcOnlyDirectories(head));
+		error = displayEOL(buf, head, file, &flags);
 		if (error.wasSet)
 			return (error);
+		error = fillBufDirFullpathTotalWithCLICondition(flags, buf, file, head);
+		if (error.wasSet)
+			return (error);
+		// if (calcOnlyDirectories(head) > 1)
+		// {
+		// 	error = fillBufDirFullpathTotal(flags, buf, file);
+		// 	if (error.wasSet)
+		// 		return (error);
+		// }
 		error = fillBufRecurs(flags, buf, file->child, file->meta);
 		if (error.wasSet)
 			return (error);
@@ -72,9 +96,9 @@ static t_error	displayFoldersRecursively(int flags, t_string *buf, \
 	return (noErrors());
 }
 
-/*
-**	Рекурсивно заполняю буфер
-*/
+/*	Рекурсивно заполняю буфер
+**	0 последним аргументом говорит о том, что первый EOL
+**	ставить по своему усмотрению  */
 
 t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta)
 {
@@ -101,11 +125,9 @@ t_error	displayCLIarguments(int flags, t_string *buf, t_file *head)
 {
 	t_error	error;
 	t_file	*file;
-	// int		filesWasPrinted;
 	t_meta	commonFilesMeta;
 
 	file = head;
-	// filesWasPrinted = 0;
 	commonFilesMeta = calcMetaOnlyFromFiles(head);
 	while (file)
 	{
@@ -117,7 +139,6 @@ t_error	displayCLIarguments(int flags, t_string *buf, t_file *head)
 			error = fillBufFileSepatator(flags, buf, file->next);
 			if (error.wasSet)
 				return (error);
-			// filesWasPrinted = 1;
 		}
 		file = file->next;
 	}
@@ -139,7 +160,7 @@ t_error	displayCurrentFolder(int flags, t_string *buf, t_file *head)
 	}
 	else
 	{
-		error = fillBufDirFullpathTotal(flags, buf, head, calcOnlyDirectories(head));
+		error = fillBufDirFullpathTotal(flags, buf, head);
 		if (error.wasSet)
 			return (error);
 		error = fillBufRecurs(flags, buf, head->child, head->meta);
