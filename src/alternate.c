@@ -75,10 +75,11 @@ static char	changeTextCases(char c, int flags)
 {
 	if (flags & (1 << FLAG_T))
 	{
-		if (c >= 'a' && c <= 'z')
-			return (c - 'a' + 'A');
-		if (c >= 'A' && c <= 'Z')
-			return (c - 'A' + 'a');
+		// if (c >= 'a' && c <= 'z')
+		// 	return (c - 'a' + 'A');
+		// if (c >= 'A' && c <= 'Z')
+		// 	return (c - 'A' + 'a');
+		
 		// if (c == '.')
 		// 	return (126);
 	}

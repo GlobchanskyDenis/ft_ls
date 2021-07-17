@@ -46,14 +46,14 @@ void	freeFile(t_file **file)
 	*file = NULL;
 }
 
-int	isFileNotExist(char const *filename)
-{
-	struct stat	stat;
+// int	isFileNotExist(char const *filename)
+// {
+// 	struct stat	stat;
 
-	if (lstat(filename, &stat) != 0)
-		return (errno);
-	return (0);
-}
+// 	if (lstat(filename, &stat) != 0)
+// 		return (errno);
+// 	return (0);
+// }
 
 int	calcOnlyDirectories(t_file *file)
 {

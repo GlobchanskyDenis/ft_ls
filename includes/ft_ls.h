@@ -34,8 +34,6 @@
 # define FILE						8
 # define SYMBOLIC					10
 
-// ((1 << 3) | (1 << 1))
-
 /*
 **	Тут описываю флаги, которые обрабатываю
 */
@@ -59,10 +57,15 @@
 # define SORT_BY_MODIF				16
 # define SHOW_ACCESS_TIME			17
 # define SHOW_MODIF_TIME			18
-# define SHOW_RIGHTS				19
-# define SHOW_AUTHOR				20
+# define SEPARATOR_EOL				19
+# define SHOW_RIGHTS_GROUP_WEIGHT	20
+# define SHOW_AUTHOR				21
+# define SHOW_HIDDEN				22
 
-# define FLAG_PRINT_EOL				22
+/*	Это костыль связанный с говноархитектурой
+**	Школа 42 - сделайте демократичную норму кода!!  */
+
+# define SEPARATOR_FOLDERS_EOL		24
 
 /*
 **	Константы escape последовательностей
@@ -81,6 +84,7 @@
 
 # define MAX_FILENAME				255
 # define MAX_DEVICESIZE				60
+# define START_BUF_SIZE				100000
 
 /*
 **	ТИПЫ ДАННЫХ
@@ -158,7 +162,6 @@ typedef struct s_error
 /*	alternate.c  */
 
 int		initAlternateString(char *dst, char *src, int flags);
-// char	changeTextCases(char c);
 
 /*	directory.c  */
 
@@ -200,13 +203,14 @@ void	DumpBits(int value);
 t_error	newError(char *cause, char *description);
 t_error	accessFailed(char const *av, int errNo);
 t_error	invalidOption(char c);
+t_error	unrecognizedOption(char *argument);
 t_error	allocateFailed(void);
-t_error	noErrors(void);
 
 /*	error_handler.c  */
 
-int		freeError(t_error *error);
-int		handleError(t_error *error);
+int		freeError(t_error error);
+int		handleError(t_error error);
+t_error	noErrors(void);
 
 /*	file.c  */
 
@@ -226,9 +230,34 @@ int		freeFilenameList(t_list **fileList);
 t_error	initializeFileTree(int flags, t_list *files, t_file **fileTree);
 int		freeFileTree(t_file **fileTree);
 
-/*	handleFlags.c  */
+/*	flagsHandle.c flagsParse1.c flagsParse2.c flagsGetters.c  */
 
-int		handleFlags(int flags);
+int		isFlag(char const *av);
+int		isNeedToSkipThisFlag(char const *av);
+// t_error	handleShortFlag(const char c, int *flags);
+t_error	parseShortFlags(const char *av, int *flags);
+t_error	parseCLIArgumentToFlags(const char *av, int *flags);
+int		isSortingDisabled(int flags);
+
+/*	flagsSetSort.c  */
+
+int 	setSortByName(int flags);
+int 	setSortByModification(int flags);
+int 	setSortByAccess(int flags);
+int		setSortDisable(int flags);
+
+/*	flagsSetters1.c flagsSetters2.c flagsSetters3.c  */
+
+int		setFlagLong(int flags);
+int		setFlagInColumn(int flags);
+int		setFlagLongWithoutAuthor(int flags);
+int		setFlagHiddenA(int flags);
+int		setFlagOnlyDirectories(int flags);
+int		setFlagReverse(int flags);
+int		setFlagRecursion(int flags);
+int		setFlagSortByModificationTime(int flags);
+int		setFlagSortByAccessTime(int flags);
+int		setFlagDisableSort(int flags);
 
 /*	insert.c  */
 
@@ -282,18 +311,8 @@ void	fillBufByFileSizeColumn(t_string *buf, t_file *file, t_meta meta);
 
 t_meta	calcMetaOnlyFromFiles(t_file *file);
 
-/*	parseFlags.c  */
-
-t_error	parseFlags(const char *av, int *flags);
-
-// t_error checkFlags(const char c);
-// t_error	checkForLongFlag(char const *av);
-// void	parseShortFlags(const char *av, int *flags);
-// void	parseLongFlag(const char *av, int *flags);
-
 /*	reader.c  */
 
-t_error	checkForErrors(char const *av);
 t_error	reader(int ac, char **av, int *flags, t_list **filenames);
 void	printUsage(void);
 

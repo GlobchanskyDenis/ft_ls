@@ -14,14 +14,18 @@ FILES		=	alternate.c					directory.c			\
 				dump.c						\
 				error_constructor.c			error_handler.c		\
 				file.c						filenameList.c		\
-				fileTree.c					handleFlags.c		\
-				insert.c			\
+				fileTree.c					\
+				flagsHandle.c				flagsParse1.c		\
+				flagsParse2.c				flagsSetSort.c		\
+				flagsSetters1.c				flagsSetters2.c		\
+				flagsSetters3.c				flagsGetters.c		\
+				insert.c					\
 				insertByAccessTime.c		insertByModTime.c	\
 				insertByName.c				insertHandlers.c	\
 				insertWithoutOrder.c		\
 				lstat.c						\
 				main.c						majorMinor.c		\
-				meta.c						parseFlags.c		\
+				meta.c						\
 				reader.c
 OBJECTS		=	$(addprefix $(DIR_SRC),$(FILES:.c=.o))
 SRC			=	$(addprefix $(DIR_SRC),$(FILES))

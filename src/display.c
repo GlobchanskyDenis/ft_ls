@@ -7,8 +7,7 @@ static t_error	fillBufFileSepatator(int flags, t_string *buf, t_file *nextFile)
 {
 	if (!stringGrantSize(buf, 3))
 		return (allocateFailed());
-	if (nextFile == NULL || (flags & (1 << FLAG_L)) || \
-		(flags & (1 << FLAG_1)) || (flags & (1 << FLAG_G)))
+	if (nextFile == NULL || (flags & (1 << SEPARATOR_EOL)))
 		stringCat(buf, "\n");
 	else
 		stringCat(buf, "  ");
@@ -29,12 +28,27 @@ static t_error	fillBufFilenames(int flags, t_string *buf, t_file *head, \
 	file = head;
 	while (file)
 	{
-		error = fillBufFile(flags, buf, file, meta);
-		if (error.wasSet)
-			return (error);
-		error = fillBufFileSepatator(flags, buf, file->next);
-		if (error.wasSet)
-			return (error);
+		if (file->accessErrno != 0)
+		{
+			if (buf->length > 0)
+			{
+				write(1, buf->str, buf->length);
+				buf->length = 0;
+				buf->str[0] = 0;
+				buf->str[1] = 0;
+			}
+			fprint_fd(2, "ls: cannot access '%s': %s\n", file->name, \
+				strerror(file->accessErrno));
+		}
+		else
+		{
+			error = fillBufFile(flags, buf, file, meta);
+			if (error.wasSet)
+				return (error);
+			error = fillBufFileSepatator(flags, buf, file->next);
+			if (error.wasSet)
+				return (error);
+		}
 		file = file->next;
 	}
 	return (noErrors());
@@ -43,7 +57,7 @@ static t_error	fillBufFilenames(int flags, t_string *buf, t_file *head, \
 static t_error	displayEOL(t_string *buf, t_file *head, t_file *file, \
 	int *flags)
 {
-	if ((*flags) & (1 << FLAG_PRINT_EOL))
+	if ((*flags) & (1 << SEPARATOR_FOLDERS_EOL))
 	{
 		if (!stringCat(buf, "\n"))
 			return (allocateFailed());
@@ -53,7 +67,7 @@ static t_error	displayEOL(t_string *buf, t_file *head, t_file *file, \
 	{
 		if (!stringCat(buf, "\n"))
 			return (allocateFailed());
-		(*flags) |= (1 << FLAG_PRINT_EOL);
+		(*flags) |= (1 << SEPARATOR_FOLDERS_EOL);
 	}
 	return (noErrors());
 }
@@ -131,7 +145,20 @@ t_error	displayCLIarguments(int flags, t_string *buf, t_file *head)
 	commonFilesMeta = calcMetaOnlyFromFiles(head);
 	while (file)
 	{
-		if (file->type != DIRECTORY)
+		if (file->accessErrno != 0)
+		{
+			if (buf->length > 0)
+			{
+				write(1, buf->str, buf->length);
+				buf->length = 0;
+				buf->str[0] = 0;
+				buf->str[1] = 0;
+			}
+			fprint_fd(2, "ls: cannot access '%s': %s\n", file->name, \
+				strerror(file->accessErrno));
+		}
+			
+		else if (file->type != DIRECTORY)
 		{
 			error = fillBufFile(flags, buf, file, commonFilesMeta);
 			if (error.wasSet)
@@ -182,7 +209,7 @@ t_error	displayFileTree(int flags, t_file *head)
 	t_string	*buf;
 	t_error		error;
 
-	buf = stringNew(1000000);
+	buf = stringNew(START_BUF_SIZE);
 	if (!buf)
 		return (allocateFailed());
 	if (flags & (1 << FLAG_FILE_ARGS))

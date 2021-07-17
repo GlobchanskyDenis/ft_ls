@@ -12,8 +12,9 @@ int	insertByModTimeReverseNameDesc(t_file *dir, t_file *prev, t_file *next, t_fi
 	int	ret2;
 	int	ret3;
 
-	ret1 = dir->child->stat.st_mtime / 60 - newfile->stat.st_mtime / 60;
-	if (ret1 > 0)
+	ret1 = dir->child->stat.st_mtime  - newfile->stat.st_mtime ;
+	// if (ret1 > 0 || (ret1 == 0 && dir->child->type == DIRECTORY && newfile->type != DIRECTORY))
+	if (ret1 > 0 || (ret1 == 0 && dir->child->stat.st_mode < newfile->stat.st_mode))
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	ret2 = ft_strcmp(dir->child->alterName, newfile->alterName);
 	ret3 = ft_strcmp(dir->child->name, newfile->name);
@@ -22,7 +23,8 @@ int	insertByModTimeReverseNameDesc(t_file *dir, t_file *prev, t_file *next, t_fi
 	if (next == NULL)
 		return (insertNewFileAsLastInFolder(prev, newfile));
 	ret1 = next->stat.st_mtime - newfile->stat.st_mtime;
-	if (ret1 > 0)
+	// if (ret1 > 0 || (ret1 == 0 && next->type == DIRECTORY && newfile->type != DIRECTORY))
+	if (ret1 > 0 || (ret1 == 0 && next->stat.st_mode < newfile->stat.st_mode))
 		return (insertNewFileBetweenPrevAndNext(prev, next, newfile));
 	ret2 = ft_strcmp(next->alterName, newfile->alterName);
 	ret3 = ft_strcmp(next->name, newfile->name);
@@ -38,8 +40,9 @@ int	insertByModTimeNameDesc(t_file *dir, t_file *prev, t_file *next,
 	int	ret2;
 	int	ret3;
 
-	ret1 = dir->child->stat.st_mtime / 60 - newfile->stat.st_mtime / 60;
-	if (ret1 < 0)
+	ret1 = dir->child->stat.st_mtime - newfile->stat.st_mtime;
+	// if (ret1 < 0 || (ret1 == 0 && dir->child->type == DIRECTORY && newfile->type != DIRECTORY))
+	if (ret1 < 0 || (ret1 == 0 && dir->child->stat.st_mode > newfile->stat.st_mode))
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	ret2 = ft_strcmp(dir->child->alterName, newfile->alterName);
 	ret3 = ft_strcmp(dir->child->name, newfile->name);
@@ -48,7 +51,8 @@ int	insertByModTimeNameDesc(t_file *dir, t_file *prev, t_file *next,
 	if (next == NULL)
 		return (insertNewFileAsLastInFolder(prev, newfile));
 	ret1 = next->stat.st_mtime - newfile->stat.st_mtime;
-	if (ret1 < 0)
+	// if (ret1 < 0 || (ret1 == 0 && next->type == DIRECTORY && newfile->type != DIRECTORY))
+	if (ret1 < 0 || (ret1 == 0 && next->stat.st_mode > newfile->stat.st_mode))
 		return (insertNewFileBetweenPrevAndNext(prev, next, newfile));
 	ret2 = ft_strcmp(next->alterName, newfile->alterName);
 	ret3 = ft_strcmp(next->name, newfile->name);
@@ -63,8 +67,9 @@ int	insertByModTimeReverseNameAsc(t_file *dir, t_file *prev, t_file *next, t_fil
 	int	ret2;
 	int	ret3;
 
-	ret1 = dir->child->stat.st_mtime / 60 - newfile->stat.st_mtime / 60;
-	if (ret1 > 0)
+	ret1 = dir->child->stat.st_mtime  - newfile->stat.st_mtime ;
+	// if (ret1 > 0 || (ret1 == 0 && dir->child->type == DIRECTORY && newfile->type != DIRECTORY))
+	if (ret1 > 0 || (ret1 == 0 && dir->child->stat.st_mode < newfile->stat.st_mode))
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	ret2 = ft_strcmp(dir->child->alterName, newfile->alterName);
 	ret3 = ft_strcmp(dir->child->name, newfile->name);
@@ -73,7 +78,8 @@ int	insertByModTimeReverseNameAsc(t_file *dir, t_file *prev, t_file *next, t_fil
 	if (next == NULL)
 		return (insertNewFileAsLastInFolder(prev, newfile));
 	ret1 = next->stat.st_mtime - newfile->stat.st_mtime;
-	if (ret1 > 0)
+	// if (ret1 > 0 || (ret1 == 0 && next->type == DIRECTORY && newfile->type != DIRECTORY))
+	if (ret1 > 0 || (ret1 == 0 && next->stat.st_mode < newfile->stat.st_mode))
 		return (insertNewFileBetweenPrevAndNext(prev, next, newfile));
 	ret2 = ft_strcmp(next->alterName, newfile->alterName);
 	ret3 = ft_strcmp(next->name, newfile->name);
@@ -89,8 +95,9 @@ int	insertByModTimeNameAsc(t_file *dir, t_file *prev, t_file *next,
 	int	ret2;
 	int	ret3;
 
-	ret1 = dir->child->stat.st_mtime / 60 - newfile->stat.st_mtime / 60;
-	if (ret1 < 0)
+	ret1 = dir->child->stat.st_mtime  - newfile->stat.st_mtime ;
+	// if (ret1 < 0 || (ret1 == 0 && dir->child->type == DIRECTORY && newfile->type != DIRECTORY))
+	if (ret1 < 0 || (ret1 == 0 && dir->child->stat.st_mode < newfile->stat.st_mode))
 		return (insertNewFileAsFirstInFolder(dir, newfile));
 	ret2 = ft_strcmp(dir->child->alterName, newfile->alterName);
 	ret3 = ft_strcmp(dir->child->name, newfile->name);
@@ -99,7 +106,8 @@ int	insertByModTimeNameAsc(t_file *dir, t_file *prev, t_file *next,
 	if (next == NULL)
 		return (insertNewFileAsLastInFolder(prev, newfile));
 	ret1 = next->stat.st_mtime - newfile->stat.st_mtime;
-	if (ret1 < 0)
+	// if (ret1 < 0 || (ret1 == 0 && next->type == DIRECTORY && newfile->type != DIRECTORY))
+	if (ret1 < 0 || (ret1 == 0 && next->stat.st_mode < newfile->stat.st_mode))
 		return (insertNewFileBetweenPrevAndNext(prev, next, newfile));
 	ret2 = ft_strcmp(next->alterName, newfile->alterName);
 	ret3 = ft_strcmp(next->name, newfile->name);

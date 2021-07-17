@@ -31,10 +31,11 @@ void	fillFileAuthor(int flags, t_string *buf, t_file *file,
 {
 	if (flags & (1 << FLAG_COLOR))
 		stringCat(buf, COLOR_AUTHOR);
-	stringCatAlignL(buf, file->author, meta.maxAuthorLen, ' ');
-	stringCat(buf, " ");
-	if (flags & (1 << FLAG_G))
-		return ;
+	if (flags & (1 << SHOW_AUTHOR))
+	{
+		stringCatAlignL(buf, file->author, meta.maxAuthorLen, ' ');
+		stringCat(buf, " ");
+	}
 	stringCatAlignL(buf, file->group, meta.maxGroupLen, ' ');
 	if (flags & (1 << FLAG_COLOR))
 		stringCat(buf, NO_COLOR);
@@ -57,7 +58,7 @@ t_error	fillFileTime(int flags, t_string *buf, t_file *file)
 	else if (flags & (1 << SHOW_MODIF_TIME))
 		printTime = ctime(&(file->stat.st_mtime));
 	else
-		printTime = ctime(&(file->stat.st_mtime));
+		return (newError("(a/m)time", "impossible case"));
 	if (printTime == NULL)
 		return (newError("(a/m)time", strerror(errno)));
 	printTime = &(printTime[4]);
@@ -96,7 +97,7 @@ t_error	fillFileName(int flags, t_string *buf, t_file *file)
 		stringCat(buf, "'");
 	if (flags & (1 << FLAG_COLOR))
 		stringCat(buf, NO_COLOR);
-	if (((flags & (1 << FLAG_L)) || (flags & (1 << FLAG_G))) \
+	if ((flags & (1 << SHOW_RIGHTS_GROUP_WEIGHT)) \
 		&& file->type == SYMBOLIC)
 		stringCat2(buf, " -> ", file->symlink);
 	
@@ -151,7 +152,7 @@ t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta)
 {
 	t_error	error;
 
-	if (flags & (1 << FLAG_L) || flags & (1 << FLAG_G))
+	if (flags & (1 << SHOW_RIGHTS_GROUP_WEIGHT))
 	{
 		if (!stringGrantSize(buf, 50 + meta.sum))
 			return (allocateFailed());

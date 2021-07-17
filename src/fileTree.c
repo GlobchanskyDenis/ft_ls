@@ -87,7 +87,7 @@ t_error	initializeFileTree(int flags, t_list *files, t_file **fileTree)
 		return (noErrors());
 	}
 	else
-		initializeFromFileList(flags, files, fileTree);
+		return (initializeFromFileList(flags, files, fileTree));
 	return (noErrors());
 }
 

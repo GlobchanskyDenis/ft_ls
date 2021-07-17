@@ -69,28 +69,48 @@ void	insertByFlags(int flags, t_file *dir, t_file *newfile)
 	metaExchange(dir, newfile);
 	if (flags & (1 << FLAG_R))
 	{
-		if (flags & (1 << FLAG_F))
+		if (isSortingDisabled(flags))
 			insert(dir, newfile, insertWithoutOrder);
-		else if ((flags & (1 << SORT_BY_MODIF)) && (flags & (1 << FLAG_FILE_ARGS)))
-			insert(dir, newfile, insertByModTimeReverseNameDesc);
-		else if ((flags & (1 << SORT_BY_MODIF)) && !(flags & (1 << FLAG_FILE_ARGS)))
-			insert(dir, newfile, insertByModTimeReverseNameDesc);
-		else if ((flags & (1 << SORT_BY_ACCESS)) && !newfile->isArgument)
-			insert(dir, newfile, insertByAccessTimeReverse);
-		else
+		else if (flags & (1 << SORT_BY_MODIF))
+		{
+			if (flags & (1 << FLAG_FILE_ARGS))
+				insert(dir, newfile, insertByModTimeReverseNameDesc);
+			else
+				insert(dir, newfile, insertByModTimeReverseNameDesc);
+		}
+		else if (flags & (1 << SORT_BY_ACCESS))
+		{
+			if (!newfile->isArgument)
+				insert(dir, newfile, insertByAccessTimeReverse);
+			else
+				insert(dir, newfile, insertWithoutOrder);
+		}
+		else if (flags & (1 << SORT_BY_NAME))
 			insert(dir, newfile, insertByNameReverse);
+		else
+			fprint("Рефакторинг!!! insertByFlags found unexpected case!!\n");
 	}
 	else
 	{
-		if (flags & (1 << FLAG_F))
+		if (isSortingDisabled(flags))
 			insert(dir, newfile, insertWithoutOrder);
-		else if ((flags & (1 << SORT_BY_MODIF)) && (flags & (1 << FLAG_FILE_ARGS)))
-			insert(dir, newfile, insertByModTimeNameDesc);
-		else if ((flags & (1 << SORT_BY_MODIF)) && !(flags & (1 << FLAG_FILE_ARGS)))
-			insert(dir, newfile, insertByModTimeNameAsc);
-		else if ((flags & (1 << SORT_BY_ACCESS)) && !newfile->isArgument)
-			insert(dir, newfile, insertByAccessTime);
-		else
+		else if (flags & (1 << SORT_BY_MODIF))
+		{
+			if (flags & (1 << FLAG_FILE_ARGS))
+				insert(dir, newfile, insertByModTimeNameDesc);
+			else
+				insert(dir, newfile, insertByModTimeNameAsc);
+		}
+		else if (flags & (1 << SORT_BY_ACCESS))
+		{
+			if (!newfile->isArgument)
+				insert(dir, newfile, insertByAccessTime);
+			else
+				insert(dir, newfile, insertWithoutOrder);
+		}
+		else if (flags & (1 << SORT_BY_NAME))
 			insert(dir, newfile, insertByName);
+		else
+			fprint("Рефакторинг!!! insertByFlags found unexpected case!!\n");
 	}
 }

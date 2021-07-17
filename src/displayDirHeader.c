@@ -35,7 +35,7 @@ t_error	fillBufDirFullpathTotal(int flags, t_string *buf, t_file *dir)
 		return (allocateFailed());
 	if (flags & (1 << FLAG_RR))
 		fillBufDirFullpath(buf, dir);
-	if ((flags & (1 << FLAG_L)) || (flags & (1 << FLAG_G)))
+	if (flags & (1 << SHOW_RIGHTS_GROUP_WEIGHT))
 		fillBufDirTotal(buf, dir);
 	return (noErrors());
 }
@@ -57,7 +57,7 @@ t_error fillBufDirFullpathTotalWithCLICondition(int flags, t_string *buf, t_file
 		(calcOnlyNotDirectories(dirHead) > 0 || \
 		calcOnlyDirectories(dirHead) > 1))
 		fillBufDirFullpath(buf, dir);
-	if ((flags & (1 << FLAG_L)) || (flags & (1 << FLAG_G)))
+	if (flags & (1 << SHOW_RIGHTS_GROUP_WEIGHT))
 		fillBufDirTotal(buf, dir);
 	return (noErrors());
 }

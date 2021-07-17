@@ -1,56 +1,5 @@
 #include "ft_ls.h"
 
-static t_error	checkFlags(const char c)
-{
-	if (c == 'l' || c == 'R' || c == 'a' || c == 'r' || c == 't')
-		return (noErrors());
-	if (c == 'u' || c == 'f' || c == 'g' || c == 'd' || c == '1')
-		return (noErrors());
-	return (invalidOption(c));
-}
-
-static t_error	checkForLongFlag(char const *av)
-{
-	if (!ft_strcmp("--all", av))
-		return (noErrors());
-	if (!ft_strcmp("--reverse", av))
-		return (noErrors());
-	if (!ft_strcmp("--recursive", av))
-		return (noErrors());
-	if (!ft_strcmp("--directory", av))
-		return (noErrors());
-	if (!ft_strcmp("--color", av))
-		return (noErrors());
-	if (!ft_strcmp("--help", av))
-		return (noErrors());
-	return (accessFailed(av, isFileNotExist(av)));
-}
-
-t_error	checkForErrors(char const *av)
-{
-	size_t	len;
-	size_t	i;
-	t_error	error;
-
-	len = ft_strlen(av);
-	if (len < 1)
-		return (newError("Program arguments are invalid",
-				"checkForErrors function"));
-	if (av[0] != '-' || (av[0] == '-' && len == 1))
-		return (accessFailed(av, isFileNotExist(av)));
-	if ((ft_strncmp("--", av, 2) == 0) && len > 2)
-		return (checkForLongFlag(av));
-	i = 1;
-	while (i < len)
-	{
-		error = checkFlags(av[i]);
-		if (error.wasSet)
-			return (error);
-		i++;
-	}
-	return (noErrors());
-}
-
 void	printUsage(void)
 {
 	fprint("Usage: ft_ls [OPTION]... [FILE]...\nList information ");
@@ -61,6 +10,7 @@ void	printUsage(void)
 	fprint("   -r, --reverse\treverse order while sorting\n");
 	fprint("   -t\t\t\tsort by modification time, newest first\n");
 	fprint("   -R, --recursive\tlist subdirectories recursively\n");
+	fprint("   -1\t\t\tlist one file per line\n");
 	fprint("\n\tBONUSES\n");
 	fprint("   -u\t\t\tsort by, and show, access time\n");
 	fprint("   -f\t\t\tdisable sorting\n");
@@ -82,28 +32,25 @@ t_error	reader(int ac, char **av, int *flags, t_list **filenames)
 {
 	int		i;
 	t_error	error;
-	t_error	toReturnError;
 
-	*flags = 0;
+	*flags = setSortByName(0) | (1 << SHOW_MODIF_TIME);
 	*filenames = NULL;
 	i = 0;
-	toReturnError = noErrors();
 	while (++i < ac)
 	{
-		// fprint("flag %s ", av[i]);
-		error = parseFlags(av[i], flags);
-		// fprint("%d\n", error.wasSet);
-		if (error.wasSet)
+		if (isFlag(av[i]))
 		{
-			// fprint("file exists? %d\n", !isFileNotExist(av[i]));
-			if (!isFileNotExist(av[i]) && freeError(&error))
-			{
-				*flags = *flags | (1 << FLAG_FILE_ARGS);
-				addToFilenameList(av[i], filenames);
-			}
-			else if (!toReturnError.wasSet)
-				toReturnError = error;
+			error = parseCLIArgumentToFlags(av[i], flags);
+			if (error.wasSet)
+				return (error);
+		}
+		else if (isNeedToSkipThisFlag(av[i]))
+			continue;
+		else
+		{
+			*flags = *flags | (1 << FLAG_FILE_ARGS);
+			addToFilenameList(av[i], filenames);
 		}
 	}
-	return (toReturnError);
+	return (noErrors());
 }

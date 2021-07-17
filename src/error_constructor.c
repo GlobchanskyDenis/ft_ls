@@ -35,11 +35,14 @@ t_error	invalidOption(char c)
 	return (error);
 }
 
-t_error	noErrors(void)
+t_error	unrecognizedOption(char *argument)
 {
 	t_error	error;
 
 	ft_bzero(&error, sizeof(error));
+	error.wasSet = 1;
+	error.panic = ft_concat3("ls: unrecognized option '", \
+		argument, "'");
 	return (error);
 }
 

@@ -61,13 +61,14 @@ static t_error	readFileACL(t_file *file)
 	return (noErrors());
 }
 
-static t_error	readFileLstat(t_file *file)
+static int	readFileLstat(t_file *file)
 {
 	if (lstat(file->fullpath, &(file->stat)) != 0)
 	{
-		return (newError(file->fullpath, strerror(errno)));
+		file->accessErrno = errno;
+		return (-1);
 	}
-	return (noErrors());
+	return (0);
 }
 
 /*
@@ -88,9 +89,8 @@ t_error	readHandleFileAttributes(t_file *file)
 {
 	t_error	error;
 
-	error = readFileLstat(file); // Считываю lstat
-	if (error.wasSet)
-		return (error);
+	if (readFileLstat(file))
+		return (noErrors());
 	file->type = file->stat.st_mode >> 12; // обрабатываю полученные результаты
 	// if (file->stat.st_size == 0 && file->stat.st_rdev != 0) // 
 	// 	calcDeviceMajorMinorLength(file);

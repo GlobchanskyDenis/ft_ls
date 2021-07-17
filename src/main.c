@@ -18,21 +18,21 @@ int	main(int ac, char **av)
 	if (flags & (1 << FLAG_HELP))
 	{
 		printUsage();
-		return (freeError(&error) + freeFilenameList(&filenames));
+		return (freeError(error) + freeFilenameList(&filenames));
 	}
 	if (error.wasSet)
-		return (handleError(&error) + freeFilenameList(&filenames));
-	flags = handleFlags(flags);
+		return (handleError(error) + freeFilenameList(&filenames));
+	// flags = handleFlags(flags);
 	// DumpFlags(flags);
 	// DumpFiles(filenames);
 	error = initializeFileTree(flags, filenames, &fileTree);
 	freeFilenameList(&filenames);
 	if (error.wasSet)
-		return (freeFileTree(&fileTree) + handleError(&error));
+		return (freeFileTree(&fileTree) + handleError(error));
 	// DumpFileTree(0, fileTree);
 	error = displayFileTree(flags, fileTree);
 	if (error.wasSet)
-		return (freeFileTree(&fileTree) + handleError(&error));
+		return (freeFileTree(&fileTree) + handleError(error));
 	freeFileTree(&fileTree);
 	return (0);
 }
