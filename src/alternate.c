@@ -1,12 +1,10 @@
 #include "ft_ls.h"
 
-/*
-**	а б в г д е ж з и й к л м н о п
+/*	а б в г д е ж з и й к л м н о п
 **	ё
 **	р с т у ф х ц ч ш щ ъ ы ь э ю я
 **	Whole russian alphabet in upper case except Ё
-**	Ё
-*/
+**	Ё  */
 
 static char	utf8LocaleRuToAlternateFirst(char c1, char c2)
 {
@@ -23,14 +21,12 @@ static char	utf8LocaleRuToAlternateFirst(char c1, char c2)
 	return (c1);
 }
 
-/*
-**	А Б В Г Д Е
+/*	А Б В Г Д Е
 **	Ё
 **	ё
 **	ж з и й к л м н о п
 **	р с т у ф х ц ч ш щ ъ ы ь э ю я
-**	not russian locale or Ж З .. Э Ю Я
-*/
+**	not russian locale or Ж З .. Э Ю Я  */
 
 static char	utf8LocaleRuToAlternateSecond(char c1, char c2)
 {
@@ -75,10 +71,10 @@ static char	changeTextCases(char c, int flags)
 {
 	if (flags & (1 << FLAG_T))
 	{
-		// if (c >= 'a' && c <= 'z')
-		// 	return (c - 'a' + 'A');
-		// if (c >= 'A' && c <= 'Z')
-		// 	return (c - 'A' + 'a');
+		if (c >= 'a' && c <= 'z')
+			return (c - 'a' + 'A');
+		if (c >= 'A' && c <= 'Z')
+			return (c - 'A' + 'a');
 		
 		// if (c == '.')
 		// 	return (126);

@@ -3,15 +3,11 @@
 
 # include "../libft/libft.h"
 
-/*
-**	For all
-*/
+/*	For all  */
 
 # include <sys/types.h>
 
-/*
-**	For lstat, opendir, ctime, getpwuid, getgrgid, errno
-*/
+/*	For lstat, opendir, ctime, getpwuid, getgrgid, errno  */
 
 # include <sys/stat.h>
 # include <unistd.h>
@@ -22,6 +18,7 @@
 # include <errno.h>
 # include <sys/types.h>
 # include <sys/xattr.h>
+# include <sys/ioctl.h>
 
 /*
 **	Тут описываю типы файлов, которые могут встретится
@@ -61,26 +58,23 @@
 # define SHOW_RIGHTS_GROUP_WEIGHT	20
 # define SHOW_AUTHOR				21
 # define SHOW_HIDDEN				22
+# define DISABLE_QUOTES				23
 
 /*	Это костыль связанный с говноархитектурой
 **	Школа 42 - сделайте демократичную норму кода!!  */
 
 # define SEPARATOR_FOLDERS_EOL		24
 
-/*
-**	Константы escape последовательностей
-*/
+/*	Константы escape последовательностей  */
 
 # define COLOR_MODE					"\033[35m"
 # define COLOR_AUTHOR				"\033[36m"
 # define COLOR_NAME					"\033[34m"
 # define NO_COLOR					"\033[m"
 
-/*
-**	Константа описывающая максимальную длинну имени
+/*	Константа описывающая максимальную длинну имени
 **	под которую я буду выделять память в стеке функции
-**	или как строковую переменную в составе структуры
-*/
+**	или как строковую переменную в составе структуры  */
 
 # define MAX_FILENAME				255
 # define MAX_DEVICESIZE				60
@@ -90,13 +84,11 @@
 **	ТИПЫ ДАННЫХ
 */
 
-/*
-**	Структура, описывающая метаинформацию файла или папки
+/*	Структура, описывающая метаинформацию файла или папки
 **	Данная структура входит в состав данных структуры файла
 **	Используется в основном для отображения информации о
 **	файле при включенном флаге -l -- максимальная ширина
-**	каждой колонки и так далее
-*/
+**	каждой колонки и так далее  */
 
 typedef struct s_meta
 {
@@ -109,23 +101,23 @@ typedef struct s_meta
 	size_t	maxMajorLen;
 	size_t	maxMinorLen;
 	size_t	sum;
+	size_t	oneOfFilesNeedsQuotes;
 }	t_meta;
 
-/*
-**	Ключевая структура проекта - файл
-*/
+/*	Ключевая структура проекта - файл  */
 
 typedef struct s_file
 {
-	char			*name;
-	char			*alterName;
+	char			name[MAX_FILENAME + 1];
+	char			alterName[MAX_FILENAME + 1];
 	char			*fullpath;
 	char			*symlink;
 	char			author[MAX_FILENAME + 1];
 	char			group[MAX_FILENAME + 1];
 	char			devId[MAX_DEVICESIZE + 1];
 	int				accessErrno;
-	int				isNeedQuotes;
+	int				isNeedNameQuotes;
+	int				isNeedPathQuotes;
 	int				isArgument;
 	int				hasACL;
 	int				type;
@@ -135,16 +127,14 @@ typedef struct s_file
 	struct s_file	*next;
 }	t_file;
 
-/*
-**	Структура ошибки. В проекте реализована обработка
+/*	Структура ошибки. В проекте реализована обработка
 **	ошибок. Везде где можно обработать ошибку функция
 **	возвращает данную структуру (в стеке). За признак
 **	того, что произошла ошибка отвечает флаг wasSet.
 **	Также имеет в своем составе информацию, которая позво-
 **	ляет идентифицировать - что произошло и обработать
 **	эту ошибку в главной функции проекта. Благодаря данному
-**	подходу в проекте не используется функция exit()
-*/
+**	подходу в проекте не используется функция exit()  */
 
 typedef struct s_error
 {
@@ -218,6 +208,7 @@ t_file	*newFile(char const *name, char *path, int type, int flags);
 void	freeFile(t_file **file);
 int		isFileNotExist(char const *filename);
 int		calcOnlyDirectories(t_file *file);
+int		calcOnlyDirectoriesThatWeCanAccess(t_file *file);
 int		calcOnlyNotDirectories(t_file *file);
 
 /*	filenameList.c  */
@@ -310,6 +301,7 @@ void	fillBufByFileSizeColumn(t_string *buf, t_file *file, t_meta meta);
 /*	meta.c  */
 
 t_meta	calcMetaOnlyFromFiles(t_file *file);
+void	metaExchange(t_file *dir, t_file *newfile);
 
 /*	reader.c  */
 

@@ -83,17 +83,19 @@ t_error	fillFileTime(int flags, t_string *buf, t_file *file)
 **	ВЫВОДИТСЯ В АПОСТРОФАХ - все  
 */
 
-t_error	fillFileName(int flags, t_string *buf, t_file *file)
+t_error	fillFileName(int flags, t_string *buf, t_file *file, size_t grantPlaceForQuote)
 {
 	if (!stringGrantSize(buf, 10 + ft_strlen(file->name) + \
 		safe_strlen(file->symlink)))
 		return (allocateFailed());
 	if (flags & (1 << FLAG_COLOR))
 		stringCat(buf, COLOR_NAME);
-	if (file->isNeedQuotes)
+	if (file->isNeedNameQuotes && !(flags & (1 << DISABLE_QUOTES)))
 		stringCat(buf, "'");
+	else if (grantPlaceForQuote && !(flags & (1 << DISABLE_QUOTES)))
+		stringCat(buf, " ");
 	stringCat(buf, file->name);
-	if (file->isNeedQuotes)
+	if (file->isNeedNameQuotes && !(flags & (1 << DISABLE_QUOTES)))
 		stringCat(buf, "'");
 	if (flags & (1 << FLAG_COLOR))
 		stringCat(buf, NO_COLOR);
@@ -164,13 +166,13 @@ t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta)
 		error = fillFileTime(flags, buf, file);
 		if (error.wasSet)
 			return (error);
-		error = fillFileName(flags, buf, file);
+		error = fillFileName(flags, buf, file, meta.oneOfFilesNeedsQuotes);
 		if (error.wasSet)
 			return (error);
 	}
 	else
 	{
-		error = fillFileName(flags, buf, file);
+		error = fillFileName(flags, buf, file, 0);
 		if (error.wasSet)
 			return (error);
 	}

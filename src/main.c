@@ -1,5 +1,23 @@
 #include "ft_ls.h"
 
+int	getWidthTerminal(int flags)
+{
+	struct winsize win;
+
+	if (ioctl(1, TIOCGWINSZ, &win) < 0)
+	{
+		// fprint("Вывод в файл\n");
+		flags = setFlagInColumn(flags);
+		flags |= (1 << DISABLE_QUOTES);
+	}
+	// fprint("columns %d\n", win.ws_col);
+	// fprint("rows %d\n", win.ws_row);
+	// fprint("x pixel %d\n", win.ws_xpixel);
+	// fprint("y pixel %d\n", win.ws_ypixel);
+
+	return (flags);
+}
+
 /*
 **	reader - обработка флагов, проверка существования файлов из аргументов
 **	initializeFileTree - считывание файлов и папок вместе с lstat и прочим
@@ -22,6 +40,7 @@ int	main(int ac, char **av)
 	}
 	if (error.wasSet)
 		return (handleError(error) + freeFilenameList(&filenames));
+	flags = getWidthTerminal(flags);
 	// flags = handleFlags(flags);
 	// DumpFlags(flags);
 	// DumpFiles(filenames);

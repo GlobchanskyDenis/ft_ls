@@ -10,8 +10,6 @@
 **	имя файла в зависимости от флага для сортировки как в оригинальной
 **	функции (это костыль)  */
 
-// static 
-
 static t_error	initFileFromCLIinsertToTree(int flags, t_list *filename, \
 	t_file **fileTree)
 {

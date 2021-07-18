@@ -1,5 +1,22 @@
 #include "ft_ls.h"
 
+static void	handleErrno(t_string *buf, t_file *file)
+{
+	if (buf->length > 0)
+	{
+		write(1, buf->str, buf->length);
+		buf->length = 0;
+		buf->str[0] = 0;
+		buf->str[1] = 0;
+	}
+	if (file->type == DIRECTORY)
+		fprint_fd(2, "ls: cannot open directory '%s': %s\n", file->name, \
+			strerror(file->accessErrno));
+	else
+		fprint_fd(2, "ls: cannot access '%s': %s\n", file->name, \
+			strerror(file->accessErrno));
+}
+
 /*	Разделяет файлы сепаратором (в зависимости от флага)
 **	Если текущий файл был последним - сепаратор всегда - перенос строки  */
 
@@ -10,7 +27,7 @@ static t_error	fillBufFileSepatator(int flags, t_string *buf, t_file *nextFile)
 	if (nextFile == NULL || (flags & (1 << SEPARATOR_EOL)))
 		stringCat(buf, "\n");
 	else
-		stringCat(buf, "  ");
+		stringCat(buf, "   ");
 	return (noErrors());
 }
 
@@ -29,17 +46,7 @@ static t_error	fillBufFilenames(int flags, t_string *buf, t_file *head, \
 	while (file)
 	{
 		if (file->accessErrno != 0)
-		{
-			if (buf->length > 0)
-			{
-				write(1, buf->str, buf->length);
-				buf->length = 0;
-				buf->str[0] = 0;
-				buf->str[1] = 0;
-			}
-			fprint_fd(2, "ls: cannot access '%s': %s\n", file->name, \
-				strerror(file->accessErrno));
-		}
+			handleErrno(buf, file);
 		else
 		{
 			error = fillBufFile(flags, buf, file, meta);
@@ -57,6 +64,8 @@ static t_error	fillBufFilenames(int flags, t_string *buf, t_file *head, \
 static t_error	displayEOL(t_string *buf, t_file *head, t_file *file, \
 	int *flags)
 {
+	if (file->accessErrno != 0)
+		return (noErrors());
 	if ((*flags) & (1 << SEPARATOR_FOLDERS_EOL))
 	{
 		if (!stringCat(buf, "\n"))
@@ -96,12 +105,6 @@ static t_error	displayFoldersRecursively(int flags, t_string *buf, \
 		error = fillBufDirFullpathTotalWithCLICondition(flags, buf, file, head);
 		if (error.wasSet)
 			return (error);
-		// if (calcOnlyDirectories(head) > 1)
-		// {
-		// 	error = fillBufDirFullpathTotal(flags, buf, file);
-		// 	if (error.wasSet)
-		// 		return (error);
-		// }
 		error = fillBufRecurs(flags, buf, file->child, file->meta);
 		if (error.wasSet)
 			return (error);
@@ -146,18 +149,7 @@ t_error	displayCLIarguments(int flags, t_string *buf, t_file *head)
 	while (file)
 	{
 		if (file->accessErrno != 0)
-		{
-			if (buf->length > 0)
-			{
-				write(1, buf->str, buf->length);
-				buf->length = 0;
-				buf->str[0] = 0;
-				buf->str[1] = 0;
-			}
-			fprint_fd(2, "ls: cannot access '%s': %s\n", file->name, \
-				strerror(file->accessErrno));
-		}
-			
+			handleErrno(buf, file);
 		else if (file->type != DIRECTORY)
 		{
 			error = fillBufFile(flags, buf, file, commonFilesMeta);
@@ -184,6 +176,8 @@ t_error	displayCurrentFolder(int flags, t_string *buf, t_file *head)
 	{
 		commonFilesMeta = calcMetaOnlyFromFiles(head);
 		error = fillBufRecurs(flags, buf, head, commonFilesMeta);
+		if (error.wasSet)
+			return (error);
 	}
 	else
 	{
