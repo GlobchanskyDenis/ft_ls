@@ -263,6 +263,9 @@ int		insertByAccessTimeReverse(t_file *dir, t_file *prev, t_file *next, \
 
 /*	insertByModTime.c  */
 
+// int		insertByModTime(t_file *dir, t_file *prev, t_file *next, t_file *newfile);
+// int		insertByModTimeReverse(t_file *dir, t_file *prev, t_file *next, t_file *newfile);
+
 int		insertByModTimeNameDesc(t_file *dir, t_file *prev, t_file *next, \
 	t_file *node);
 int		insertByModTimeReverseNameDesc(t_file *dir, t_file *prev, \
@@ -271,6 +274,8 @@ int		insertByModTimeNameAsc(t_file *dir, t_file *prev, t_file *next, \
 	t_file *node);
 int		insertByModTimeReverseNameAsc(t_file *dir, t_file *prev, \
 	t_file *next, t_file *node);
+int	insertByModTimeInodeDescNameDesc(t_file *dir, t_file *prev, t_file *next,
+		t_file *newfile);
 
 /*	insertByName.c  */
 

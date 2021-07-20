@@ -33,6 +33,7 @@ void	insertByFlags(int flags, t_file *dir, t_file *newfile)
 			insert(dir, newfile, insertWithoutOrder);
 		else if (flags & (1 << SORT_BY_MODIF))
 		{
+			// insert(dir, newfile, insertByModTimeReverse);
 			if (flags & (1 << FLAG_FILE_ARGS))
 				insert(dir, newfile, insertByModTimeReverseNameDesc);
 			else
@@ -56,6 +57,7 @@ void	insertByFlags(int flags, t_file *dir, t_file *newfile)
 			insert(dir, newfile, insertWithoutOrder);
 		else if (flags & (1 << SORT_BY_MODIF))
 		{
+			// insert(dir, newfile, insertByModTime);
 			if (flags & (1 << FLAG_FILE_ARGS))
 				insert(dir, newfile, insertByModTimeNameDesc);
 			else

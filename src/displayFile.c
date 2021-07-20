@@ -103,21 +103,24 @@ t_error	fillFileName(int flags, t_string *buf, t_file *file, size_t grantPlaceFo
 		&& file->type == SYMBOLIC)
 		stringCat2(buf, " -> ", file->symlink);
 	
+	// if (ft_strlen(file->name) < 13)
+	// 	stringCat(buf, "\t");
 	// if (ft_strlen(file->name) <= 7)
 	// 	stringCat(buf, "\t");
 	// if (ft_strlen(file->name) <= 15)
 	// 	stringCat(buf, "\t");
+	// if (ft_strlen(file->name) <= 23)
+	// 	stringCat(buf, "\t");
 
-	// stringCat2(buf, "\t", file->alterName);
-	// stringCat(buf, "\t");
-	// if (ft_strlen(file->name) <= 7)
+	// stringCat2(buf, file->alterName, "\t");
+	// if (ft_strlen(file->name) <= 15)
 	// 	stringCat(buf, "\t");
 	// stringSizeTtoa(buf, file->stat.st_mtime);
 
 	// stringCat(buf, "\t");
 	// stringSizeTtoa(buf, file->stat.st_atime);
 	// stringCat(buf, "\t");
-	// stringSizeTtoa(buf, file->stat.st_atime / 60);
+	// stringSizeTtoa(buf, file->stat.st_ctime);
 
 	// stringCat(buf, "\t");
 	// stringSizeTtoa(buf, file->stat.st_dev);

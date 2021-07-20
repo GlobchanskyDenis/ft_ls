@@ -71,13 +71,18 @@ static t_error	displayEOL(t_string *buf, t_file *head, t_file *file, \
 		if (!stringCat(buf, "\n"))
 			return (allocateFailed());
 	}
-	else if (file != head && (calcOnlyNotDirectories(head) > 0 || \
-		calcOnlyDirectories(head) > 1))
+	else if ((file != head && (calcOnlyNotDirectories(head) > 0 || 
+		calcOnlyDirectories(head) > 1)) || buf->length != 0)
 	{
 		if (!stringCat(buf, "\n"))
 			return (allocateFailed());
 		(*flags) |= (1 << SEPARATOR_FOLDERS_EOL);
 	}
+	// if (buf->length != 0 && (head || !head) && (flags || !flags))
+	// {
+	// 	if (!stringCat(buf, "\n"))
+	// 		return (allocateFailed());
+	// }
 	return (noErrors());
 }
 
