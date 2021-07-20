@@ -20,6 +20,54 @@ static void	insert(t_file *dir, t_file *newfile,
 	}
 }
 
+static void	insertReverse(int flags, t_file *dir, t_file *newfile)
+{
+	if (isSortingDisabled(flags))
+		insert(dir, newfile, insertWithoutOrder);
+	else if (flags & (1 << SORT_BY_MODIF))
+	{
+		if (flags & (1 << FLAG_FILE_ARGS))
+			insert(dir, newfile, insertByModTimeReverseNameDesc);
+		else
+			insert(dir, newfile, insertByModTimeReverseNameDesc);
+	}
+	else if (flags & (1 << SORT_BY_ACCESS))
+	{
+		if (!newfile->isArgument)
+			insert(dir, newfile, insertByAccessTimeReverse);
+		else
+			insert(dir, newfile, insertWithoutOrder);
+	}
+	else if (flags & (1 << SORT_BY_NAME))
+		insert(dir, newfile, insertByNameReverse);
+	else
+		fprint("Рефакторинг!!! insertByFlags found unexpected case!!\n");
+}
+
+static void	insertInRightOrder(int flags, t_file *dir, t_file *newfile)
+{
+	if (isSortingDisabled(flags))
+		insert(dir, newfile, insertWithoutOrder);
+	else if (flags & (1 << SORT_BY_MODIF))
+	{
+		if (flags & (1 << FLAG_FILE_ARGS))
+			insert(dir, newfile, insertByModTimeNameDesc);
+		else
+			insert(dir, newfile, insertByModTimeNameDesc);
+	}
+	else if (flags & (1 << SORT_BY_ACCESS))
+	{
+		if (!newfile->isArgument)
+			insert(dir, newfile, insertByAccessTime);
+		else
+			insert(dir, newfile, insertWithoutOrder);
+	}
+	else if (flags & (1 << SORT_BY_NAME))
+		insert(dir, newfile, insertByName);
+	else
+		fprint("Рефакторинг!!! insertByFlags found unexpected case!!\n");
+}
+
 /*	Исключение для сортировки по времени доступа (-u)
 **	Если файлы были поданы как аргумент CLI - это блокирует
 **	выполнение флага -u  */
@@ -28,51 +76,7 @@ void	insertByFlags(int flags, t_file *dir, t_file *newfile)
 {
 	metaExchange(dir, newfile);
 	if (flags & (1 << FLAG_R))
-	{
-		if (isSortingDisabled(flags))
-			insert(dir, newfile, insertWithoutOrder);
-		else if (flags & (1 << SORT_BY_MODIF))
-		{
-			// insert(dir, newfile, insertByModTimeReverse);
-			if (flags & (1 << FLAG_FILE_ARGS))
-				insert(dir, newfile, insertByModTimeReverseNameDesc);
-			else
-				insert(dir, newfile, insertByModTimeReverseNameDesc);
-		}
-		else if (flags & (1 << SORT_BY_ACCESS))
-		{
-			if (!newfile->isArgument)
-				insert(dir, newfile, insertByAccessTimeReverse);
-			else
-				insert(dir, newfile, insertWithoutOrder);
-		}
-		else if (flags & (1 << SORT_BY_NAME))
-			insert(dir, newfile, insertByNameReverse);
-		else
-			fprint("Рефакторинг!!! insertByFlags found unexpected case!!\n");
-	}
+		insertReverse(flags, dir, newfile);
 	else
-	{
-		if (isSortingDisabled(flags))
-			insert(dir, newfile, insertWithoutOrder);
-		else if (flags & (1 << SORT_BY_MODIF))
-		{
-			// insert(dir, newfile, insertByModTime);
-			if (flags & (1 << FLAG_FILE_ARGS))
-				insert(dir, newfile, insertByModTimeNameDesc);
-			else
-				insert(dir, newfile, insertByModTimeNameAsc);
-		}
-		else if (flags & (1 << SORT_BY_ACCESS))
-		{
-			if (!newfile->isArgument)
-				insert(dir, newfile, insertByAccessTime);
-			else
-				insert(dir, newfile, insertWithoutOrder);
-		}
-		else if (flags & (1 << SORT_BY_NAME))
-			insert(dir, newfile, insertByName);
-		else
-			fprint("Рефакторинг!!! insertByFlags found unexpected case!!\n");
-	}
+		insertInRightOrder(flags, dir, newfile);
 }

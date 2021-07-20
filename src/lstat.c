@@ -80,10 +80,6 @@ static int	readFileLstat(t_file *file)
 **	по ID полученным из аттрибутов, считываю расширенные аттрибуты, если
 **	они существуют - помечаю у файла их наличие
 */
-// if (!ft_strcmp(file->name, "..")) // В комментарии отправлено в связи
-	// с тем, что при выводе может быть сега
-// 	return (noErrors());			 // Осторожнее с этими строками !!!
-// fprint("%s %s\n", file->name, file->fullpath);
 
 t_error	readHandleFileAttributes(t_file *file)
 {
@@ -91,21 +87,18 @@ t_error	readHandleFileAttributes(t_file *file)
 
 	if (readFileLstat(file))
 		return (noErrors());
-	file->type = file->stat.st_mode >> 12; // обрабатываю полученные результаты
-	// if (file->stat.st_size == 0 && file->stat.st_rdev != 0) // 
-	// 	calcDeviceMajorMinorLength(file);
-	if (file->type == SYMBOLIC) // Считываю куда ссылается символическая ссылка
+	file->type = file->stat.st_mode >> 12;
+	if (file->type == SYMBOLIC)
 	{
 		error = readSymLink(file);
 		if (error.wasSet)
 			return (error);
 	}
-	error = readAuthorGroupNames(file); // Считываю имена автора и группы по ID
+	error = readAuthorGroupNames(file);
 	if (error.wasSet)
 		return (error);
-	error = readFileACL(file); // Считываю расширенное значение аттрибутов
+	error = readFileACL(file);
 	if (error.wasSet)
 		return (error);
-	
 	return (noErrors());
 }

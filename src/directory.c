@@ -41,7 +41,7 @@ static t_error	addFileToDirectory(int flags, t_file *directory,
 	fullpath = allocateFileFullpath(directory->fullpath, name);
 	if (!fullpath)
 		return (allocateFailed());
-	newfile = newFile(name, fullpath, type, flags);
+	newfile = newFile(name, fullpath, type);
 	if (!newfile)
 	{
 		free(fullpath);
@@ -93,11 +93,9 @@ t_error	readDirFiles(int flags, t_file *directory)
 	struct dirent	*entry;
 	t_error			error;
 
-	// fprint("reading files in %s (%s) directory\n", directory->name, directory->fullpath);
 	dir = opendir(directory->fullpath);
 	if (!dir)
 	{
-		// fprint("Marker 1\n");
 		directory->accessErrno = errno;
 		return (noErrors());
 	}
@@ -109,7 +107,6 @@ t_error	readDirFiles(int flags, t_file *directory)
 				entry->d_type);
 		if (error.wasSet)
 		{
-			// fprint("Marker 2\n");
 			closedir(dir);
 			return (error);
 		}

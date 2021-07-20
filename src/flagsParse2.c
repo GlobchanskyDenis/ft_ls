@@ -19,7 +19,7 @@ static t_error	handleShortFlagContinue1(const char c, int *flags)
 {
 	if (c == 't')
 	{
-		*flags= setFlagSortByModificationTime(*flags);
+		(*flags) = setFlagSortByModificationTime(*flags);
 		return (noErrors());
 	}
 	else if (c == 'u')

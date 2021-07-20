@@ -2,7 +2,7 @@
 
 /*	Constructor and handlers for t_file file type  */
 
-t_file	*newFile(char const *name, char *fullpath, int type, int flags)
+t_file	*newFile(char const *name, char *fullpath, int type)
 {
 	t_file	*dst;
 
@@ -15,7 +15,7 @@ t_file	*newFile(char const *name, char *fullpath, int type, int flags)
 		return (NULL);
 	dst->type = type;
 	ft_strcpy(dst->name, name);
-	dst->isNeedNameQuotes = initAlternateString(dst->alterName, dst->name, flags);
+	dst->isNeedNameQuotes = initAlternateString(dst->alterName, dst->name);
 	dst->fullpath = fullpath;
 	return (dst);
 }
@@ -39,7 +39,7 @@ int	calcOnlyDirectories(t_file *file)
 	i = 0;
 	while (file)
 	{
-		if (file->type == DIRECTORY/* && file->accessErrno == 0*/)
+		if (file->type == DIRECTORY)
 			i++;
 		file = file->next;
 	}

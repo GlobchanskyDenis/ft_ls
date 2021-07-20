@@ -8,7 +8,6 @@ int	freeError(t_error error)
 {
 	if (error.panic != NULL)
 		free(error.panic);
-	// error.wasSet = 0;
 	return (1);
 }
 

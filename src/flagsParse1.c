@@ -48,11 +48,11 @@ t_error	parseCLIArgumentToFlags(const char *av, int *flags)
 {
 	if (!ft_strncmp("--", av, 2))
 	{
-		return parseLongFlag(av, flags);
+		return (parseLongFlag(av, flags));
 	}
 	else if (!ft_strncmp("-", av, 1))
 	{
-		return parseShortFlags(av, flags);
+		return (parseShortFlags(av, flags));
 	}
 	return (newError("Рефактор!!", \
 		"parseCLIArgumentToFlags found imposible case!"));

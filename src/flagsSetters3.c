@@ -5,10 +5,10 @@ int	setFlagSortByModificationTime(int flags)
 	flags |= (1 << FLAG_T);
 	flags = setSortByModification(flags);
 	flags |= (1 << SHOW_MODIF_TIME);
-	// if (flags & (1 << FLAG_F))
-	// {
-	// 	flags = setSortByAccess(flags);
-	// }
+	if (flags & (1 << FLAG_F))
+	{
+		flags = setSortByAccess(flags);
+	}
 	if (flags & (1 << FLAG_U))
 	{
 		flags = setSortByAccess(flags);
@@ -45,17 +45,13 @@ int	setFlagSortByAccessTime(int flags)
 int	setFlagDisableSort(int flags)
 {
 	flags |= (1 << FLAG_F);
-	flags |= (1 << SEPARATOR_EOL);
+	flags &= ~(1 << SEPARATOR_EOL);
 	flags |= (1 << SHOW_HIDDEN);
 	if (flags & (1 << FLAG_L) || flags & (1 << FLAG_G))
 	{
 		flags &= ~(1 << SHOW_RIGHTS_GROUP_WEIGHT);
 		flags &= ~(1 << SHOW_AUTHOR);
 	}
-	// if (flags & (1 << FLAG_T))
-	// {
-	// 	flags |= (1 << SHOW_HIDDEN);
-	// }
 	flags = setSortDisable(flags);
 	return (flags);
 }

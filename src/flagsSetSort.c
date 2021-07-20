@@ -1,6 +1,6 @@
 #include "ft_ls.h"
 
-int setSortByName(int flags)
+int	setSortByName(int flags)
 {
 	flags |= (1 << SORT_BY_NAME);
 	flags &= ~(1 << SORT_BY_MODIF);
@@ -8,7 +8,7 @@ int setSortByName(int flags)
 	return (flags);
 }
 
-int setSortByModification(int flags)
+int	setSortByModification(int flags)
 {
 	flags |= (1 << SORT_BY_MODIF);
 	flags &= ~(1 << SORT_BY_NAME);
@@ -16,7 +16,7 @@ int setSortByModification(int flags)
 	return (flags);
 }
 
-int setSortByAccess(int flags)
+int	setSortByAccess(int flags)
 {
 	flags |= (1 << SORT_BY_ACCESS);
 	flags &= ~(1 << SORT_BY_NAME);

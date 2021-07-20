@@ -67,20 +67,19 @@ static int	shouldPrintNameWithQuotes(char c)
 /*	Костыль для последующей сортировки. Отправляет LowCase в UpCase
 **	и наоборот в зависимости от того, какой флаг был включен */
 
-static char	changeTextCases(char c, int flags)
-{
-	if (flags & (1 << FLAG_T))
-	{
-		// if (c >= 'a' && c <= 'z')
-		// 	return (c - 'a' + 'A');
-		// if (c >= 'A' && c <= 'Z')
-		// 	return (c - 'A' + 'a');
-		
-		// if (c == '.')
-		// 	return (126);
-	}
-	return (c);
-}
+// static char	changeTextCases(char c, int flags)
+// {
+// 	if (flags & (1 << FLAG_T))
+// 	{
+// 		// if (c >= 'a' && c <= 'z')
+// 		// 	return (c - 'a' + 'A');
+// 		// if (c >= 'A' && c <= 'Z')
+// 		// 	return (c - 'A' + 'a');
+// 		// if (c == '.')
+// 		// 	return (126);
+// 	}
+// 	return (c);
+// }
 
 /*	Альтернативное имя используется для корректной сортировки русского
 **	алфавита а также в качестве костыля (на моей Ubuntu даже при
@@ -90,7 +89,7 @@ static char	changeTextCases(char c, int flags)
 **	Поэтому я передаю аргументом в эту функцию флаги, хотя в такой
 **	низкоуровневой функции это выглядит странно  */
 
-int	initAlternateString(char *dst, char *src, int flags)
+int	initAlternateString(char *dst, char *src)
 {
 	size_t	i;
 	size_t	len;
@@ -109,7 +108,7 @@ int	initAlternateString(char *dst, char *src, int flags)
 		}
 		else
 		{
-			dst[i] = changeTextCases(src[i], flags);
+			dst[i] = src[i];
 			if (shouldPrintNameWithQuotes(src[i]))
 				isNeedQuotes = 1;
 		}

@@ -8,7 +8,8 @@ DIR_SRC		=	src/
 FILES_INC	=	ft_ls.h
 FILES		=	alternate.c					directory.c			\
 				directoryHandlers.c			\
-				display.c					displayDirHeader.c	\
+				display.c					display2.c			\
+				displayDirHeader.c	\
 				displayFile.c				\
 				displayFileMode.c			\
 				dump.c						\

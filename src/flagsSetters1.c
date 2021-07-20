@@ -1,6 +1,6 @@
 #include "ft_ls.h"
 
-int setFlagLong(int flags)
+int	setFlagLong(int flags)
 {
 	flags |= (1 << FLAG_L);
 	flags |= (1 << SEPARATOR_EOL);

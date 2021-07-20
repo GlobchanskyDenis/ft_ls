@@ -64,14 +64,6 @@ t_error	fillFileTime(int flags, t_string *buf, t_file *file)
 	printTime = &(printTime[4]);
 	stringCatN(buf, printTime, 12);
 	stringCat(buf, " ");
-
-	// printTime = ctime(&(file->stat.st_atime));
-	// if (printTime == NULL)
-	// 	return (newError("(a/m)time", strerror(errno)));
-	// printTime = &(printTime[4]);
-	// stringCatN(buf, printTime, 12);
-	// stringCat(buf, " ");
-
 	return (noErrors());
 }
 
@@ -83,7 +75,8 @@ t_error	fillFileTime(int flags, t_string *buf, t_file *file)
 **	ВЫВОДИТСЯ В АПОСТРОФАХ - все  
 */
 
-t_error	fillFileName(int flags, t_string *buf, t_file *file, size_t grantPlaceForQuote)
+t_error	fillFileName(int flags, t_string *buf, t_file *file, \
+	size_t grantPlaceForQuote)
 {
 	if (!stringGrantSize(buf, 10 + ft_strlen(file->name) + \
 		safe_strlen(file->symlink)))
@@ -102,50 +95,6 @@ t_error	fillFileName(int flags, t_string *buf, t_file *file, size_t grantPlaceFo
 	if ((flags & (1 << SHOW_RIGHTS_GROUP_WEIGHT)) \
 		&& file->type == SYMBOLIC)
 		stringCat2(buf, " -> ", file->symlink);
-	
-	// if (ft_strlen(file->name) < 13)
-	// 	stringCat(buf, "\t");
-	// if (ft_strlen(file->name) <= 7)
-	// 	stringCat(buf, "\t");
-	// if (ft_strlen(file->name) <= 15)
-	// 	stringCat(buf, "\t");
-	// if (ft_strlen(file->name) <= 23)
-	// 	stringCat(buf, "\t");
-
-	// stringCat2(buf, file->alterName, "\t");
-	// if (ft_strlen(file->name) <= 15)
-	// 	stringCat(buf, "\t");
-	// stringSizeTtoa(buf, file->stat.st_mtime);
-
-	// stringCat(buf, "\t");
-	// stringSizeTtoa(buf, file->stat.st_atime);
-	// stringCat(buf, "\t");
-	// stringSizeTtoa(buf, file->stat.st_ctime);
-
-	// stringCat(buf, "\t");
-	// stringSizeTtoa(buf, file->stat.st_dev);
-	// stringCat(buf, "\t");
-	// stringSizeTtoa(buf, file->stat.st_ino);
-	// stringCat(buf, "\t");
-	// stringSizeTtoa(buf, file->stat.st_mode);
-	// stringCat(buf, "\t");
-	// stringSizeTtoa(buf, file->stat.st_ctime);
-	// stringCat(buf, "\t");
-	// stringSizeTtoa(buf, file->stat.st_nlink);
-	// stringCat(buf, "\t");
-	// stringSizeTtoa(buf, file->stat.st_uid);
-	// stringCat(buf, "\t");
-	// stringSizeTtoa(buf, file->stat.st_gid);
-	// stringCat(buf, "\t");
-	// stringSizeTtoa(buf, file->stat.st_rdev);
-	// stringCat(buf, "\t");
-	// stringSizeTtoa(buf, file->stat.st_size);
-	// stringCat(buf, "\t");
-	// stringSizeTtoa(buf, file->stat.st_blksize);
-	// stringCat(buf, "\t");
-	// stringSizeTtoa(buf, file->stat.st_blocks);
-
-
 	return (noErrors());
 }
 
@@ -162,7 +111,8 @@ t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta)
 		if (!stringGrantSize(buf, 50 + meta.sum))
 			return (allocateFailed());
 		fillBufFileMode(flags, buf, file, meta);
-		stringSizeTtoaAlignR(buf, file->stat.st_nlink, meta.maxLinksNumLen, ' ');
+		stringSizeTtoaAlignR(buf, file->stat.st_nlink, \
+			meta.maxLinksNumLen, ' ');
 		stringCat(buf, " ");
 		fillFileAuthor(flags, buf, file, meta);
 		fillBufByFileSizeColumn(buf, file, meta);
@@ -170,14 +120,8 @@ t_error	fillBufFile(int flags, t_string *buf, t_file *file, t_meta meta)
 		if (error.wasSet)
 			return (error);
 		error = fillFileName(flags, buf, file, meta.oneOfFilesNeedsQuotes);
-		if (error.wasSet)
-			return (error);
 	}
 	else
-	{
 		error = fillFileName(flags, buf, file, 0);
-		if (error.wasSet)
-			return (error);
-	}
 	return (noErrors());
 }

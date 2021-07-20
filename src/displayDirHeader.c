@@ -43,8 +43,6 @@ t_error	fillBufDirFullpathTotal(int flags, t_string *buf, t_file *dir)
 static int	isCanPrintDirFullpath(int flags, t_file *dir, t_file *dirHead)
 {
 	int	amountDirs;
-	// int	amountNormalDirs;
-	// int	amountDamagedDirs;
 	int	amountFiles;
 
 	if (dir->accessErrno != 0)
@@ -52,8 +50,6 @@ static int	isCanPrintDirFullpath(int flags, t_file *dir, t_file *dirHead)
 	if (flags & (1 << FLAG_RR))
 		return (1);
 	amountDirs = calcOnlyDirectories(dirHead);
-	// amountNormalDirs = calcOnlyDirectoriesThatWeCanAccess(dirHead);
-	// amountDamagedDirs = amountDirs - amountNormalDirs;
 	amountFiles = calcOnlyNotDirectories(dirHead);
 	if (flags & (1 << FLAG_FILE_ARGS))
 	{
@@ -70,7 +66,7 @@ static int	isCanPrintDirFullpath(int flags, t_file *dir, t_file *dirHead)
 **	должен отображаться либо если есть рекурсия, либо если папка не одна
 **	в списке и нет файлов, либо одна но есть также и файлы */
 
-t_error fillBufDirFullpathTotalWithCLICondition(int flags, t_string *buf, \
+t_error	fillBufDirFullpathTotalWithCLICondition(int flags, t_string *buf, \
 	t_file *dir, t_file *dirHead)
 {
 	if (!dir)

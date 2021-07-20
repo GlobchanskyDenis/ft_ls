@@ -45,7 +45,7 @@ t_error	reader(int ac, char **av, int *flags, t_list **filenames)
 				return (error);
 		}
 		else if (isNeedToSkipThisFlag(av[i]))
-			continue;
+			continue ;
 		else
 		{
 			*flags = *flags | (1 << FLAG_FILE_ARGS);

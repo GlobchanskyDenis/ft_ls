@@ -14,9 +14,9 @@ static t_error	initFileFromCLIinsertToTree(int flags, t_list *filename, \
 	t_file **fileTree)
 {
 	t_file	*newfile;
-	t_error error;
+	t_error	error;
 
-	newfile = newFile(filename->content, ft_strdup(filename->content), UNKNOWN, flags);
+	newfile = newFile(filename->content, ft_strdup(filename->content), UNKNOWN);
 	if (!newfile)
 		return (allocateFailed());
 	error = readHandleFileAttributes(newfile);
@@ -69,7 +69,7 @@ t_error	initializeFileTree(int flags, t_list *files, t_file **fileTree)
 {
 	t_error	error;
 
-	*fileTree = newFile(".", ft_strdup("."), DIRECTORY, flags);
+	*fileTree = newFile(".", ft_strdup("."), DIRECTORY);
 	if (!(*fileTree))
 		return (allocateFailed());
 	if (files == NULL)

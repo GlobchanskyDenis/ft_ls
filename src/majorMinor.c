@@ -40,7 +40,8 @@ static void	fillBufDeviceMajorMinor(t_string *buf, t_file *file, t_meta meta)
 
 	major = file->stat.st_rdev >> 8;
 	minor = file->stat.st_rdev & 255;
-	tab = (int)meta.maxSizeLen - (int)meta.maxMajorLen - 2 - (int)meta.maxMinorLen;
+	tab = (int)meta.maxSizeLen - (int)meta.maxMajorLen - 2 - \
+		(int)meta.maxMinorLen;
 	while (tab-- > 0)
 		stringCat(buf, " ");
 	tab = (int)meta.maxMajorLen - (int)countRanksSizeT(major, 10);

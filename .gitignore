@@ -7,7 +7,7 @@ subdir
 file1
 file2
 ft_ls
-test/*
+# test/*
 *.o
 libft.a
 hard_link

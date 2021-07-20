@@ -151,7 +151,7 @@ typedef struct s_error
 
 /*	alternate.c  */
 
-int		initAlternateString(char *dst, char *src, int flags);
+int		initAlternateString(char *dst, char *src);
 
 /*	directory.c  */
 
@@ -173,7 +173,7 @@ t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta);
 /*	displayDirHeader.c  */
 
 t_error	fillBufDirFullpathTotal(int flags, t_string *buf, t_file *dir);
-t_error fillBufDirFullpathTotalWithCLICondition(int flags, t_string *buf, \
+t_error	fillBufDirFullpathTotalWithCLICondition(int flags, t_string *buf, \
 	t_file *dir, t_file *dirHead);
 
 /*	displayFile.c  */
@@ -204,7 +204,7 @@ t_error	noErrors(void);
 
 /*	file.c  */
 
-t_file	*newFile(char const *name, char *path, int type, int flags);
+t_file	*newFile(char const *name, char *path, int type);
 void	freeFile(t_file **file);
 int		isFileNotExist(char const *filename);
 int		calcOnlyDirectories(t_file *file);
@@ -225,16 +225,15 @@ int		freeFileTree(t_file **fileTree);
 
 int		isFlag(char const *av);
 int		isNeedToSkipThisFlag(char const *av);
-// t_error	handleShortFlag(const char c, int *flags);
 t_error	parseShortFlags(const char *av, int *flags);
 t_error	parseCLIArgumentToFlags(const char *av, int *flags);
 int		isSortingDisabled(int flags);
 
 /*	flagsSetSort.c  */
 
-int 	setSortByName(int flags);
-int 	setSortByModification(int flags);
-int 	setSortByAccess(int flags);
+int		setSortByName(int flags);
+int		setSortByModification(int flags);
+int		setSortByAccess(int flags);
 int		setSortDisable(int flags);
 
 /*	flagsSetters1.c flagsSetters2.c flagsSetters3.c  */
@@ -252,6 +251,19 @@ int		setFlagDisableSort(int flags);
 
 /*	insert.c  */
 
+void	handleErrno(t_string *buf, t_file *file);
+t_error	fillBufFileSepatator(int flags, t_string *buf, t_file *nextFile);
+t_error	fillBufFilenames(int flags, t_string *buf, t_file *head, \
+	t_meta meta);
+t_error	displayEOL(t_string *buf, t_file *head, t_file *file, \
+	int *flags);
+t_error	displayFoldersRecursively(int flags, t_string *buf, \
+	t_file *head);
+t_error	fillBufRecurs(int flags, t_string *buf, t_file *head, t_meta meta);
+t_error	displayCLIarguments(int flags, t_string *buf, t_file *head);
+t_error	displayCurrentFolder(int flags, t_string *buf, t_file *head);
+t_error	displayFolderWithFlagD(int flags, t_string *buf, \
+	t_file *head);
 void	insertByFlags(int flags, t_file *dir, t_file *newfile);
 
 /*	insertByAccessTime.c  */
@@ -263,9 +275,6 @@ int		insertByAccessTimeReverse(t_file *dir, t_file *prev, t_file *next, \
 
 /*	insertByModTime.c  */
 
-// int		insertByModTime(t_file *dir, t_file *prev, t_file *next, t_file *newfile);
-// int		insertByModTimeReverse(t_file *dir, t_file *prev, t_file *next, t_file *newfile);
-
 int		insertByModTimeNameDesc(t_file *dir, t_file *prev, t_file *next, \
 	t_file *node);
 int		insertByModTimeReverseNameDesc(t_file *dir, t_file *prev, \
@@ -274,8 +283,6 @@ int		insertByModTimeNameAsc(t_file *dir, t_file *prev, t_file *next, \
 	t_file *node);
 int		insertByModTimeReverseNameAsc(t_file *dir, t_file *prev, \
 	t_file *next, t_file *node);
-int	insertByModTimeInodeDescNameDesc(t_file *dir, t_file *prev, t_file *next,
-		t_file *newfile);
 
 /*	insertByName.c  */
 
